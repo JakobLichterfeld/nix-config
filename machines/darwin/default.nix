@@ -1,6 +1,7 @@
 { inputs, pkgs, lib, ... }:
 {
   imports = [
+    home-manager
     ../../modules/cachix
     ./dock
     ./system.nix
