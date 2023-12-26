@@ -8,6 +8,7 @@
 
   home-manager = {
     useGlobalPkgs = false; # makes hm use nixos's pkgs value
+    useUserPackages = true;
       extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
       users.jakob = { config, pkgs, ... }: {
         nixpkgs.overlays = [
