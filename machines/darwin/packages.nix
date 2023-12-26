@@ -106,6 +106,5 @@ with pkgs; [
   alt-tab-macos
   rectangle
   android-file-transfer
-  # karabiner-elements # Keyboard customizer for macOS
-
+  karabiner-elements # Keyboard customizer for macOS
 ]
