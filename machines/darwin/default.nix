@@ -24,7 +24,6 @@
       };
 
     backupFileExtension = "bak";
-    useUserPackages = true;
   };
 
   homebrew = {
