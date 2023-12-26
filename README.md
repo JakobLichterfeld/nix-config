@@ -12,7 +12,18 @@ Managed using `nix-darwin` and `home-manager`. Impure packages and apps are mana
 
 ## How to use
 
-Updated dependencies: `nix --extra-experimental-features flakes --extra-experimental-features nix-command flake update``
+Update dependencies: `nix --experimental-features 'nix-command flakes' flake update`
+
+build: `nix --experimental-features 'nix-command flakes' build .#darwinConfigurations."MainDev".system`
+
+as macOS does not allow writing to `/` write to symlink:
+
+```shell
+printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf # read below
+/System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t # read below
+```
+
+apply changes: `./result/sw/bin/darwin-rebuild switch --flake .`
 
 ## Contributing
 
