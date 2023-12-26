@@ -5,7 +5,7 @@
   age.identityPaths = ["/home/jakob/.ssh/id_ed25519"];
 
   age.secrets.hashedUserPassword = {
-    file = /secrets/hashedUserPassword.age;
+    file = ../../secrets/hashedUserPassword.age;
   };
 
   users = {

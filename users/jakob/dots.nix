@@ -19,8 +19,8 @@ in
   home = home;
 
   imports = [
-      /dots/neofetch/default.nix
-      /dots/zsh/default.nix
+      ../../dots/neofetch/default.nix
+      ../../dots/zsh/default.nix
       ./packages.nix
   ];
 
