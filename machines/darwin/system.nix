@@ -58,8 +58,6 @@
         # Cover Flow  : `Flwv`
         FXPreferredViewStyle = "clmnv";
 
-        # show hidden files by default
-        # AppleShowAllFiles = true;
       };
       CustomUserPreferences = {
         "com.apple.finder" = {
@@ -83,6 +81,9 @@
 
           # allow text selection in Quick Look
           QLEnableTextSelection = true;
+
+          # show hidden files by default
+          # AppleShowAllFiles = true;
         };
 
       };
@@ -167,8 +168,10 @@
       };
 
       CustomUserPreferences ={
-        # Add a context menu item for showing the Safari Web Inspector in web views
-        WebKitDeveloperExtras = true;
+        NSGlobalDomain = {
+          # Add a context menu item for showing the Safari Web Inspector in web views
+          WebKitDeveloperExtras = true;
+        };
 
         com.apple.springing ={
           # Enable spring loading for directories
