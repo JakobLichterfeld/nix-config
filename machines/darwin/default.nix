@@ -1,4 +1,4 @@
-{ inputs, pkgs, lib, ... }:
+{ inputs, pkgs, lib, home-manager, ... }:
 {
   imports = [
     <home-manager/nix-darwin>
