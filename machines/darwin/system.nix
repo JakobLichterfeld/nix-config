@@ -34,6 +34,9 @@
       };
       finder = {
         # When performing a search, search the current folder by default
+        # This Mac       : `SCev`
+        # Current Folder : `SCcf`
+        # Previous Scope : `SCsp`
         FXDefaultSearchScope = "SCcf";
 
         #show all filename extensions
@@ -45,29 +48,45 @@
         # show status bar
         ShowStatusBar = true;
 
-        # allow text selection in Quick Look
-        QLEnableTextSelection = true;
-
         # Display full POSIX path as Finder window title
         _FXShowPosixPathInTitle = true;
 
-        # Set Desktop as the default location for new Finder windows
-        # For other paths, use `PfLo` and `file:///full/path/here/`
-        NewWindowTarget = "PfDe";
-        # NewWindowTargetPath = "file://${HOME}/Desktop/";
-
         # Use column view in all Finder windows by default
+        # Icon View   : `icnv`
+        # List View   : `Nlsv`
+        # Column View : `clmv`
+        # Cover Flow  : `Flwv`
         FXPreferredViewStyle = "clmnv";
-
-        # Show icons for hard drives, servers, and removable media on the desktop
-        ShowExternalHardDrivesOnDesktop = true;
-        ShowHardDrivesOnDesktop = true;
-        ShowMountedServersOnDesktop = true;
-        ShowRemovableMediaOnDesktop = true;
 
         # show hidden files by default
         # AppleShowAllFiles = true;
       };
+      CustomUserPreferences = {
+        "com.apple.finder" = {
+          # Set Home as the default location for new Finder windows
+          # Computer     : "PfCm"
+          # Volume       : "PfVo"
+          # $HOME        : "PfHm"
+          # Desktop      : "PfDe"
+          # Documents    : "PfDo"
+          # All My Files : "PfAF"
+          # Other…       : "PfLo"
+          # For other paths, use `PfLo` and `file:///full/path/here/`
+          cNewWindowTarget = "PfHm";
+          # NewWindowTargetPath = "file://${HOME}/Desktop/";
+
+          # Show icons for hard drives, servers, and removable media on the desktop
+          ShowExternalHardDrivesOnDesktop = true;
+          ShowHardDrivesOnDesktop = true;
+          ShowMountedServersOnDesktop = true;
+          ShowRemovableMediaOnDesktop = true;
+
+          # allow text selection in Quick Look
+          QLEnableTextSelection = true;
+        };
+
+      };
+
       dock = {
         # Dock on the left
         orientation = "left";
@@ -104,15 +123,12 @@
 
         # Top left screen corner → Mission Control (All windows)
         wvous-tl-corner = 2;
-        wvous-tl-modifier = 0;
 
         # Bottom right screen corner → Desktop
         wvous-br-corner = 4;
-        wvous-br-modifier = 0;
 
         # Bottom Left screen corner -> show Application Windows
         wvous-bl-corner = 3;
-        wvous-bl-modifier = 0;
       };
       NSGlobalDomain = {
         ###############################################################################
@@ -127,9 +143,6 @@
 
         # Save to disk (not to iCloud) by default
         NSDocumentSaveNewDocumentsToCloud = false;
-
-        # Add a context menu item for showing the Safari Web Inspector in web views
-        WebKitDeveloperExtras = true;
 
         ###############################################################################
         # Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
@@ -151,18 +164,34 @@
         # Disable auto-correct
         NSAutomaticSpellingCorrectionEnabled = false;
 
-       # Enable spring loading for directories
-        com.apple.springing.enabled = true;
+      };
 
-        # Remove the spring loading delay for directories
-        com.apple.springing.delay = 0.1;
+      CustomUserPreferences ={
+        # Add a context menu item for showing the Safari Web Inspector in web views
+        WebKitDeveloperExtras = true;
+
+        com.apple.springing ={
+          # Enable spring loading for directories
+          enabled = true;
+
+          # Remove the spring loading delay for directories
+          delay = 0.1;
+        };
       };
 
       # Automatically quit printer app once the print jobs complete
-      print.PrintingPrefs.QuitWhenFinished = true;
+      CustomUserPreferences = {
+        "com.apple.print.PrintingPrefs" = {
+          QuitWhenFinished = true;
+        };
+      };
 
-      # Avoid creating .DS_Store files on network volumes
-      desktopservices.DSDontWriteNetworkStores = true;
+      CustomUserPreferences = {
+        "com.apple.desktopservices" = {
+          # Avoid creating .DS_Store files on network volumes
+          DSDontWriteNetworkStores = true;
+        };
+      };
 
       # Enable the 'reduce transparency' option. Save GPU cycles.
       universalaccess.reduceTransparency = true;
@@ -179,12 +208,14 @@
       ###############################################################################
       # Safari & WebKit                                                             #
       ###############################################################################
-      Safari = {
-        # Enable the Develop menu and the Web Inspector in Safari
-        IncludeDevelopMenu = true;
-        WebKitDeveloperExtrasEnabledPreferenceKey = true;
-        com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled = true;
-
+      CustomUserPreferences={
+        "com.apple.Safari" = {
+          # Enable the Develop menu and the Web Inspector in Safari
+          IncludeDevelopMenu = true;
+          WebKitDeveloperExtrasEnabledPreferenceKey = true;
+          ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled =
+            true;
+        };
       };
 
       ###############################################################################
@@ -192,34 +223,47 @@
       ###############################################################################
 
       # Copy email addresses as `foo@example.com` instead of `Foo Bar <foo@example.com>` in Mail.app
-      com.apple.mail.AddressesIncludeNameOnPasteboard = false;
+      CustomUserPreferences={
+        "com.apple.mail" = {
+          AddressesIncludeNameOnPasteboard = false;
+        };
+      };
 
       ###############################################################################
       # Activity Monitor                                                            #
       ###############################################################################
 
       # Show the main window when launching Activity Monitor
-      com.apple.ActivityMonitor.OpenMainWindow = true;
+      ActivityMonitor.OpenMainWindow = true;
 
       # Show all processes in Activity Monitor
-      com.apple.ActivityMonitor.ShowCategory = 0;
+      ActivityMonitor.ShowCategory = 0;
 
       ###############################################################################
       # Messages                                                                    #
       ###############################################################################
 
-      # Disable smart quotes as it’s annoying for messages that contain code
-      com.apple.messageshelper.MessageController.SOInputLineSettings.automaticQuoteSubstitutionEnabled = false;
-
-      # Disable continuous spell checking
-      com.apple.messageshelper.MessageController.SOInputLineSettingscontinuousSpellCheckingEnabled = false;
+      CustomUserPreferences={
+        "com.apple.messageshelper.MessageController" = {
+          SOInputLineSettings = {
+            # Disable smart quotes as it’s annoying for messages that contain code
+            automaticQuoteSubstitutionEnabled = false;
+            # Disable continuous spell checking
+            continuousSpellCheckingEnabled = false;
+          };
+        };
+      };
 
       ###############################################################################
       # App Store                                                                   #
       ###############################################################################
 
       # Disable in-app rating requests from apps downloaded from the App Store.
-      com.apple.appstore.InAppReviewEnabled = 0;
+      CustomUserPreferences={
+        "com.apple.appstore" = {
+          InAppReviewEnabled = 0;
+        };
+      };
     };
 
     activationScripts.postUserActivation.text = ''
