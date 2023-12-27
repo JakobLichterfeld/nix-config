@@ -2,9 +2,9 @@
 {
   age.identityPaths = ["/persist/ssh/ssh_host_ed25519_key"];
 
-  # mkpasswd -m sha-512 password
   age.secrets.hashedUserPassword = lib.mkDefault {
-    file = ./hashedUserPassword.age;
+    file = ./hashedUserPassword.age;  # content is result of: `mkpasswd -m sha-512`
+                                      # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e hashedUserPassword.age
   };
   # age.secrets.sambaPassword = lib.mkDefault {
   #   file = ./sambaPassword.age;
@@ -43,7 +43,8 @@
   #     file = ./sonarrApiKey.age;
   #   };
   age.secrets.tailscaleAuthKey = lib.mkDefault {
-      file = ./tailscaleAuthKey.age;
+      file = ./tailscaleAuthKey.age; # generate for max 90 day at https://login.tailscale.com/admin/settings/keys
+                                    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e tailscaleAuthKey.age
     };
   # age.secrets.paperless = lib.mkDefault {
   #     file = ./paperless.age;

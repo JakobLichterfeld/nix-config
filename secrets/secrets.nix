@@ -22,4 +22,4 @@ in {
   # "icloudDriveUsername.age".publicKeys = allKeys;
 }
 
-# to add a secret run `EDITOR=nano nix --extra-experimental-features flakes --extra-experimental-features nix-command run github:ryantm/agenix -- -e hashedUserPassword.age`
+# to add a secret run `EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e hashedUserPassword.age`
