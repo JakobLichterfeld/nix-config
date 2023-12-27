@@ -20,7 +20,10 @@ Managed using `nix-darwin` and `home-manager`. Impure packages and apps are mana
 
 Update dependencies: `nix --experimental-features 'nix-command flakes' flake update`
 
-build: `nix --experimental-features 'nix-command flakes' build .#darwinConfigurations."MainDev".system`
+
+darwin build: `darwin-rebuild switch --impure --flake .``
+
+or build: `nix --experimental-features 'nix-command flakes' build .#darwinConfigurations."MainDev".system --impure`
 
 as macOS does not allow writing to `/` write to symlink:
 
