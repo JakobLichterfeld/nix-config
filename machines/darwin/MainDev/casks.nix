@@ -5,6 +5,7 @@ _:
     copilot-for-xcode
     sourcetree # Git GUI
     android-studio
+    flutter
 
     # Hardware
     logitech-g-hub # adjust Logitech Keyboard Lights

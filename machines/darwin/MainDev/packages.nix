@@ -17,7 +17,6 @@ with pkgs; [
   html-tidy
   elixir
   chromedriver
-  flutter
   cocoapods
   fastlane
   openssl_3_1
