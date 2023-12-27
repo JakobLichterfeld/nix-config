@@ -4,25 +4,9 @@ with pkgs; [
   # General packages for development and system management
   act # Run your GitHub Actions locally
 
-  # Encryption and security tools
-  age
-  gnupg
-  pinentry # GnuPG’s interface to passphrase input
-  tor-browser
-
   # Cloud-related tools and SDKs
   docker
   docker-compose
-
-  # Fonts
-  dejavu_fonts
-  fira-code-nerdfont
-
-  # Communication Tools
-  betterdiscordctl
-
-  # Entertainment Tools
-  steam
 
   # Development tools
   vscode
@@ -32,7 +16,6 @@ with pkgs; [
   shfmt
   html-tidy
   elixir
-  android-studio
   chromedriver
   flutter
   cocoapods
@@ -41,9 +24,15 @@ with pkgs; [
   ruby
 
   # Python packages
-  python39
-  python39Packages.virtualenv # globally install virtualenv
-  python39Packages.pip # globally install pip
+  python311
+  python311Packages.virtualenv # globally install virtualenv
+  python311Packages.pip # globally install pip
+
+  # Node.js development tools
+  nodePackages.nodemon
+  nodePackages.prettier
+  nodePackages.npm # globally install npm
+  nodejs
 
   # infrastructure
   ansible-lint
@@ -56,24 +45,11 @@ with pkgs; [
   pandoc
   calibre
 
-  # Image
-  geeqie # Image viewer
-  digikam # Photo management application
-
-  # Node.js development tools
-  nodePackages.nodemon
-  nodePackages.prettier
-  nodePackages.npm # globally install npm
-  nodejs
-
   # Text and terminal utilities
   binwalk
 
   # Remote desktop
-  teamviewer
   xquartz
   freerdp
 
-  # Other
-  tradingview
 ]

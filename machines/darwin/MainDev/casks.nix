@@ -1,9 +1,30 @@
 _:
 
 [
+    # Development
     copilot-for-xcode
+    sourcetree # Git GUI
+    android-studio
+
+    # Hardware
+    logitech-g-hub # adjust Logitech Keyboard Lights
+
+    # Writing
     remarkable
-    sourcetree
-    unified-remote
-    logitech-g-hub
+
+    # Communication
+    betterdiscord-installer
+
+    # Remote
+    unified-remote # Control PC with Phone
+
+    # Entertainment Tools
+    steam
+
+    # Image
+    digikam # Photo management application
+
+    # Other
+    tradingview
+
 ]

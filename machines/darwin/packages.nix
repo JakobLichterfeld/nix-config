@@ -7,7 +7,6 @@ with pkgs; [
   aspellDicts.de
   btop
   coreutils
-  killall
   neofetch
   openssh
   direnv
@@ -18,25 +17,19 @@ with pkgs; [
   warp-terminal
 
   # Encryption and security tools
+  age # A simple, modern and secure encryption tool with small explicit keys, no config options, and UNIX-style composability.
   gnupg
   pinentry # GnuPG’s interface to passphrase input
   keepassxc
-  zerotierone
 
   # Fonts
   dejavu_fonts
   fira-code-nerdfont
 
-  # Browsers
-  google-chrome
-  brave
-
   # Communication Tools
   discord
   slack
-  telegram-desktop
   zoom-us
-  signal-desktop
 
   # Development tools
   git
@@ -53,24 +46,16 @@ with pkgs; [
   unison # Bidirectional file synchronizer
 
   # Writing
-  klavaro # Free touch typing tutor program
   pstoedit # Translates PostScript and PDF graphics into other vector formats
-  languagetool
-  pdfsam-basic
   xournalpp
-  adobe-reader
-  libreoffice
 
   # Image
   exiv2 # Image metadata manipulation tool
   graphicsmagick # Image processing tools collection
   jhead # JPEG Exif header manipulation tool
-  sbclPackages.jpeg-turbo # JPEG image manipulation library
   jpegoptim # Utility to optimize/compress JPEG files
   gimp # GNU Image Manipulation Program
   inkscape # Vector graphics editor
-  luminanceHDR # HDR imaging application
-  hugin # Panorama photo stitcher
 
   # Audio
   normalize # Tool for adjusting the volume of wave files
@@ -80,13 +65,10 @@ with pkgs; [
   audacity # Audio editor
   picard # MusicBrainz tagger
 
-  # Video
-  vlc # Media player
-  obs-studio
-
   # Text and terminal utilities
   htop
   hunspell
+  hunspellDicts.en_US
   hunspellDicts.de_DE
   iftop
   jq
@@ -96,12 +78,9 @@ with pkgs; [
   zsh
   starship
 
-  # Remote desktop
-  teamviewer
-
   # System tools
-  alt-tab-macos
-  rectangle
+  alt-tab-macos # macOS alt-tab replacement
+  rectangle # Move and resize windows in macOS using keyboard shortcuts or snap areas
   android-file-transfer
   karabiner-elements # Keyboard customizer for macOS
 ]
