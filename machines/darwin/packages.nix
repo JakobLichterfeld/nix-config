@@ -18,7 +18,6 @@ with pkgs; [
   warp-terminal
 
   # Encryption and security tools
-  inputs.agenix.packages."${system}".default
   gnupg
   pinentry # GnuPG’s interface to passphrase input
   keepassxc

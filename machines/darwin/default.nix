@@ -65,8 +65,9 @@
   # Enable fonts dir
   fonts.fontDir.enable = true;
 
-
-  environment.systemPackages = pkgs.callPackage ./packages.nix {};
+  environment.systemPackages = with pkgs; [
+    inputs.agenix.packages."${pkgs.system}".default
+  ] ++ (import ./packages.nix { inherit pkgs; });
 
   # Fully declarative dock using the latest from Nix Store
     local.dock.enable = true;
