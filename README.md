@@ -12,6 +12,12 @@ Managed using `nix-darwin` and `home-manager`. Impure packages and apps are mana
 
 ## How to use
 
+[Make sure nix is installed](https://nixos.org/download#nix-install-macos)
+
+[install nix-darwin](https://github.com/LnL7/nix-darwin?tab=readme-ov-file#flakes)
+
+[install home-manager](https://nix-community.github.io/home-manager/index.xhtml#sec-install-standalone)
+
 Update dependencies: `nix --experimental-features 'nix-command flakes' flake update`
 
 build: `nix --experimental-features 'nix-command flakes' build .#darwinConfigurations."MainDev".system`
@@ -19,8 +25,8 @@ build: `nix --experimental-features 'nix-command flakes' build .#darwinConfigura
 as macOS does not allow writing to `/` write to symlink:
 
 ```shell
-printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf # read below
-/System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t # read below
+printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
+/System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
 ```
 
 apply changes: `./result/sw/bin/darwin-rebuild switch --flake .`
