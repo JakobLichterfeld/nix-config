@@ -20,7 +20,7 @@
         imports = [
           inputs.nix-index-database.hmModules.nix-index
           inputs.agenix.homeManagerModules.default
-          /users/jakob/dots.nix
+          ../../users/jakob/dots.nix
         ];
       };
 
