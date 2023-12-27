@@ -46,7 +46,7 @@
         agenix.darwinModules.default
         ./machines/darwin
         ./machines/darwin/MainDev
-        ./modules/tailscale
+        # ./modules/tailscale
         ];
       };
 
