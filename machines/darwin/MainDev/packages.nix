@@ -42,7 +42,6 @@ with pkgs; [
   # Writing
   texliveFull
   pandoc
-  calibre
 
   # Text and terminal utilities
   binwalk

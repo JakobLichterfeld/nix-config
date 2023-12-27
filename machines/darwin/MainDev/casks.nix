@@ -12,6 +12,7 @@ _:
 
     # Writing
     remarkable
+    calibre
 
     # Communication
     betterdiscord-installer
