@@ -237,7 +237,7 @@
       ActivityMonitor.OpenMainWindow = true;
 
       # Show all processes in Activity Monitor
-      ActivityMonitor.ShowCategory = 0;
+      ActivityMonitor.ShowCategory = null;
 
       ###############################################################################
       # Messages                                                                    #
