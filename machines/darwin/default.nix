@@ -62,6 +62,9 @@
     settings.experimental-features = [ "nix-command" "flakes" ];
   };
 
+  # allow packages with unfree licenses
+  nixpkgs.config.allowUnfree = true;
+
   # Enable fonts dir
   fonts.fontDir.enable = true;
 
