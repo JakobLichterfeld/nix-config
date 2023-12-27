@@ -9,9 +9,16 @@ programs.zsh = {
 
     history = {
       ignoreDups = true; #no duplicates when scrolling command history
-      save = 1000000;
-      size = 1000000;
-      ignore = [ "pwd" "ls" "cd" ]; # Remove history data we don't want to see
+      save = 10000; # how many lines of history to save in memory
+      size = 10000; # how many lines of history to keep in memory
+      ignorePatterns = [ "pwd" "ls" "cd" ]; # Remove history data we don't want to see
+    };
+
+    shellAliases = {
+      # Use difftastic, syntax-aware diffing
+      diff = "difft";
+      # Always color ls and group directories
+      ls = "ls --color=auto";
     };
 
     initExtraFirst = ''
@@ -19,12 +26,6 @@ programs.zsh = {
       shell() {
           nix-shell '<nixpkgs>' -A "$1"
       }
-
-      # Use difftastic, syntax-aware diffing
-      alias diff=difft
-
-      # Always color ls and group directories
-      alias ls='ls --color=auto'
 
       # Load Starship
       eval "$(starship init zsh)"
