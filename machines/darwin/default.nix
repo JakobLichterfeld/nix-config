@@ -1,7 +1,7 @@
 { inputs, pkgs, lib, ... }:
 {
   imports = [
-    home-manager/nix-darwin
+    <home-manager/nix-darwin>
     ../../modules/cachix
     ./dock
     ./system.nix
