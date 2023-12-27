@@ -18,7 +18,6 @@ with pkgs; [
   dejavu_fonts
   fira-code-nerdfont
 
-
   # Communication Tools
   betterdiscordctl
 

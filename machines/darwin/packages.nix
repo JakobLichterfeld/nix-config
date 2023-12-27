@@ -13,7 +13,6 @@ with pkgs; [
   direnv
   curl
   wget
-  zip
   mkpasswd
   fd #A simple, fast and user-friendly alternative to find
   warp-terminal
@@ -49,12 +48,13 @@ with pkgs; [
   # infrastructure
   ansible
 
-  klavaro # Free touch typing tutor program
 
+  # File management
   rclone
   unison # Bidirectional file synchronizer
 
   # Writing
+  klavaro # Free touch typing tutor program
   pstoedit # Translates PostScript and PDF graphics into other vector formats
   languagetool
   pdfsam-basic
@@ -94,8 +94,6 @@ with pkgs; [
   ripgrep
   tree
   tmux
-  unrar
-  unzip
   zsh
   starship
 
