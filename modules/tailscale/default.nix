@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
 {
 
+  age.secrets.tailscaleAuthKey = {
+    file = ../../secrets/tailscaleAuthKey.age;
+  };
+
   environment.systemPackages = [ pkgs.tailscale ];
 
   # networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
