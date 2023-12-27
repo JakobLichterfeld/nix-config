@@ -36,7 +36,7 @@ in
     userEmail = "jakob-lichterfeld@gmx.de";
     extraConfig = {
       init.defaultBranch = "main";
-    }
+    };
   };
 
   programs.home-manager.enable = true;
