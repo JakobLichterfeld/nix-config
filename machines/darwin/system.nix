@@ -173,7 +173,7 @@
           WebKitDeveloperExtras = true;
         };
 
-        com.apple.springing ={
+        "com.apple.springing" ={
           # Enable spring loading for directories
           enabled = true;
 
@@ -216,8 +216,7 @@
           # Enable the Develop menu and the Web Inspector in Safari
           IncludeDevelopMenu = true;
           WebKitDeveloperExtrasEnabledPreferenceKey = true;
-          ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled =
-            true;
+          WebKit2DeveloperExtrasEnabled = true;
         };
       };
 
@@ -256,13 +255,11 @@
       ###############################################################################
 
       CustomUserPreferences={
-        "com.apple.messageshelper.MessageController" = {
-          SOInputLineSettings = {
+        "com.apple.messageshelper.MessageController SOInputLineSettings" = {
             # Disable smart quotes as it’s annoying for messages that contain code
             automaticQuoteSubstitutionEnabled = false;
             # Disable continuous spell checking
             continuousSpellCheckingEnabled = false;
-          };
         };
       };
 
