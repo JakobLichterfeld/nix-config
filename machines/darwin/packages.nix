@@ -63,7 +63,6 @@ with pkgs; [
   spotify # Music streaming service
   ffmpeg # Audio/video encoder
   audacity # Audio editor
-  picard # MusicBrainz tagger
 
   # Text and terminal utilities
   htop

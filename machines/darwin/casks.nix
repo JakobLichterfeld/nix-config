@@ -40,6 +40,9 @@ _:
     luminance-hdr # HDR imaging application
     hugin # Panorama photo stitcher
 
+    # Audio
+    musicbrainz-picard # MusicBrainz tagger
+
     # Video
     vlc
     obs
