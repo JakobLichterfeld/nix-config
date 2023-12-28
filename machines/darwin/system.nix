@@ -240,7 +240,16 @@
       ActivityMonitor.OpenMainWindow = true;
 
       # Show all processes in Activity Monitor
-      ActivityMonitor.ShowCategory = null;
+      # Change which processes to show.
+      # * 100: All Processes
+      # * 101: All Processes, Hierarchally
+      # * 102: My Processes
+      # * 103: System Processes
+      # * 104: Other User Processes
+      # * 105: Active Processes
+      # * 106: Inactive Processes
+      # * 107: Windowed Processes
+      ActivityMonitor.ShowCategory = 100;
 
       ###############################################################################
       # Messages                                                                    #
