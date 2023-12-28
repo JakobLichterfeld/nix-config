@@ -11,7 +11,7 @@ with pkgs; [
   # Development tools
   vscode
   wireshark
-  john
+  # john # disabled because of Avast quarantine
   shellcheck
   shfmt
   html-tidy
