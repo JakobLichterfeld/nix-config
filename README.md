@@ -20,10 +20,9 @@ Managed using `nix-darwin` and `home-manager`. Impure packages and apps are mana
 
 Update dependencies: `nix --experimental-features 'nix-command flakes' flake update`
 
+build: `nix --experimental-features 'nix-command flakes' build .#darwinConfigurations."MainDev".system --impure`
 
-darwin build: `darwin-rebuild switch --impure --flake .`
-
-or build: `nix --experimental-features 'nix-command flakes' build .#darwinConfigurations."MainDev".system --impure`
+apply: `darwin-rebuild switch --impure --flake .`
 
 as macOS does not allow writing to `/` write to symlink:
 
@@ -32,7 +31,7 @@ printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
 /System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
 ```
 
-apply changes: `./result/sw/bin/darwin-rebuild switch --flake .`
+apply changes: `./result/sw/bin/darwin-rebuild switch --impure --flake .`
 
 ## Contributing
 
