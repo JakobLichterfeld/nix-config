@@ -35,8 +35,6 @@ with pkgs; [
 
   # infrastructure
   ansible-lint
-
-  gpsbabel
   gpsbabel-gui
 
   # Writing
