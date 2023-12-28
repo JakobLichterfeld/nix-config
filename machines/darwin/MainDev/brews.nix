@@ -1,11 +1,9 @@
-_:
-
 [
     # Encryption and security tools
-    ophcrack
-    tor-browser
+    {name = "ophcrack";}
+    {name = "tor-browser";}
 
     # Image
-    geeqie # Image viewer
+    {name = "geeqie";} # Image viewer
 
 ]

@@ -1,6 +1,4 @@
-_:
-
-[
+{
       # These app IDs are from using the mas CLI app
       # mas = mac app store
       # https://github.com/mas-cli/mas
@@ -18,4 +16,4 @@ _:
 
       # Remote
       "Microsoft Remote Desktop" = 1295203466;
-]
+}

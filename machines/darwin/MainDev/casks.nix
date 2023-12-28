@@ -1,32 +1,30 @@
-_:
-
 [
     # Development
-    copilot-for-xcode
-    sourcetree # Git GUI
-    android-studio
-    flutter
+    {name = "copilot-for-xcode";}
+    {name = "sourcetree";} # Git GUI
+    {name = "android-studio";}
+    {name = "flutter";}
 
     # Hardware
-    logitech-g-hub # adjust Logitech Keyboard Lights
+    {name = "logitech-g-hub";} # adjust Logitech Keyboard Lights
 
     # Writing
-    remarkable
-    calibre
+    {name = "remarkable";}
+    {name = "calibre";}
 
     # Communication
-    betterdiscord-installer
+    {name = "betterdiscord-installer";}
 
     # Remote
-    unified-remote # Control PC with Phone
+    {name = "unified-remote";} # Control PC with Phone
 
     # Entertainment Tools
-    steam
+    {name = "steam";}
 
     # Image
-    digikam # Photo management application
+    {name = "digikam";} # Photo management application
 
     # Other
-    tradingview
+    {name = "tradingview";}
 
 ]

@@ -14,13 +14,17 @@ let
     });
   ourAnsible =
     (ourPythonPackagesForAnsible.toPythonApplication ourPythonPackagesForAnsible.ansible);
+
+  masApps = import ./masApps.nix;
+  brews = import ./brews.nix;
+  casks = import ./casks.nix;
 in
 {
 
   homebrew = {
-    masApps = pkgs.callPackage ./masApps.nix {};
-    brews = pkgs.callPackage ./brews.nix {};
-    casks = pkgs.callPackage ./casks.nix {};
+    masApps = masApps;
+    brews = brews;
+    casks = casks;
   };
 
   environment.shellInit = ''

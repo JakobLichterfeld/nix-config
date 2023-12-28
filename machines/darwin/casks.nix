@@ -1,53 +1,51 @@
-_:
-
 [
     # Clipboard-manager
-    maccy
+    {name = "maccy";}
 
     # Communication Tools
-    microsoft-teams
-    whatsapp
-    skype
-    telegram
-    signal
+    {name = "microsoft-teams";}
+    {name = "whatsapp";}
+    {name = "skype";}
+    {name = "telegram";}
+    {name = "signal";}
 
     # Design Tools
-    figma
-    sketch
+    {name = "figma";}
+    {name = "sketch";}
 
     # File Sharing
-    rsyncui
+    {name = "rsyncui";}
 
     # Security
-    avast-security
+    {name = "avast-security";}
 
     # System Tools
-    macfuse
+    {name = "macfuse";}
 
     # Network
-    zerotier-one
+    {name = "zerotier-one";}
 
     # Browsers
-    google-chrome
-    brave-browser
+    {name = "google-chrome";}
+    {name = "brave-browser";}
 
     # Writing
-    pdfsam-basic
-    adobe-acrobat-reader
-    libreoffice
+    {name = "pdfsam-basic";}
+    {name = "adobe-acrobat-reader";}
+    {name = "libreoffice";}
 
     # Image
-    luminance-hdr # HDR imaging application
-    hugin # Panorama photo stitcher
+    {name = "luminance-hdr";} # HDR imaging application
+    {name = "hugin";} # Panorama photo stitcher
 
     # Audio
-    musicbrainz-picard # MusicBrainz tagger
+    {name = "musicbrainz-picard";} # MusicBrainz tagger
 
     # Video
-    vlc
-    obs
+    {name = "vlc";}
+    {name = "obs";}
 
     # Remote Desktop
-    teamviewer
+    {name = "teamviewer";}
 
 ]

@@ -1,13 +1,11 @@
-_:
-
 [
     # System
-    gromgit/fuse/sshfs-mac
+    {name = "gromgit/fuse/sshfs-mac";} # Mount remote filesystems via SSH
 
     # Writing
-    klavaro # Free touch typing tutor program
-    languagetool # Grammar checker
+    {name = "klavaro";} # Free touch typing tutor program
+    {name = "languagetool";} # Grammar checker
 
     # Image
-    jpeg-turbo # JPEG image manipulation library
+    {name = "jpeg-turbo";} # JPEG image manipulation library
 ]

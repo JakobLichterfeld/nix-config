@@ -1,4 +1,9 @@
 { inputs, pkgs, lib, home-manager, ... }:
+let
+  masApps = import ./masApps.nix;
+  brews = import ./brews.nix;
+  casks = import ./casks.nix;
+in
 {
   imports = [
     <home-manager/nix-darwin>
@@ -39,9 +44,9 @@
       no_quarantine = true;
     };
 
-    masApps = pkgs.callPackage ./masApps.nix {};
-    brews = pkgs.callPackage ./brews.nix {};
-    casks = pkgs.callPackage ./casks.nix {};
+    masApps = masApps;
+    brews = brews;
+    casks = casks;
   };
 
   services.nix-daemon.enable = lib.mkForce true;

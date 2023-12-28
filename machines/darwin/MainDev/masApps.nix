@@ -1,6 +1,4 @@
-_:
-
-[
+{
       # These app IDs are from using the mas CLI app
       # mas = mac app store
       # https://github.com/mas-cli/mas
@@ -14,4 +12,4 @@ _:
       "Apple Developer" = 640199958;
       "Transporter" = 1450874784;
       "TesFlight" = 899247664;
-]
+}
