@@ -21,6 +21,7 @@ in
   imports = [
       ../../dots/neofetch/default.nix
       ../../dots/zsh/default.nix
+      ../../dots/starship/default.nix
       ./packages.nix
   ];
 

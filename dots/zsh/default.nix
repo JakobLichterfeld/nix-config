@@ -26,9 +26,6 @@ programs.zsh = {
       shell() {
           nix-shell '<nixpkgs>' -A "$1"
       }
-
-      # Load Starship
-      eval "$(starship init zsh)"
     '';
   };
 }
