@@ -4,6 +4,7 @@
     {name = "sourcetree";} # Git GUI
     {name = "android-studio";}
     {name = "flutter";}
+    {name = "balenaetcher";}
 
     # Hardware
     {name = "logitech-g-hub";} # adjust Logitech Keyboard Lights
