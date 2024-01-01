@@ -120,8 +120,8 @@ in {
           generationsDir.copyKernels = true;
           grub = {
             enable = true;
-            devices = (map (diskName: cfg.devNodes + diskName) cfg.bootDevices);
-            # device = "nodev";
+            # devices = (map (diskName: cfg.devNodes + diskName) cfg.bootDevices);
+            device = "nodev";
             efiInstallAsRemovable = cfg.removableEfi;
             copyKernels = true;
             efiSupport = true;
