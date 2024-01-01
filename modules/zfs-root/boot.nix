@@ -101,7 +101,9 @@ in {
         efiSystemPartitions =
           (map (diskName: diskName + cfg.partitionScheme.efiBoot)
             cfg.bootDevices);
-	};
+        swapPartitions =
+          (map (diskName: diskName + cfg.partitionScheme.swap) cfg.bootDevices);
+      };
       boot = {
         kernelPackages = mkDefault config.boot.zfs.package.latestCompatibleLinuxPackages;
         initrd.availableKernelModules = cfg.availableKernelModules;
