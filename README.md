@@ -10,6 +10,205 @@ End of 2023 I migrated to Nix.
 
 Managed using `nix-darwin` and `home-manager`. Impure packages and apps are managed by `homebrew` and `mas`
 
+## MainServer
+
+<details><summary>Installation process</summary><p>
+According to [ne9z's "NixOS Root on ZFS"](https://openzfs.github.io/openzfs-docs/Getting%20Started/NixOS/Root%20on%20ZFS.html)
+
+Elevate privileges, declare target disk array variable, the mountpoint variable, swap size variable and reserved space variable
+```bash
+sudo su
+
+DISK='/dev/disk/by-id/nvme-FIKWOT_FN960_2TB_AA234330561'
+MNT=$(mktemp -d)
+RESERVE=1
+```
+
+Enable Nix Flakes functionality
+```bash
+mkdir -p ~/.config/nix
+echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
+```
+
+Install programs needed for system installation
+```bash
+if ! command -v git; then nix-env -f '<nixpkgs>' -iA git; fi
+if ! command -v jq;  then nix-env -f '<nixpkgs>' -iA jq; fi
+if ! command -v partprobe;  then nix-env -f '<nixpkgs>' -iA parted; fi
+```
+
+Partition the drive
+```bash
+partition_disk () {
+ local disk="${1}"
+ blkdiscard -f "${disk}" || true
+
+ parted --script --align=optimal  "${disk}" -- \
+ mklabel gpt \
+ mkpart EFI 2MiB 1GiB \
+ mkpart bpool 1GiB 5GiB \
+ mkpart rpool 5GiB 261GiB \
+ mkpart swap  261GiB 265GiB \
+ mkpart cache 265GiB -$((RESERVE))GiB \
+ mkpart BIOS 1MiB 2MiB \
+ set 1 esp on \
+ set 6 bios_grub on \
+ set 6 legacy_boot on
+
+ partprobe "${disk}"
+ udevadm settle
+}
+
+for i in ${DISK}; do
+   partition_disk "${i}"
+done
+```
+
+Create boot pool
+```bash
+zpool create \
+    -o compatibility=grub2 \
+    -o ashift=12 \
+    -o autotrim=on \
+    -O acltype=posixacl \
+    -O canmount=off \
+    -O devices=off \
+    -O compression=lz4 \
+    -O normalization=formD \
+    -O relatime=on \
+    -O xattr=sa \
+    -O mountpoint=/boot \
+    -R "${MNT}" \
+    bpool \
+    $(for i in ${DISK}; do
+       printf '%s ' "${i}-part2";
+      done)
+```
+
+Create root pool
+```bash
+zpool create \
+    -o ashift=12 \
+    -o autotrim=on \
+    -R "${MNT}" \
+    -O acltype=posixacl \
+    -O canmount=off \
+    -O compression=zstd \
+    -O dnodesize=auto \
+    -O normalization=formD \
+    -O relatime=on \
+    -O xattr=sa \
+    -O mountpoint=/ \
+    rpool \
+   $(for i in ${DISK}; do
+      printf '%s ' "${i}-part3";
+     done)
+```
+
+Create cache pool
+```bash
+zpool create \
+    -o ashift=12 \
+    -o autotrim=on \
+    -R "${MNT}" \
+    -O acltype=posixacl \
+    -O canmount=off \
+    -O compression=zstd \
+    -O dnodesize=auto \
+    -O normalization=formD \
+    -O relatime=on \
+    -O xattr=sa \
+    -O mountpoint=/mnt/cache \
+    cachepool \
+   $(for i in ${DISK}; do
+      printf '%s ' "${i}-part4";
+     done)
+```
+
+Create root system container
+```bash
+zfs create \
+ -o canmount=off \
+ -o mountpoint=none \
+rpool/nixos
+```
+
+Create the system datasets
+```bash
+zfs create -o mountpoint=legacy rpool/nixos/empty
+mount -t zfs rpool/nixos/empty "${MNT}"/
+zfs snapshot rpool/nixos/empty@start
+
+zfs create -o mountpoint=legacy rpool/nixos/home
+mkdir "${MNT}"/home
+mount -t zfs rpool/nixos/home "${MNT}"/home
+
+zfs create -o mountpoint=legacy rpool/nixos/var
+zfs create -o mountpoint=legacy rpool/nixos/var/log
+zfs create -o mountpoint=legacy rpool/nixos/config
+zfs create -o mountpoint=legacy rpool/nixos/persist
+zfs create -o mountpoint=legacy rpool/nixos/nix
+
+zfs create -o mountpoint=none bpool/nixos
+zfs create -o mountpoint=legacy bpool/nixos/root
+mkdir "${MNT}"/boot
+mount -t zfs bpool/nixos/root "${MNT}"/boot
+
+mkdir -p "${MNT}"/var/log
+mkdir -p "${MNT}"/etc/nixos
+mkdir -p "${MNT}"/nix
+mkdir -p "${MNT}"/persist
+
+mount -t zfs rpool/nixos/var/log "${MNT}"/var/log
+mount -t zfs rpool/nixos/config "${MNT}"/etc/nixos
+mount -t zfs rpool/nixos/nix "${MNT}"/nix
+mount -t zfs rpool/nixos/persist "${MNT}"/persist
+```
+
+Format and mount ESP
+```bash
+for i in ${DISK}; do
+ mkfs.vfat -n EFI "${i}"-part1
+ mkdir -p "${MNT}"/boot/efis/"${i##*/}"-part1
+ mount -t vfat -o iocharset=iso8859-1 "${i}"-part1 "${MNT}"/boot/efis/"${i##*/}"-part1
+done
+```
+
+Clone this repository
+```bash
+git clone https://github.com/JakobLichterfeld/nix-config.git "${MNT}"/etc/nixos
+```
+
+Put the private key into place (required for secret management)
+```bash
+mkdir -p /mnt/home/jakob/.ssh
+exit
+scp ~/.ssh/id_ed25519 nixos_installation_ip:/mnt/home/
+ssh nixos@nixos_installation_ip
+chmod 700 /mnt/home/jakob
+chmod 600 /mnt/home/jakob/id_ed25519
+```
+
+Install system and apply configuration
+```bash
+nixos-install \
+--root "${MNT}" \
+--no-root-passwd \
+--flake "git+file://${MNT}/etc/nixos#MainServer"
+```
+
+Unmount the filesystems
+```bash
+umount -Rl "${MNT}"
+zpool export -a
+```
+
+Reboot
+```bash
+reboot
+```
+</p></details>
+
 ## How to use
 
 [Make sure nix is installed](https://nixos.org/download#nix-install-macos)
