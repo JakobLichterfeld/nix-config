@@ -7,7 +7,7 @@
 
   environment.systemPackages = [ pkgs.tailscale ];
 
-  # networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
+  networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
 
   services.tailscale.enable = true;
 
