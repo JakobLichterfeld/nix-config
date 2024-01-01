@@ -6,9 +6,9 @@
     file = ./hashedUserPassword.age;  # content is result of: `mkpasswd -m sha-512`
                                       # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e hashedUserPassword.age
   };
-  # age.secrets.sambaPassword = lib.mkDefault {
-  #   file = ./sambaPassword.age;
-  #   };
+  age.secrets.sambaPassword = lib.mkDefault {
+    file = ./sambaPassword.age;
+    };
   # age.secrets.telegramApiKey = lib.mkDefault {
   #   file = ./telegramApiKey.age;
   #   owner = "jakob";

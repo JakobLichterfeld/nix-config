@@ -3,7 +3,7 @@ let
   allKeys = [jakob];
 in {
   "hashedUserPassword.age".publicKeys = allKeys;
-  # "sambaPassword.age".publicKeys = allKeys;
+  "sambaPassword.age".publicKeys = allKeys;
   # "smtpPassword.age".publicKeys = allKeys;
   # "telegramChannelId.age".publicKeys = allKeys;
   # "telegramApiKey.age".publicKeys = allKeys;
