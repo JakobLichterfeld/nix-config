@@ -1,4 +1,4 @@
-{ users, pkgs, config, lib, ...}:
+{ machines, users, pkgs, config, lib, ...}:
 let
 
   smb = {
@@ -61,10 +61,10 @@ services.samba = {
   securityType = "user";
   extraConfig = ''
     workgroup = WORKGROUP
-    server string = ${inputs.machines.MainServer.hostName}
-    netbios name = ${inputs.machines.MainServer.hostName}
+    server string = ${machines.MainServer.hostName}
+    netbios name = ${machines.MainServer.hostName}
     security = user
-    hosts allow = ${inputs.machines.MainServer.ipNetwork}
+    hosts allow = ${machines.MainServer.ipNetwork}
     guest account = nobody
     map to guest = bad user
     passdb backend = tdbsam
