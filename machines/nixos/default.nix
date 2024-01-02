@@ -27,7 +27,7 @@
     PasswordAuthentication = lib.mkDefault false;
     PermitRootLogin = "no";
     };
-    ports = [ inputs.machines.MainServer.sshPort ];
+    ports = [ machines.MainServer.sshPort ];
     hostKeys = [
       {
         path = "/persist/ssh/ssh_host_ed25519_key";
