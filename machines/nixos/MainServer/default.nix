@@ -22,9 +22,9 @@
       };
     };
     networking = {
-      hostName = machines.MainServer.hostName;
-      timeZone = machines.MainServer.timeZone;
-      hostId = machines.MainServer.hostId;
+      hostName = inputs.machines.MainServer.hostName;
+      timeZone = inputs.machines.MainServer.timeZone;
+      hostId = inputs.machines.MainServer.hostId;
     };
   };
 
@@ -44,18 +44,18 @@
   };
 
   networking = {
-  nameservers = machines.MainServer.nameservers;
-  defaultGateway = machines.MainServer.defaultGateway;
+  nameservers = inputs.machines.MainServer.nameservers;
+  defaultGateway = inputs.machines.MainServer.defaultGateway;
   interfaces = {
     enp1s0.ipv4 = {
       addresses = [{
-        address = machines.MainServer.ipAddress;
+        address = inputs.machines.MainServer.ipAddress;
         prefixLength = 24;
       }];
     };
     enp2s0.ipv4 = {
       addresses = [{
-        address = machines.MainServer.ipAddress2;
+        address = inputs.machines.MainServer.ipAddress2;
         prefixLength = 24;
       }];
     };
