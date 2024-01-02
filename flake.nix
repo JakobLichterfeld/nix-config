@@ -77,7 +77,7 @@
 
             # Imports
             ./machines/nixos
-            ./machines/nixos/MainDev
+            ./machines/nixos/MainServer
             ./secrets
             agenix.nixosModules.default
 
