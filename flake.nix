@@ -53,8 +53,8 @@
         hostname = secrets.age.secrets.MainServer_ipAddress.path;
         profiles.system = {
           sshUser = "jakob";
-          user = secrets.age.secrets.MainServer_username.path;
-          sshOpts = [ "-p" secrets.MainServer_sshPort.path ];
+          user = secrets.age.secrets.age.secrets.MainServer_username.path;
+          sshOpts = [ "-p" secrets.age.secrets.MainServer_sshPort.path ];
           remoteBuild = true;
           path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.MainServer;
         };
