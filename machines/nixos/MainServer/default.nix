@@ -1,4 +1,4 @@
-{ lib, config, vars, pkgs,... }:
+{ lib, config, vars, pkgs, secrets,... }:
 {
   boot.initrd.kernelModules = [ "i915" ];
   hardware.cpu.intel.updateMicrocode = true;

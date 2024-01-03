@@ -1,4 +1,4 @@
-{ users, pkgs, config, lib, ...}:
+{ users, pkgs, config, lib, secrets,...}:
 let
   smb = {
     share_list = {
