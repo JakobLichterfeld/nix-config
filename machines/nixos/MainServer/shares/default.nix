@@ -1,4 +1,4 @@
-{ machines, users, pkgs, config, lib, ...}:
+{ users, pkgs, config, lib, ...}:
 let
 
   smb = {

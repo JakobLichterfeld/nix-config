@@ -37,7 +37,7 @@
     darwinConfigurations."MainDev" = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       specialArgs = {
-        inherit inputs machines;
+        inherit inputs;
       };
       modules = [
         agenix.darwinModules.default
@@ -64,7 +64,7 @@
       MainServer = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
-          inherit inputs machines;
+          inherit inputs;
           vars = import ./machines/nixos/MainServer/vars.nix;
         };
         modules = [
@@ -86,7 +86,7 @@
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = false;
-                home-manager.extraSpecialArgs = { inherit inputs machines; };
+                home-manager.extraSpecialArgs = { inherit inputs; };
                 home-manager.users.jakob.imports = [
                   agenix.homeManagerModules.default
                   nix-index-database.hmModules.nix-index
