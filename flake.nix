@@ -33,15 +33,18 @@
               deploy-rs,
               nur,
               ... }@inputs:
+let
+  secrets = import ./secrets/default.nix;
+in
  {
     darwinConfigurations."MainDev" = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       specialArgs = {
         inherit inputs;
+        inherit secrets;
       };
       modules = [
         agenix.darwinModules.default
-        ./secrets
         ./machines/darwin
         ./machines/darwin/MainDev
         # ./modules/tailscale
@@ -66,12 +69,12 @@
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
+          inherit secrets;
           vars = import ./machines/nixos/MainServer/vars.nix;
         };
         modules = [
             # Base
             agenix.nixosModules.default
-            ./secrets
             ./modules/zfs-root
             ./modules/tailscale
             ./modules/mergerfs-uncache
