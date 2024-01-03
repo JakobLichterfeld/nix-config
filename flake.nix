@@ -38,6 +38,7 @@
       system = "aarch64-darwin";
       specialArgs = {
         inherit inputs;
+        sectrets = import ./sectrets;
       };
       modules = [
         agenix.darwinModules.default
@@ -49,11 +50,11 @@
 
     deploy.nodes = {
       MainServer = {
-        hostname = config.age.secrets.MainServer_ipAddress.path;
+        hostname = secrets.MainServer_ipAddress.path;
         profiles.system = {
           sshUser = "jakob";
-          user = config.age.secrets.MainServer_username.path;
-          sshOpts = [ "-p" config.age.secrets.MainServer_sshPort.path ];
+          user = secrets.MainServer_username.path;
+          sshOpts = [ "-p" secrets.MainServer_sshPort.path ];
           remoteBuild = true;
           path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.MainServer;
         };
@@ -66,6 +67,7 @@
         specialArgs = {
           inherit inputs;
           vars = import ./machines/nixos/MainServer/vars.nix;
+          sectrets = import ./sectrets;
         };
         modules = [
             # Base

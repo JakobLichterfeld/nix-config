@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, secrets,... }:
 {
 
   environment.systemPackages = [ pkgs.tailscale ];
@@ -31,8 +31,8 @@
         exit 0
       fi
 
-      # ${tailscale}/bin/tailscale up --advertise-exit-node --auth-key ${config.age.secrets.tailscaleAuthKey.path}
-      ${tailscale}/bin/tailscale up --auth-key ${config.age.secrets.tailscaleAuthKey.path}
+      # ${tailscale}/bin/tailscale up --advertise-exit-node --auth-key ${secrets.tailscaleAuthKey.path}
+      ${tailscale}/bin/tailscale up --auth-key ${secrets.tailscaleAuthKey.path}
     '';
   };
 }
