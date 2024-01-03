@@ -47,7 +47,7 @@ in
   };
 
   networking = {
-  nameservers = secrets.age.secrets.MainServer_nameservers.path;
+  nameservers = [ secrets.age.secrets.MainServer_nameservers.path ];
   defaultGateway = secrets.age.secrets.MainServer_defaultGateway.path;
   interfaces = {
     enp1s0.ipv4 = {
