@@ -12,7 +12,6 @@ in
       jakob = {
         name = "jakob";
         home = "/Users/jakob";
-        isHidden = false;
         shell = pkgs.zsh;
         uid = 1000;
         isNormalUser = true;
