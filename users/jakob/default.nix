@@ -1,5 +1,4 @@
 { config, pkgs, lib, secrets,... }:
-{ config, pkgs, lib, secrets,... }:
 {
   nix.settings.trusted-users = [ "jakob" ];
 
