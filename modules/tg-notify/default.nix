@@ -1,10 +1,12 @@
 { config, pkgs, secrets... }:
+{ config, pkgs, secrets... }:
 let
+notify = pkgs.writeShellScriptBin "notify"
 notify = pkgs.writeShellScriptBin "notify"
 ''
 #!/bin/bash
-api_key=$(cat ${secrets.telegramApiKey.path})
-channel_id=$(cat ${secrets.telegramChannelId.path})
+api_key=$(cat ${secrets.age.secrets.telegramApiKey.path})
+channel_id=$(cat ${secrets.age.secrets.telegramChannelId.path})
 
 
 POSITIONAL_ARGS=()

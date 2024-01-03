@@ -30,9 +30,8 @@
       	echo "Already authenticated to Tailscale, exiting."
         exit 0
       fi
-
-      # ${tailscale}/bin/tailscale up --advertise-exit-node --auth-key ${secrets.tailscaleAuthKey.path}
-      ${tailscale}/bin/tailscale up --auth-key ${secrets.tailscaleAuthKey.path}
+      # --advertise-exit-node
+      ${tailscale}/bin/tailscale up --auth-key ${secrets.age.secrets.tailscaleAuthKey.path}
     '';
   };
 }

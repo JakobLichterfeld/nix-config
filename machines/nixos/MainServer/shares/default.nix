@@ -61,10 +61,10 @@ in
     securityType = "user";
     extraConfig = ''
       workgroup = WORKGROUP
-      server string = ${secrets.MainServer_hostName.path}
-      netbios name = ${secrets.MainServer_hostName.path}
+      server string = ${config.age.secrets.MainServer_hostName.path}
+      netbios name = ${config.age.secrets.MainServer_hostName.path}
       security = user
-      hosts allow = ${secrets.MainServer_ipNetwork.path}
+      hosts allow = ${config.age.secrets.MainServer_ipNetwork.path}
       guest account = nobody
       map to guest = bad user
       passdb backend = tdbsam
