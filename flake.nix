@@ -33,18 +33,15 @@
               deploy-rs,
               nur,
               ... }@inputs:
-let
-  secrets = import ./secrets;
-in
  {
     darwinConfigurations."MainDev" = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       specialArgs = {
         inherit inputs;
-        sectrets = import ./sectrets;
       };
       modules = [
         agenix.darwinModules.default
+        ./secrets
         ./machines/darwin
         ./machines/darwin/MainDev
         # ./modules/tailscale
@@ -53,11 +50,11 @@ in
 
     deploy.nodes = {
       MainServer = {
-        hostname = secrets.age.secrets.MainServer_ipAddress.path;
+        hostname = config.age.secrets.MainServer_ipAddress.path;
         profiles.system = {
           sshUser = "jakob";
-          user = secrets.age.secrets.age.secrets.MainServer_username.path;
-          sshOpts = [ "-p" secrets.age.secrets.MainServer_sshPort.path ];
+          user = config.age.secrets.age.secrets.MainServer_username.path;
+          sshOpts = [ "-p" config.age.secrets.MainServer_sshPort.path ];
           remoteBuild = true;
           path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.MainServer;
         };
@@ -70,14 +67,14 @@ in
         specialArgs = {
           inherit inputs;
           vars = import ./machines/nixos/MainServer/vars.nix;
-          sectrets = import ./sectrets;
         };
         modules = [
             # Base
+            agenix.nixosModules.default
+            ./secrets
             ./modules/zfs-root
             ./modules/tailscale
             ./modules/mergerfs-uncache
-            agenix.nixosModules.default
 
             # Imports
             ./machines/nixos

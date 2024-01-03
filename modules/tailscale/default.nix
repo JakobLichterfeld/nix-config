@@ -1,7 +1,4 @@
 { config, pkgs, ... }:
-let
-  secrets = import ../../secrets;
-in
 {
   environment.systemPackages = [ pkgs.tailscale ];
 
@@ -33,7 +30,7 @@ in
         exit 0
       fi
       # --advertise-exit-node
-      ${tailscale}/bin/tailscale up --auth-key ${secrets.age.secrets.tailscaleAuthKey.path}
+      ${tailscale}/bin/tailscale up --auth-key ${config.age.secrets.tailscaleAuthKey.path}
     '';
   };
 }

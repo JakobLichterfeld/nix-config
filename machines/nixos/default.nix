@@ -1,7 +1,4 @@
 { inputs, config, pkgs, lib, ... }:
-let
- secrets = import ../../secrets;
-in
 {
   system.stateVersion = "23.11";
 
@@ -20,7 +17,7 @@ in
 
   users.users = {
     root = {
-      initialHashedPassword = secrets.age.secrets.hashedUserPassword.path;
+      initialHashedPassword = config.age.secrets.hashedUserPassword.path;
       openssh.authorizedKeys.keys = [ "sshKey_placeholder" ];
     };
   };
@@ -30,7 +27,7 @@ in
     PasswordAuthentication = lib.mkDefault false;
     PermitRootLogin = "no";
     };
-    ports = [ secrets.age.secrets.MainServer_sshPort.path ];
+    ports = [ config.age.secrets.MainServer_sshPort.path ];
     hostKeys = [
       {
         path = "/persist/ssh/ssh_host_ed25519_main_server";

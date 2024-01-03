@@ -1,7 +1,4 @@
 { lib, config, vars, pkgs,... }:
-let
-  secrets = import ../../../secrets;
-in
 {
   boot.initrd.kernelModules = [ "i915" ];
   hardware.cpu.intel.updateMicrocode = true;
@@ -25,9 +22,9 @@ in
       };
     };
     networking = {
-      hostName = secrets.age.secrets.MainServer_hostName.path;
-      timeZone = secrets.age.secrets.MainServer_timeZone.path;
-      hostId = secrets.age.secrets.MainServer_hostId.path;
+      hostName = config.age.secrets.MainServer_hostName.path;
+      timeZone = config.age.secrets.MainServer_timeZone.path;
+      hostId = config.age.secrets.MainServer_hostId.path;
     };
   };
 
@@ -47,18 +44,18 @@ in
   };
 
   networking = {
-  nameservers = [ secrets.age.secrets.MainServer_nameservers.path ];
-  defaultGateway = secrets.age.secrets.MainServer_defaultGateway.path;
+  nameservers = [ config.age.secrets.MainServer_nameservers.path ];
+  defaultGateway = config.age.secrets.MainServer_defaultGateway.path;
   interfaces = {
     enp1s0.ipv4 = {
       addresses = [{
-        address = secrets.age.secrets.MainServer_ipAddress.path;
+        address = config.age.secrets.MainServer_ipAddress.path;
         prefixLength = 24;
       }];
     };
     enp2s0.ipv4 = {
       addresses = [{
-        address = secrets.age.secrets.MainServer_ipAddress2.path;
+        address = config.age.secrets.MainServer_ipAddress2.path;
         prefixLength = 24;
       }];
     };

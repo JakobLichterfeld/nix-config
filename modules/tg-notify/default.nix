@@ -1,11 +1,10 @@
 { config, pkgs,... }:
 let
-secrets = import ../../secrets;
 notify = pkgs.writeShellScriptBin "notify"
 ''
 #!/bin/bash
-api_key=$(cat ${secrets.age.secrets.telegramApiKey.path})
-channel_id=$(cat ${secrets.age.secrets.telegramChannelId.path})
+api_key=$(cat ${config.age.secrets.telegramApiKey.path})
+channel_id=$(cat ${config.age.secrets.telegramChannelId.path})
 
 
 POSITIONAL_ARGS=()
@@ -81,7 +80,7 @@ $(date)
         --data-urlencode "parse_mode=HTML" \
         https://api.telegram.org/$api_key/sendMessage > /dev/null
 '';
-in 
+in
 {
   environment.systemPackages = [ notify ];
 }
