@@ -33,7 +33,6 @@ echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 Install programs needed for system installation
 ```bash
 if ! command -v git; then nix-env -f '<nixpkgs>' -iA git; fi
-if ! command -v git-crypt; then nix-env -f '<nixpkgs>' -iA git-crypt; fi
 if ! command -v jq;  then nix-env -f '<nixpkgs>' -iA jq; fi
 if ! command -v partprobe;  then nix-env -f '<nixpkgs>' -iA parted; fi
 ```

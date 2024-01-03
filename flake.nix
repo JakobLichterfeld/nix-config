@@ -33,9 +33,7 @@
               deploy-rs,
               nur,
               ... }@inputs:
-    let
-      machines = import ./machines.nix;
-    in {
+ {
     darwinConfigurations."MainDev" = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       specialArgs = {
@@ -51,11 +49,11 @@
 
     deploy.nodes = {
       MainServer = {
-        hostname = machines.MainServer.ipAddress;
+        hostname = config.age.secrets.MainServer_ipAddress.path;
         profiles.system = {
           sshUser = "jakob";
-          user = "root";
-          sshOpts = [ "-p" machines.MainServer.sshPort ];
+          user = config.age.secrets.MainServer_username.path;
+          sshOpts = [ "-p" config.age.secrets.MainServer_sshPort.path ];
           remoteBuild = true;
           path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.MainServer;
         };
@@ -78,7 +76,6 @@
             # Imports
             ./machines/nixos
             ./machines/nixos/MainServer
-            ./secrets
             agenix.nixosModules.default
 
             # Services

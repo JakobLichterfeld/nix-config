@@ -22,9 +22,9 @@
       };
     };
     networking = {
-      hostName = machines.MainServer.hostName;
-      timeZone = machines.MainServer.timeZone;
-      hostId = machines.MainServer.hostId;
+      hostName = config.age.secrets.MainServer_hostName.path;
+      timeZone = config.age.secrets.MainServer_timeZone.path;
+      hostId = config.age.secrets.MainServer_hostId.path;
     };
   };
 
@@ -44,18 +44,18 @@
   };
 
   networking = {
-  nameservers = machines.MainServer.nameservers;
-  defaultGateway = machines.MainServer.defaultGateway;
+  nameservers = config.age.secrets.MainServer_nameservers.path;
+  defaultGateway = config.age.secrets.MainServer_defaultGateway.path;
   interfaces = {
     enp1s0.ipv4 = {
       addresses = [{
-        address = machines.MainServer.ipAddress;
+        address = config.age.secrets.MainServer_ipAddress.path;
         prefixLength = 24;
       }];
     };
     enp2s0.ipv4 = {
       addresses = [{
-        address = machines.MainServer.ipAddress2;
+        address = config.age.secrets.MainServer_ipAddress2.path;
         prefixLength = 24;
       }];
     };
