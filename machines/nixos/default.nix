@@ -17,7 +17,7 @@
 
   users.users = {
     root = {
-      initialHashedPassword = config.age.secrets.hashedUserPassword.path;
+      initialHashedPassword = secrets.age.secrets.hashedUserPassword.path;
       openssh.authorizedKeys.keys = [ "sshKey_placeholder" ];
     };
   };
@@ -27,7 +27,7 @@
     PasswordAuthentication = lib.mkDefault false;
     PermitRootLogin = "no";
     };
-    ports = [ config.age.secrets.MainServer_sshPort.path ];
+    ports = [ secrets.age.secrets.MainServer_sshPort.path ];
     hostKeys = [
       {
         path = "/persist/ssh/ssh_host_ed25519_main_server";

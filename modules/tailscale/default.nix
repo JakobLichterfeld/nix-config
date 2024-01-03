@@ -30,7 +30,7 @@
         exit 0
       fi
       # --advertise-exit-node
-      ${tailscale}/bin/tailscale up --auth-key ${config.age.secrets.tailscaleAuthKey.path}
+      ${tailscale}/bin/tailscale up --auth-key ${secrets.age.secrets.tailscaleAuthKey.path}
     '';
   };
 }

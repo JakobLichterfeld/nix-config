@@ -42,7 +42,7 @@ in
   systemd.tmpfiles.rules = map (x: "d ${x.path} 0775 share share - -") (lib.attrValues smb.share_list) ++ ["d /mnt 0775 share share - -"];
 
   system.activationScripts.samba_user_create = ''
-      smb_password=$(cat "${config.age.secrets.sambaPassword.path}")
+      smb_password=$(cat "${secrets.age.secrets.sambaPassword.path}")
       echo -e "$smb_password\n$smb_password\n" | /run/current-system/sw/bin/smbpasswd -a -s share
       '';
 
@@ -60,10 +60,10 @@ in
     securityType = "user";
     extraConfig = ''
       workgroup = WORKGROUP
-      server string = ${config.age.secrets.MainServer_hostName.path}
-      netbios name = ${config.age.secrets.MainServer_hostName.path}
+      server string = ${secrets.age.secrets.MainServer_hostName.path}
+      netbios name = ${secrets.age.secrets.MainServer_hostName.path}
       security = user
-      hosts allow = ${config.age.secrets.MainServer_ipNetwork.path}
+      hosts allow = ${secrets.age.secrets.MainServer_ipNetwork.path}
       guest account = nobody
       map to guest = bad user
       passdb backend = tdbsam

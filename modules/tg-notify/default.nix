@@ -3,8 +3,8 @@ let
 notify = pkgs.writeShellScriptBin "notify"
 ''
 #!/bin/bash
-api_key=$(cat ${config.age.secrets.telegramApiKey.path})
-channel_id=$(cat ${config.age.secrets.telegramChannelId.path})
+api_key=$(cat ${secrets.age.secrets.telegramApiKey.path})
+channel_id=$(cat ${secrets.age.secrets.telegramChannelId.path})
 
 
 POSITIONAL_ARGS=()
