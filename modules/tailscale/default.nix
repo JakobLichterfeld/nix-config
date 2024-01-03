@@ -1,6 +1,8 @@
-{ config, pkgs, secrets,... }:
+{ config, pkgs, ... }:
+let
+  secrets = import ../../secrets;
+in
 {
-
   environment.systemPackages = [ pkgs.tailscale ];
 
   networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];

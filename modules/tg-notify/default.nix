@@ -1,7 +1,6 @@
-{ config, pkgs, secrets... }:
-{ config, pkgs, secrets... }:
+{ config, pkgs,... }:
 let
-notify = pkgs.writeShellScriptBin "notify"
+secrets = import ../../secrets;
 notify = pkgs.writeShellScriptBin "notify"
 ''
 #!/bin/bash

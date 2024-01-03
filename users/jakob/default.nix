@@ -1,4 +1,7 @@
-{ config, pkgs, lib, secrets,... }:
+{ config, pkgs, lib,... }:
+let
+  secrets = import ../../secrets;
+in
 {
   nix.settings.trusted-users = [ "jakob" ];
 

@@ -1,4 +1,7 @@
-{ inputs, config, pkgs, lib, secrets, ... }:
+{ inputs, config, pkgs, lib, ... }:
+let
+ secrets = import ../../secrets;
+in
 {
   system.stateVersion = "23.11";
 

@@ -1,6 +1,6 @@
-{ users, pkgs, config, lib, secrets, ...}:
+{ users, pkgs, config, lib, ...}:
 let
-
+  secrets = import ../../../../secrets;
   smb = {
     share_list = {
       Backups = { path = "/mnt/user/Backups"; };

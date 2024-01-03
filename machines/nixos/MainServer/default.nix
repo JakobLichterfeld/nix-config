@@ -1,4 +1,7 @@
-{ lib, config, vars, pkgs, secrets,... }:
+{ lib, config, vars, pkgs,... }:
+let
+  secrets = import ../../../secrets;
+in
 {
   boot.initrd.kernelModules = [ "i915" ];
   hardware.cpu.intel.updateMicrocode = true;

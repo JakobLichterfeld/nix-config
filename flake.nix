@@ -77,11 +77,11 @@ in
             ./modules/zfs-root
             ./modules/tailscale
             ./modules/mergerfs-uncache
+            agenix.nixosModules.default
 
             # Imports
             ./machines/nixos
             ./machines/nixos/MainServer
-            agenix.nixosModules.default
 
             # Services
             ./services/monitoring
