@@ -33,6 +33,9 @@
               deploy-rs,
               nur,
               ... }@inputs:
+let
+  secrets = import ./secrets;
+in
  {
     darwinConfigurations."MainDev" = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
