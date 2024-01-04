@@ -71,5 +71,7 @@
     lm_sensors
     jc
     moreutils
+    gnupg
+    pinentry
   ];
 }
