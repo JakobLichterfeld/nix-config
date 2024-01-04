@@ -8,7 +8,7 @@ End of 2023 I migrated to Nix.
 
 ## MainDev (Mac)
 
-Managed using `nix-darwin` and `home-manager`. Impure packages and apps are managed by `homebrew` and `mas`
+Managed by `nix-darwin` and `home-manager`. Impure packages and applications are managed by `homebrew` and `mas`.
 
 ## MainServer
 
@@ -219,9 +219,9 @@ reboot
 
 Update dependencies: `nix --experimental-features 'nix-command flakes' flake update`
 
-build: `nix --experimental-features 'nix-command flakes' build .#darwinConfigurations."MainDev".system --impure`
+build: `nix --experimental-features 'nix-command flakes' build .#darwinConfigurations."MainDev".system`
 
-apply: `darwin-rebuild switch --impure --flake .`
+apply: `darwin-rebuild switch  --flake .`
 
 as macOS does not allow writing to `/` write to symlink:
 
@@ -230,7 +230,7 @@ printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
 /System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
 ```
 
-apply changes: `./result/sw/bin/darwin-rebuild switch --impure --flake .`
+apply changes: `./result/sw/bin/darwin-rebuild switch --flake .`
 
 ## Contributing
 
