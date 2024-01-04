@@ -71,6 +71,7 @@
     lm_sensors
     jc
     moreutils
+    git-crypt
     gnupg
     pinentry
   ];
