@@ -57,11 +57,11 @@ in
 
     deploy.nodes = {
       MainServer = {
-        hostname = machinesSensitiveVars.MainServer_ipAddress;
+        hostname = machinesSensitiveVars.MainServer.ipAddress;
         profiles.system = {
           sshUser = "jakob";
-          user = machinesSensitiveVars.MainServer_username;
-          sshOpts = [ "-p" machinesSensitiveVars.MainServer_sshPort ];
+          user = machinesSensitiveVars.MainServer.username;
+          sshOpts = [ "-p" machinesSensitiveVars.MainServer.sshPort ];
           remoteBuild = true;
           path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.MainServer;
         };
