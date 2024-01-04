@@ -6,13 +6,12 @@ let
 in
 {
   imports = [
-    <home-manager/nix-darwin>
     ../../modules/cachix
     ./dock
     ./system.nix
   ];
 
-  home-manager = {
+  home-manager.nix-darwin = {
     useGlobalPkgs = false; # makes hm use nixos's pkgs value
     useUserPackages = true;
       extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules

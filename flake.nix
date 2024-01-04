@@ -43,6 +43,7 @@ in
       system = "aarch64-darwin";
       specialArgs = {
         inherit inputs;
+        inherit home-manager;
         inherit secrets;
         inherit machinesSensitiveVars;
       };
