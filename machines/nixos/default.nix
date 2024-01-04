@@ -1,4 +1,4 @@
-{ inputs, config, pkgs, lib, secrets, ... }:
+{ inputs, config, pkgs, lib, secrets, machinesSensitiveVars,... }:
 {
   system.stateVersion = "23.11";
 
@@ -27,7 +27,7 @@
     PasswordAuthentication = lib.mkDefault false;
     PermitRootLogin = "no";
     };
-    ports = [ secrets.age.secrets.MainServer_sshPort.path ];
+    ports = [ machinesSensitiveVars.MainServer_sshPort ];
     hostKeys = [
       {
         path = "/persist/ssh/ssh_host_ed25519_main_server";

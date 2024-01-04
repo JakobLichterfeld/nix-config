@@ -1,4 +1,4 @@
-{ users, pkgs, config, lib, secrets,...}:
+{ users, pkgs, config, lib, secrets, machinesSensitiveVars,...}:
 let
   smb = {
     share_list = {
@@ -60,10 +60,10 @@ in
     securityType = "user";
     extraConfig = ''
       workgroup = WORKGROUP
-      server string = ${secrets.age.secrets.MainServer_hostName.path}
-      netbios name = ${secrets.age.secrets.MainServer_hostName.path}
+      server string = ${machinesSensitiveVars.MainServer_hostName}
+      netbios name = ${machinesSensitiveVars.MainServer_hostName}
       security = user
-      hosts allow = ${secrets.age.secrets.MainServer_ipNetwork.path}
+      hosts allow = ${machinesSensitiveVars.MainServer_ipNetwork}
       guest account = nobody
       map to guest = bad user
       passdb backend = tdbsam

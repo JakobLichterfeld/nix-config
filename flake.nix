@@ -34,7 +34,8 @@
               nur,
               ... }@inputs:
 let
-  secrets = import ./secrets/default.nix;
+  secrets = import ./secrets;
+  machinesSensitiveVars = import ./machinesSensitiveVars.nix;
 in
  {
     darwinConfigurations."MainDev" = nix-darwin.lib.darwinSystem {
@@ -42,6 +43,7 @@ in
       specialArgs = {
         inherit inputs;
         inherit secrets;
+        inherit machinesSensitiveVars;
       };
       modules = [
         agenix.darwinModules.default
@@ -53,11 +55,11 @@ in
 
     deploy.nodes = {
       MainServer = {
-        hostname = secrets.age.secrets.MainServer_ipAddress.path;
+        hostname = machinesSensitiveVars.MainServer_ipAddress;
         profiles.system = {
           sshUser = "jakob";
-          user = secrets.age.secrets.age.secrets.MainServer_username.path;
-          sshOpts = [ "-p" secrets.age.secrets.MainServer_sshPort.path ];
+          user = machinesSensitiveVars.MainServer_username;
+          sshOpts = [ "-p" machinesSensitiveVars.MainServer_sshPort ];
           remoteBuild = true;
           path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.MainServer;
         };
@@ -70,6 +72,7 @@ in
         specialArgs = {
           inherit inputs;
           inherit secrets;
+          inherit machinesSensitiveVars;
           vars = import ./machines/nixos/MainServer/vars.nix;
         };
         modules = [
