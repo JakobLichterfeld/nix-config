@@ -36,7 +36,7 @@
               ... }@inputs:
 let
   secrets = import ./secrets;
-  machinesSensitiveVars = import ./machinesSensitiveVars.nix;
+  machinesSensitiveVars = builtins.fromJSON (builtins.readFile "${self}/machinesSensitiveVars.nix");
 in
  {
     darwinConfigurations."MainDev" = nix-darwin.lib.darwinSystem {
