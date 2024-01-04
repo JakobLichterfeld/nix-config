@@ -22,9 +22,9 @@
       };
     };
     networking = {
-      hostName = machinesSensitiveVars.MainServer_hostName;
+      hostName = machinesSensitiveVars.MainServer.hostName;
       timeZone = "Europe/Berlin";
-      hostId = machinesSensitiveVars.MainServer_hostId;
+      hostId = machinesSensitiveVars.MainServer.hostId;
     };
   };
 
@@ -44,18 +44,18 @@
   };
 
   networking = {
-  nameservers = [ machinesSensitiveVars.MainServer_nameservers ];
-  defaultGateway = machinesSensitiveVars.MainServer_defaultGateway;
+  nameservers = [ machinesSensitiveVars.MainServer.nameservers ];
+  defaultGateway = machinesSensitiveVars.MainServer.defaultGateway;
   interfaces = {
     enp1s0.ipv4 = {
       addresses = [{
-        address = machinesSensitiveVars.MainServer_ipAddress;
+        address = machinesSensitiveVars.MainServer.ipAddress;
         prefixLength = 24;
       }];
     };
     enp2s0.ipv4 = {
       addresses = [{
-        address = machinesSensitiveVars.MainServer_ipAddress2;
+        address = machinesSensitiveVars.MainServer.ipAddress2;
         prefixLength = 24;
       }];
     };
