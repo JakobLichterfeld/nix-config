@@ -9,7 +9,6 @@
       jakob = {
         name = "jakob";
         home = "/Users/jakob";
-        shell = pkgs.zsh;
         uid = 1000;
         isNormalUser = true;
         passwordFile = secrets.age.secrets.hashedUserPassword.path;

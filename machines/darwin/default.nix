@@ -20,6 +20,7 @@ in
         inputs.nur.overlay
         ];
         home.homeDirectory = lib.mkForce "/Users/jakob";
+        shell = pkgs.zsh;
 
         imports = [
           inputs.nix-index-database.hmModules.nix-index
