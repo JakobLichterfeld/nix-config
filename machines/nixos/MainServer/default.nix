@@ -1,4 +1,4 @@
-{ lib, config, vars, pkgs, secrets,... }:
+{ lib, config, vars, pkgs, machinesSensitiveVars,... }:
 {
   boot.initrd.kernelModules = [ "i915" ];
   hardware.cpu.intel.updateMicrocode = true;
@@ -22,9 +22,9 @@
       };
     };
     networking = {
-      hostName = secrets.age.secrets.MainServer_hostName.path;
-      timeZone = secrets.age.secrets.MainServer_timeZone.path;
-      hostId = secrets.age.secrets.MainServer_hostId.path;
+      hostName = machinesSensitiveVars.MainServer_hostName;
+      timeZone = "Europe/Berlin";
+      hostId = machinesSensitiveVars.MainServer_hostId;
     };
   };
 
@@ -44,18 +44,18 @@
   };
 
   networking = {
-  nameservers = [ secrets.age.secrets.MainServer_nameservers.path ];
-  defaultGateway = secrets.age.secrets.MainServer_defaultGateway.path;
+  nameservers = [ machinesSensitiveVars.MainServer_nameservers ];
+  defaultGateway = machinesSensitiveVars.MainServer_defaultGateway;
   interfaces = {
     enp1s0.ipv4 = {
       addresses = [{
-        address = secrets.age.secrets.MainServer_ipAddress.path;
+        address = machinesSensitiveVars.MainServer_ipAddress;
         prefixLength = 24;
       }];
     };
     enp2s0.ipv4 = {
       addresses = [{
-        address = secrets.age.secrets.MainServer_ipAddress2.path;
+        address = machinesSensitiveVars.MainServer_ipAddress2;
         prefixLength = 24;
       }];
     };
