@@ -17,7 +17,7 @@
 
   users.users = {
     root = {
-      initialHashedPassword = secrets.age.secrets.hashedUserPassword.path;
+      initialHashedPassword = secrets.config.age.secrets.hashedUserPassword.path;
       openssh.authorizedKeys.keys = [ "sshKey_placeholder" ];
     };
   };
