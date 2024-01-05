@@ -10,6 +10,7 @@
       # url = "github:ryantm/agenix"; # agenix
       url = "github:yaxitech/ragenix"; # ragenix
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
     };
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
