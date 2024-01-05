@@ -35,7 +35,6 @@
               nur,
               ... }@inputs:
 let
-  secrets = import ./secrets;
   machinesSensitiveVars = builtins.fromJSON (builtins.readFile "${self}/machinesSensitiveVars.json");
 in
  {
@@ -44,7 +43,6 @@ in
       specialArgs = {
         inherit inputs;
         inherit home-manager;
-        inherit secrets;
         inherit machinesSensitiveVars;
       };
       modules = [
@@ -73,7 +71,6 @@ in
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
-          inherit secrets;
           inherit machinesSensitiveVars;
           vars = import ./machines/nixos/MainServer/vars.nix;
         };
