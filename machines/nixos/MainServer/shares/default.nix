@@ -42,7 +42,7 @@ in
   systemd.tmpfiles.rules = map (x: "d ${x.path} 0775 share share - -") (lib.attrValues smb.share_list) ++ ["d /mnt 0775 share share - -"];
 
   system.activationScripts.samba_user_create = ''
-      smb_password=$(cat "${secrets.age.secrets.sambaPassword.path}")
+      smb_password=$(cat "${secrets.config.age.secrets.sambaPassword.path}")
       echo -e "$smb_password\n$smb_password\n" | /run/current-system/sw/bin/smbpasswd -a -s share
       '';
 
