@@ -8,7 +8,7 @@
     };
     agenix = {
       # url = "github:ryantm/agenix"; # agenix
-      url = "github.com/yaxitech/ragenix"; # ragenix
+      url = "github:yaxitech/ragenix"; # ragenix
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
