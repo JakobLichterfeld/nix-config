@@ -59,7 +59,7 @@
   environment.systemPackages = with pkgs; [
     wget
     iperf3
-    exa
+    eza # A modern, maintained replacement for ls
     neofetch
     (python311.withPackages(ps: with ps; [ pip ]))
     tmux
