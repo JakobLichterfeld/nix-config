@@ -1,4 +1,4 @@
-{ users, pkgs, config, lib, secrets, machinesSensitiveVars,...}:
+{ users, pkgs, config, lib, machinesSensitiveVars,...}:
 let
   smb = {
     share_list = {
@@ -22,6 +22,8 @@ let
   smb_shares = builtins.mapAttrs (name: value: value // smb.share_params) smb.share_list;
 in
 {
+  age.secrets.sambaPassword.file = ../../../../secrets/sambaPassword.age;
+
   services.samba-wsdd.enable = true; # enable wsdd for discovery
 
   users = {
@@ -42,7 +44,7 @@ in
   systemd.tmpfiles.rules = map (x: "d ${x.path} 0775 share share - -") (lib.attrValues smb.share_list) ++ ["d /mnt 0775 share share - -"];
 
   system.activationScripts.samba_user_create = ''
-      smb_password=$(cat "${secrets.config.age.secrets.sambaPassword.path}")
+      smb_password=$(cat "${config.age.secrets.sambaPassword.path}")
       echo -e "$smb_password\n$smb_password\n" | /run/current-system/sw/bin/smbpasswd -a -s share
       '';
 

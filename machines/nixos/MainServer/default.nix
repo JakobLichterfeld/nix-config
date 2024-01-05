@@ -1,5 +1,7 @@
 { lib, config, vars, pkgs, machinesSensitiveVars,... }:
 {
+  age.identityPaths = ["/persist/ssh/ssh_host_ed25519_main_server"];
+
   boot.initrd.kernelModules = [ "i915" ];
   hardware.cpu.intel.updateMicrocode = true;
   hardware.enableRedistributableFirmware = true;

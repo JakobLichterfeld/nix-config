@@ -1,5 +1,7 @@
-{ inputs, config, pkgs, lib, secrets, machinesSensitiveVars,... }:
+{ inputs, config, pkgs, lib, machinesSensitiveVars,... }:
 {
+  age.secrets.hashedUserPassword.file = ../../secrets/hashedUserPassword.age;  # content is result of: `mkpasswd -m sha-512`
+
   system.stateVersion = "23.11";
 
   networking.useDHCP = false;
@@ -17,7 +19,7 @@
 
   users.users = {
     root = {
-      initialHashedPassword = secrets.config.age.secrets.hashedUserPassword.path;
+      initialHashedPassword = config.age.secrets.hashedUserPassword.path;
       openssh.authorizedKeys.keys = [ "sshKey_placeholder" ];
     };
   };
