@@ -181,12 +181,13 @@ git clone https://github.com/JakobLichterfeld/nix-config.git "${MNT}"/etc/nixos
 
 Put the private key into place (required for secret management)
 ```bash
-mkdir -p /mnt/home/jakob/.ssh
+mkdir -p "${MNT}"/persist/ssh
+echo "${MNT}"
 exit
-scp ~/.ssh/id_ed25519 nixos_installation_ip:/mnt/home/
+scp ~/.ssh/id_ed25519_main_server nixos_installation_ip:/MNT_path_see_echo_from_above/persist/ssh/id_ed25519_main_server
 ssh nixos@nixos_installation_ip
-chmod 700 /mnt/home/jakob
-chmod 600 /mnt/home/jakob/id_ed25519
+chmod 700 "${MNT}"/persist/ssh
+chmod 600 "${MNT}"/persist/ssh/id_ed25519_main_server
 ```
 
 Install system and apply configuration
