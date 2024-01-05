@@ -21,7 +21,6 @@ with pkgs; [
   fastlane
   openssl_3_1
   ruby
-  openjdk
 
   # Python packages
   python311
