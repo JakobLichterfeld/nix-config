@@ -1,4 +1,4 @@
-{ config, pkgs, secrets,... }:
+{ config, pkgs, lib,... }:
 {
   age.secrets.tailscaleAuthKey = lib.mkDefault {
     file = ../../secrets/tailscaleAuthKey.age; # generate for max 90 day at https://login.tailscale.com/admin/settings/keys
@@ -7,7 +7,7 @@
 
   environment.systemPackages = [ pkgs.tailscale ];
 
-  networking.trustedInterfaces = [ "tailscale0" ];
+  networking.firewall.trustedInterfaces = [ "tailscale0" ];
   networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
 
   services.tailscale.enable = true;
@@ -38,7 +38,7 @@
 
       echo "Authenticating with Tailscale ..."
       # --advertise-exit-node
-      ${tailscale}/bin/tailscale up --auth-key=file:${secrets.age.secrets.tailscaleAuthKey.path}
+      ${tailscale}/bin/tailscale up --auth-key=file:${age.secrets.tailscaleAuthKey.path}
     '';
   };
 }
