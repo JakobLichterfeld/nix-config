@@ -52,6 +52,7 @@ in
     allowedTCPPorts = [ 5357 ]; # Microsoft Network Discovery,
     allowedUDPPorts = [ 3702 ]; # Web Services Discovery (WSD)
   };
+  networking.firewall.extraCommands = ''iptables -t raw -A OUTPUT -p udp -m udp --dport 137 -j CT --helper netbios-ns'';
 
   services.samba = {
     enable = true;
@@ -65,7 +66,8 @@ in
       server string = ${machinesSensitiveVars.MainServer.hostName}
       netbios name = ${machinesSensitiveVars.MainServer.hostName}
       security = user
-      hosts allow = ${machinesSensitiveVars.MainServer.ipNetwork}
+      hosts allow = ${machinesSensitiveVars.MainServer.ipNetwork} 127.0.0.1 localhost
+      host deny = 0.0.0.0/0
       guest account = nobody
       map to guest = bad user
       passdb backend = tdbsam
