@@ -8,7 +8,6 @@ snapraid = {
   contentFiles = [
     "/mnt/data1/snapraid.content"
     "/mnt/parity1/snapraid.content"
-    "/mnt/cache/snapraid.content"
   ];
   dataDisks = {
     d1 = "/mnt/data1";
