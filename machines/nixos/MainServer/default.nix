@@ -24,9 +24,10 @@
   boot.kernelParams = [ "consoleblank=60" ];
   networking = {
     hostName = machinesSensitiveVars.MainServer.hostName;
-    timeZone = "Europe/Berlin";
     hostId = machinesSensitiveVars.MainServer.hostId;
   };
+  time.timeZone = "Europe/Berlin";
+
 
   imports = [
     ./filesystems
