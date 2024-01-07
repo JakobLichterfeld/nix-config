@@ -206,6 +206,7 @@ nixos-install \
 Unmount the filesystems
 ```bash
 umount -Rl "${MNT}"
+cd /
 zpool export -a
 ```
 
