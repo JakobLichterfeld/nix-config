@@ -35,6 +35,7 @@ Install programs needed for system installation
 if ! command -v git; then nix-env -f '<nixpkgs>' -iA git; fi
 if ! command -v jq;  then nix-env -f '<nixpkgs>' -iA jq; fi
 if ! command -v partprobe;  then nix-env -f '<nixpkgs>' -iA parted; fi
+if ! command -v git-crypt;  then nix-env -f '<nixpkgs>' -iA git-crypt; fi
 ```
 
 Partition the drive
@@ -184,10 +185,14 @@ Put the private key into place (required for secret management)
 mkdir -p "${MNT}"/persist/ssh
 echo "${MNT}"
 exit
-scp ~/.ssh/id_ed25519_main_server nixos_installation_ip:/MNT_path_see_echo_from_above/persist/ssh/id_ed25519_main_server
+scp ~/.ssh/id_ed25519_main_server root@nixos_installation_ip:/MNT_path_see_echo_from_above/persist/ssh/id_ed25519_main_server
+scp ~/.ssh/nix-config_local.key.asc root@nixos_installation_ip:/MNT_path_see_echo_from_above/etc/nixos/nix-config_local.key.asc
 ssh nixos@nixos_installation_ip
 chmod 700 "${MNT}"/persist/ssh
 chmod 600 "${MNT}"/persist/ssh/id_ed25519_main_server
+cd "${MNT}"/etc/nixos
+git-crypt unlock nix-config_local.key.asc
+
 ```
 
 Install system and apply configuration
