@@ -36,6 +36,8 @@
 
   powerManagement.powertop.enable = true;
 
+  systemd.enableEmergencyMode = false; # as we have no console of any kind attached to the server, we don't want to end up in emergency mode
+
   systemd.services.hd-idle = {
     description = "HD spin down daemon";
     wantedBy = [ "multi-user.target" ];
