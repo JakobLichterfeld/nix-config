@@ -52,7 +52,7 @@
     };
   };
 
-  fileSystems."/nix" =
+  fileSystems."/nix" = lib.mkForce
   { device = "rpool/nixos/nix";
     fsType = "zfs";
     neededForBoot = true;
@@ -64,34 +64,34 @@
     neededForBoot = true;
   };
 
-  fileSystems."/boot" =
+  fileSystems."/boot" = lib.mkForce
   { device = "bpool/nixos/root";
     fsType = "zfs";
   };
 
-  fileSystems."/home" =
+  fileSystems."/home" = lib.mkForce
   { device = "rpool/nixos/home";
     fsType = "zfs";
     neededForBoot = true;
   };
 
-  fileSystems."/persist" =
+  fileSystems."/persist" = lib.mkForce
   { device = "rpool/nixos/persist";
     fsType = "zfs";
     neededForBoot = true;
   };
 
-  fileSystems."/var/log" =
+  fileSystems."/var/log" = lib.mkForce
   { device = "rpool/nixos/var/log";
     fsType = "zfs";
   };
 
-  fileSystems."/var/lib/containers" =
+  fileSystems."/var/lib/containers" = lib.mkForce
   { device = "/dev/zvol/rpool/docker";
     fsType = "ext4";
   };
 
-  fileSystems.${vars.cacheArray} =
+  fileSystems.${vars.cacheArray} = lib.mkForce
   { device = "cachepool";
     fsType = "zfs";
   };
