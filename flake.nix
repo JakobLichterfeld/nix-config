@@ -35,7 +35,7 @@
               nur,
               ... }@inputs:
 let
-  machinesSensitiveVars = builtins.fromJSON (builtins.readFile "${self}/machinesSensitiveVars.json");
+  machinesSensitiveVars = builtins.fromJSON (builtins.readFile "./machinesSensitiveVars.json");
 in
  {
     darwinConfigurations."MainDev" = nix-darwin.lib.darwinSystem {
