@@ -123,7 +123,7 @@ in {
           grub = {
             enable = true;
             # devices = (map (diskName: cfg.devNodes + diskName) cfg.bootDevices);
-            devices = "nodev";
+            devices = ["nodev"];
             efiInstallAsRemovable = cfg.removableEfi;
             copyKernels = true;
             efiSupport = true;
