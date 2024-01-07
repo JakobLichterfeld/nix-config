@@ -24,15 +24,7 @@ in {
       description = "Specify boot devices";
       type = types.nonEmptyListOf types.str;
     };
-    kernelParams = mkOption {
-      type = types.listOf types.str;
-      default = [ ];
-    };
-    availableKernelModules = mkOption {
-      type = types.nonEmptyListOf types.str;
-      default = [ "uas" "nvme" "ahci" ];
-    };
-    immutable = mkOption {
+    immutable.enable = mkOption {
       description = "Enable root on ZFS immutable root support";
       type = types.bool;
       default = false;
@@ -88,13 +80,16 @@ in {
           "/oldroot/etc/nixos" = "/etc/nixos";
         };
       };
-      boot.initrd.postDeviceCommands = ''
-        if ! grep -q zfs_no_rollback /proc/cmdline; then
-          zpool import -N rpool
-          zfs rollback -r rpool/nixos/empty@start
-          zpool export -a
-        fi
-      '';
+      boot.initrd.systemd.services.immutable-zfs-root = {
+        description = "Rollback root filesystem to an empty snapshot";
+        unitConfig.DefaultDependencies = false;
+        wantedBy = [ "zfs.target" ];
+        after = [ "zfs-import-rpool.service" ];
+        before = [ "sysroot.mount" ];
+        path = [ pkgs.zfs ];
+        serviceConfig.Type = "oneshot";
+        script = "zfs rollback -r rpool/nixos/empty@start";
+      };
     })
     {
       zfs-root.fileSystems = {

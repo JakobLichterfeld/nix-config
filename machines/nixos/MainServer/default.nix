@@ -12,17 +12,15 @@
     boot = {
       devNodes = "/dev/disk/by-id/";
       bootDevices = [  "nvme-FIKWOT_FN960_2TB_AA234330561" ];
-      immutable = false;
-      availableKernelModules = [  "uhci_hcd" "ehci_pci" "ahci" "sd_mod" ];
+      immutable.enable = true;
       removableEfi = true;
-      kernelParams = [
-      "consoleblank=60"
-      ];
       sshUnlock = {
         enable = false;
         authorizedKeys = [ ];
       };
     };
+    boot.initrd.availableKernelModules = [  "uhci_hcd" "ehci_pci" "ahci" "sd_mod" "nvme" "uas" "nvme" "ahci" ];
+    boot.kernelParams = [ "consoleblank=60" ];
     networking = {
       hostName = machinesSensitiveVars.MainServer.hostName;
       timeZone = "Europe/Berlin";
