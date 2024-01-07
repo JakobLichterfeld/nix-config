@@ -134,17 +134,17 @@ zfs create \
 rpool/nixos
 ```
 
-Create the system datasets
+Create the system datasets and manage mountpoints
 ```bash
-zfs create -o mountpoint=legacy rpool/nixos/empty
-mount -t zfs rpool/nixos/empty "${MNT}"/
-zfs snapshot rpool/nixos/empty@start
+zfs create -o mountpoint=legacy     rpool/nixos/root
+mount -t zfs rpool/nixos/root "${MNT}"/
 
 zfs create -o mountpoint=legacy rpool/nixos/home
 mkdir "${MNT}"/home
 mount -t zfs rpool/nixos/home "${MNT}"/home
 
-zfs create -o mountpoint=legacy rpool/nixos/var
+zfs create -o mountpoint=none   rpool/nixos/var
+zfs create -o mountpoint=legacy rpool/nixos/var/lib
 zfs create -o mountpoint=legacy rpool/nixos/var/log
 zfs create -o mountpoint=legacy rpool/nixos/config
 zfs create -o mountpoint=legacy rpool/nixos/persist
@@ -156,14 +156,18 @@ mkdir "${MNT}"/boot
 mount -t zfs bpool/nixos/root "${MNT}"/boot
 
 mkdir -p "${MNT}"/var/log
+mkdir -p "${MNT}"/var/lib
 mkdir -p "${MNT}"/etc/nixos
 mkdir -p "${MNT}"/nix
 mkdir -p "${MNT}"/persist
 
+mount -t zfs rpool/nixos/var/lib "${MNT}"/var/lib
 mount -t zfs rpool/nixos/var/log "${MNT}"/var/log
 mount -t zfs rpool/nixos/config "${MNT}"/etc/nixos
 mount -t zfs rpool/nixos/nix "${MNT}"/nix
 mount -t zfs rpool/nixos/persist "${MNT}"/persist
+zfs create -o mountpoint=legacy rpool/nixos/empty
+zfs snapshot rpool/nixos/empty@start
 ```
 
 Format and mount ESP
