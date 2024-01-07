@@ -19,13 +19,13 @@
         authorizedKeys = [ ];
       };
     };
-    boot.initrd.availableKernelModules = [  "uhci_hcd" "ehci_pci" "ahci" "sd_mod" "nvme" "uas" "nvme" "ahci" "i915" ];
-    boot.kernelParams = [ "consoleblank=60" ];
-    networking = {
-      hostName = machinesSensitiveVars.MainServer.hostName;
-      timeZone = "Europe/Berlin";
-      hostId = machinesSensitiveVars.MainServer.hostId;
-    };
+  };
+  boot.initrd.availableKernelModules = [  "uhci_hcd" "ehci_pci" "ahci" "sd_mod" "nvme" "uas" "nvme" "ahci" "i915" ];
+  boot.kernelParams = [ "consoleblank=60" ];
+  networking = {
+    hostName = machinesSensitiveVars.MainServer.hostName;
+    timeZone = "Europe/Berlin";
+    hostId = machinesSensitiveVars.MainServer.hostId;
   };
 
   imports = [
