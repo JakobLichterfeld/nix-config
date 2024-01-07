@@ -126,7 +126,7 @@
   fileSystems.${vars.mainArray} =
   { device = "${vars.cacheArray}:${vars.slowerArray}";
     options = [
-      "category.create=lfs"
+      "category.create=epff"
         "defaults"
         "allow_other"
         "moveonenospc=1"
