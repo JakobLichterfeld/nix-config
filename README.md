@@ -122,7 +122,7 @@ zpool create \
     -O mountpoint=/mnt/cache \
     cachepool \
    $(for i in ${DISK}; do
-      printf '%s ' "${i}-part4";
+      printf '%s ' "${i}-part5";
      done)
 ```
 
