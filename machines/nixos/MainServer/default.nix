@@ -23,10 +23,10 @@
   boot.initrd.availableKernelModules = [  "uhci_hcd" "ehci_pci" "ahci" "sd_mod" "nvme" "uas" "nvme" "ahci" "i915" ];
   boot.kernelParams = [ "consoleblank=60" ];
   networking = {
-    hostName = lib.mkForce machinesSensitiveVars.MainServer.hostName;
-    hostId = lib.mkForce machinesSensitiveVars.MainServer.hostId;
+    hostName = machinesSensitiveVars.MainServer.hostName;
+    hostId = machinesSensitiveVars.MainServer.hostId;
   };
-  time.timeZone = lib.mkForce "Europe/Berlin";
+  time.timeZone = "Europe/Berlin";
 
 
   imports = [
