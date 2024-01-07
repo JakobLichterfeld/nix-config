@@ -7,11 +7,11 @@ in {
     hostName = mkOption {
       description = "The name of the machine. Used by nix flake.";
       type = types.str;
-      default = lib.mkDefault "exampleHost";
+      default = "exampleHost";
     };
     timeZone = mkOption {
       type = types.str;
-      default = lib.mkDefault "Etc/UTC";
+      default = "Etc/UTC";
     };
     hostId = mkOption {
       description = "Set host id";
