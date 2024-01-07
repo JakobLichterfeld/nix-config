@@ -66,10 +66,10 @@ in {
         "bpool/nixos/root" = "/boot";
       };
     }
-    (mkIf (!cfg.immutable) {
+    (mkIf (!cfg.immutable.enable) {
       zfs-root.fileSystems.datasets = { "rpool/nixos/root" = "/"; };
     })
-    (mkIf cfg.immutable {
+    (mkIf !cfg.immutable.enable {
       zfs-root.fileSystems = {
         datasets = {
           "rpool/nixos/empty" = "/";
@@ -100,9 +100,6 @@ in {
           (map (diskName: diskName + cfg.partitionScheme.swap) cfg.bootDevices);
       };
       boot = {
-        kernelPackages = mkDefault config.boot.zfs.package.latestCompatibleLinuxPackages;
-        initrd.availableKernelModules = cfg.availableKernelModules;
-        kernelParams = cfg.kernelParams;
         supportedFilesystems = [ "zfs" ];
         zfs = {
           devNodes = cfg.devNodes;
