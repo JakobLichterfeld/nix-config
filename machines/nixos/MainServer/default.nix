@@ -20,7 +20,7 @@
       };
     };
   };
-  boot.initrd.availableKernelModules = [  "uhci_hcd" "ehci_pci" "ahci" "sd_mod" "nvme" "uas" "nvme" "ahci" "i915" ];
+  boot.initrd.availableKernelModules = [  "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "i915" ];
   boot.kernelParams = [ "consoleblank=60" ];
   networking = {
     hostName = machinesSensitiveVars.MainServer.hostName;
