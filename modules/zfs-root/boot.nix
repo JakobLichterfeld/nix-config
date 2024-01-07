@@ -69,7 +69,7 @@ in {
     (mkIf (!cfg.immutable.enable) {
       zfs-root.fileSystems.datasets = { "rpool/nixos/root" = "/"; };
     })
-    (mkIf !cfg.immutable.enable {
+    (mkIf cfg.immutable.enable {
       zfs-root.fileSystems = {
         datasets = {
           "rpool/nixos/empty" = "/";
