@@ -25,6 +25,7 @@
   networking = {
     hostName = machinesSensitiveVars.MainServer.hostName;
     hostId = machinesSensitiveVars.MainServer.hostId;
+    firewall.enable = true;
   };
   time.timeZone = "Europe/Berlin";
 
