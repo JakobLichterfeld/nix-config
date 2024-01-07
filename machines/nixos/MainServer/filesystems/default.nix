@@ -58,7 +58,7 @@
     neededForBoot = true;
   };
 
-  fileSystems."/etc/nixos" =
+  fileSystems."/etc/nixos" = lib.mkForce
   { device = "rpool/nixos/config";
     fsType = "zfs";
     neededForBoot = true;
