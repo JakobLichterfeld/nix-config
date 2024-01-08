@@ -204,7 +204,6 @@ chmod 700 "${MNT}"/persist/ssh
 chmod 600 "${MNT}"/persist/ssh/id_ed25519_main_server
 cd "${MNT}"/etc/nixos
 git-crypt unlock nix-config_local.key.asc
-
 ```
 
 Install system and apply configuration
