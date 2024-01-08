@@ -65,6 +65,14 @@ for i in ${DISK}; do
 done
 ```
 
+Setup swap
+```bash
+for i in ${DISK}; do
+   mkswap /dev/mapper/"${i##*/}"-part4
+   swapon /dev/mapper/"${i##*/}"-part4
+done
+```
+
 Create boot pool
 ```bash
 zpool create \
