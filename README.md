@@ -49,7 +49,7 @@ partition_disk () {
  mkpart EFI 2MiB 1GiB \
  mkpart bpool 1GiB 5GiB \
  mkpart rpool 5GiB 261GiB \
- mkpart swap  261GiB 265GiB \
+ mkpart swap 261GiB 265GiB \
  mkpart cache 265GiB -$((RESERVE))GiB \
  mkpart BIOS 1MiB 2MiB \
  set 1 esp on \
@@ -68,8 +68,8 @@ done
 Setup swap
 ```bash
 for i in ${DISK}; do
-   mkswap /dev/mapper/"${i##*/}"-part4
-   swapon /dev/mapper/"${i##*/}"-part4
+   mkswap -L "swap" "${i}"-part4
+   swapon "${i}"-part4
 done
 ```
 
