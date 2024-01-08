@@ -40,18 +40,6 @@
     fsType = "zfs";
   };
 
-  boot.initrd.systemd.services = {
-    rollback = {
-      description = "Rollback ZFS dataset";
-      wantedBy = [ "initrd-root-fs.target" ];
-      before = [ "initrd-root-fs.target" ];
-      serviceConfig.Type = "oneshot";
-      script = ''
-        zfs rollback -r rpool/nixos/empty@start
-      '';
-    };
-  };
-
   fileSystems."/nix" = lib.mkForce
   { device = "rpool/nixos/nix";
     fsType = "zfs";
