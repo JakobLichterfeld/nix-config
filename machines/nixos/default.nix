@@ -41,6 +41,8 @@
 
   nix.settings.experimental-features = lib.mkDefault [ "nix-command" "flakes" ];
 
+  console.keyMap = "de";
+
   programs.git.enable = true;
   programs.mosh.enable = true;
   programs.htop.enable = true;
