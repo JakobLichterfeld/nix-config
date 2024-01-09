@@ -37,6 +37,7 @@
       }
     ];
   };
+  networking.firewall.allowedTCPPorts = [ machinesSensitiveVars.MainServer.sshPort ];
 
   nix.settings.experimental-features = lib.mkDefault [ "nix-command" "flakes" ];
 
