@@ -17,7 +17,7 @@
     exporters = {
       node = {
         enable = true;
-        enabledCollectors = [ "systemd"  ];
+        enabledCollectors = [ "systemd" ];
         port = 9100;
       };
     };
