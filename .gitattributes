@@ -2,3 +2,4 @@
 machines.nix filter=git-crypt diff=git-crypt
 machinesSensitiveVars.nix filter=git-crypt diff=git-crypt
 machinesSensitiveVars.json filter=git-crypt diff=git-crypt
+services/homepage/services.yaml filter=git-crypt diff=git-crypt
