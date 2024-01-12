@@ -60,7 +60,9 @@ in
           "/var/run/podman/podman.sock:/var/run/docker.sock:ro"
         ];
         networks = [ "nginx-net" ];
-        ports = "3080:3000";
+        ports = [
+          "3080:3000"
+        ];
         environment = {
           TZ = "Europe/Berlin";
         };
