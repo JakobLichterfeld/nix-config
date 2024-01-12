@@ -158,6 +158,8 @@ zfs create -o mountpoint=legacy rpool/nixos/config
 zfs create -o mountpoint=legacy rpool/nixos/persist
 zfs create -o mountpoint=legacy rpool/nixos/nix
 
+zfs create -o mountpoint=legacy cachepool
+
 zfs create -o mountpoint=none bpool/nixos
 zfs create -o mountpoint=legacy bpool/nixos/root
 mkdir "${MNT}"/boot
