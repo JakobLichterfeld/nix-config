@@ -1,0 +1,2 @@
+.gitattributes !filter !diff
+services.yaml filter=git-crypt diff=git-crypt
