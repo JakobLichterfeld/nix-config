@@ -6,28 +6,28 @@ headerStyle = "underlined";
 statusStyle = "dot";
 hideVersion = true;
 layout = {
-  Network = {
+  "Network" = {
     icon = "mdi-lan";
     showStats= true;
   };
-  Tesla = {
+  "Tesla" = {
     icon = "si-tesla";
     showStats= true;
   };
-  Other Devices = {
+  "Other Devices" = {
     icon = "mdi-devices";
   };
-  Handy = {
+  "Handy" = {
     icon = "si-oneplus"
   };
-  System = {
+  "System" = {
     icon = "mdi-desktop-classic";
     showStats= true;
   };
-  Health Checks = {
+  "Health Checks" = {
     icon = "healthchecks-v2";
   };
-  External Services = {
+  "External Services" = {
     icon = "mdi-open-in-new";
   };
 };
