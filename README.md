@@ -206,6 +206,12 @@ cd "${MNT}"/etc/nixos
 git-crypt unlock nix-config_local.key.asc
 ```
 
+Create Home Dir
+```bash
+mkdir -p /home/jakob
+```
+
+
 Install system and apply configuration
 ```bash
 nixos-install \
