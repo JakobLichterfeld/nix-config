@@ -18,7 +18,7 @@ layout = {
     icon = "mdi-devices";
   };
   "Handy" = {
-    icon = "si-oneplus"
+    icon = "si-oneplus";
   };
   "System" = {
     icon = "mdi-desktop-classic";
