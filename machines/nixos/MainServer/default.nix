@@ -2,7 +2,10 @@
 {
   age.identityPaths = ["/persist/ssh/id_ed25519_main_server"];
 
+  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" ];
+  boot.kernelModules = [ "kvm-intel" ];
+  boot.kernelParams = [ "consoleblank=60" ];
   hardware.cpu.intel.updateMicrocode = true;
   hardware.enableRedistributableFirmware = true;
   hardware.opengl.enable = true;
@@ -20,8 +23,6 @@
       };
     };
   };
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" ];
-  boot.kernelParams = [ "consoleblank=60" ];
   networking = {
     hostName = machinesSensitiveVars.MainServer.hostName;
     hostId = machinesSensitiveVars.MainServer.hostId;
