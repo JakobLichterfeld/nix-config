@@ -227,6 +227,16 @@ reboot
 ```
 </p></details>
 
+<details><summary>Update to newest config</summary><p>
+
+```bash
+cd /etc/nixos
+git pull
+nixos-rebuild switch
+```
+
+</p></details>
+
 ## How to use
 
 [Make sure nix is installed](https://nixos.org/download#nix-install-macos)
