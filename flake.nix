@@ -3,7 +3,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
     home-manager = {
-      url = "github:nix-community/home-manager/release-23.11";
+      # url = "github:nix-community/home-manager/release-23.11"; # gets timeouts
+      url = "https://github.com/nix-community/home-manager/archive/release-23.11.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     agenix = {
