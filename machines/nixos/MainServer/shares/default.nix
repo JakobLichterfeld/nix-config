@@ -67,7 +67,6 @@ in
       netbios name = ${machinesSensitiveVars.MainServer.hostName}
       security = user
       hosts allow = ${machinesSensitiveVars.MainServer.ipNetwork} 127.0.0.1 localhost
-      host deny = 0.0.0.0/0
       guest account = nobody
       map to guest = bad user
       passdb backend = tdbsam
