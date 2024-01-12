@@ -88,6 +88,7 @@ in
 
             # Services
             ./services/monitoring
+            ./services/homepage
 
             # Users
             ./users/jakob
