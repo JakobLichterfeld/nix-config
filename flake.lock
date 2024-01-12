@@ -54,11 +54,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1703087360,
-        "narHash": "sha256-0VUbWBW8VyiDRuimMuLsEO4elGuUw/nc2WDeuO1eN1M=",
+        "lastModified": 1704875591,
+        "narHash": "sha256-eWRLbqRcrILgztU/m/k7CYLzETKNbv0OsT2GjkaNm8A=",
         "owner": "serokell",
         "repo": "deploy-rs",
-        "rev": "b709d63debafce9f5645a5ba550c9e0983b3d1f7",
+        "rev": "1776009f1f3fb2b5d236b84d9815f2edee463a9b",
         "type": "github"
       },
       "original": {
@@ -90,18 +90,14 @@
         ]
       },
       "locked": {
-        "lastModified": 1704099619,
-        "narHash": "sha256-QRVMkdxLmv+aKGjcgeEg31xtJEIsYq4i1Kbyw5EPS6g=",
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "rev": "7e398b3d76bc1503171b1364c9d4a07ac06f3851",
-        "type": "github"
+        "lastModified": 1704980875,
+        "narHash": "sha256-IPZmMjk5f4TBbEpzUFBc3OC1W6OwDNEXk2w/0uVXX1o=",
+        "type": "tarball",
+        "url": "https://github.com/nix-community/home-manager/archive/release-23.11.tar.gz"
       },
       "original": {
-        "owner": "nix-community",
-        "ref": "release-23.11",
-        "repo": "home-manager",
-        "type": "github"
+        "type": "tarball",
+        "url": "https://github.com/nix-community/home-manager/archive/release-23.11.tar.gz"
       }
     },
     "nix-darwin": {
@@ -162,11 +158,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1704420045,
-        "narHash": "sha256-C36QmoJd5tdQ5R9MC1jM7fBkZW9zBUqbUCsgwS6j4QU=",
+        "lastModified": 1704874635,
+        "narHash": "sha256-YWuCrtsty5vVZvu+7BchAxmcYzTMfolSPP5io8+WYCg=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "c1be43e8e837b8dbee2b3665a007e761680f0c3d",
+        "rev": "3dc440faeee9e889fe2d1b4d25ad0f430d449356",
         "type": "github"
       },
       "original": {
@@ -178,11 +174,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1704616763,
-        "narHash": "sha256-ysXM6aokc5QjpLXBM6jwdZXDNolLX941i/VuWU6t+eI=",
+        "lastModified": 1705071979,
+        "narHash": "sha256-NqvlgB8e6JbDbtzeC+OZkWHp1VjxcaGCdO9IrW/OZYg=",
         "owner": "nix-community",
         "repo": "nur",
-        "rev": "6fe0213bf13f89a1a0bc725a5a4fe6f9ac72ae05",
+        "rev": "78c2da2d2cfe95bf6dacaf091cc018ed7bf9b3c8",
         "type": "github"
       },
       "original": {
