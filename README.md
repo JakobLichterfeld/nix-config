@@ -232,7 +232,7 @@ reboot
 ```bash
 cd /etc/nixos
 git pull
-nixos-rebuild switch
+nixos-rebuild switch --flake /etc/nixos#MainServer
 ```
 
 </p></details>
