@@ -80,6 +80,7 @@ in
             ./modules/zfs-root
             ./modules/tailscale
             ./modules/mergerfs-uncache
+            ./modules/podman
 
             # Imports
             ./machines/nixos
