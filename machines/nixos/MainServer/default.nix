@@ -34,7 +34,7 @@
     ./filesystems
     ./shares ];
 
-  powerManagement.powertop.enable = true;
+  powerManagement.powertop.enable = false;
 
   systemd.enableEmergencyMode = false; # as we have no console of any kind attached to the server, we don't want to end up in emergency mode
 
