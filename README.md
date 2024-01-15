@@ -211,6 +211,7 @@ git-crypt unlock nix-config_local.key.asc
 Create Home Dir
 ```bash
 mkdir -p /home/jakob
+sudo chown -R jakob:jakob /home/jakob
 ```
 
 
