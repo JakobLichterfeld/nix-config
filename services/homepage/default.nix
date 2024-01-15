@@ -43,7 +43,7 @@ in
   virtualisation.oci-containers = {
     containers = {
       homepage = {
-        image = "ghcr.io/gethomepage/homepage:0.8.4";
+        image = "ghcr.io/gethomepage/homepage:v0.8.4";
         autoStart = true;
         extraOptions = [
         "-l=traefik.enable=true"
