@@ -75,7 +75,7 @@
 
   mover = {
     cacheArray = vars.cacheArray;
-    backingArray = vars.slowArray;
+    backingArray = vars.slowerArray;
     percentageFree = 60;
     excludedPaths = [
     ];
