@@ -239,6 +239,7 @@ reboot
 <details><summary>Update to newest config</summary><p>
 
 ```bash
+sudo su
 cd /etc/nixos
 git pull
 nixos-rebuild switch --flake /etc/nixos#MainServer
