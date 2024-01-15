@@ -21,9 +21,8 @@ in
           "--api.insecure=true"
           "--providers.docker=true"
           "--providers.docker.exposedbydefault=false"
-          "--entrypoints.web.address=:80"
           "--certificatesresolvers.letsencrypt.acme.dnschallenge=true"
-          "--certificatesresolvers.myresolver.acme.dnschallenge.delaybeforecheck=20"
+          "--certificatesresolvers.letsencrypt.acme.dnschallenge.delaybeforecheck=20"
           "--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=${machinesSensitiveVars.MainServer.dnschallengeProvider}"
           "--certificatesresolvers.letsencrypt.acme.email=${machinesSensitiveVars.MainServer.letsencryptEmail}"
           # http
@@ -32,7 +31,7 @@ in
           "--entrypoints.web.http.redirections.entrypoint.scheme=https"
           # https
           "--entrypoints.websecure.address=:443"
-          "--entrypoints.websecure.asDefault=true"
+          #"--entrypoints.websecure.asDefault=true"
           "--entrypoints.websecure.http.tls=true"
           "--entrypoints.websecure.http.tls.certResolver=letsencrypt"
           "--entrypoints.websecure.http.tls.domains[0].main=${machinesSensitiveVars.MainServer.domainNameTail}"
