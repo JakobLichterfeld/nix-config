@@ -1,0 +1,26 @@
+---
+theme: dark
+language: de
+color: stone
+# iconStyle: theme #or: gradient
+headerStyle: underlined
+
+layout:
+  Network:
+    icon: mdi-lan
+    showStats: true
+  Tesla:
+    icon: si-tesla
+    showStats: true
+  Other Devices:
+    icon: mdi-devices
+  Handy:
+    icon: si-oneplus
+  System:
+    icon: mdi-desktop-classic
+    showStats: true
+  #  style: row
+  Health Checks:
+    icon: healthchecks-v2
+  External Services:
+    icon: mdi-open-in-new
