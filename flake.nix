@@ -88,6 +88,7 @@ in
             ./machines/nixos/MainServer
 
             # Services
+            ./services/traefik
             ./services/monitoring
             ./services/homepage
 
