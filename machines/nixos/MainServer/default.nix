@@ -73,7 +73,13 @@
 
   virtualisation.docker.storageDriver = "overlay2";
 
-  systemd.services.mergerfs-uncache.serviceConfig.ExecStart = lib.mkForce "/run/current-system/sw/bin/mergerfs-uncache -s ${vars.cacheArray} -d ${vars.slowerArray} -t 50";
+  mover = {
+    cacheArray = vars.cacheArray;
+    backingArray = vars.slowArray;
+    percentageFree = 60;
+    excludedPaths = [
+    ];
+  };
 
   services.prometheus = {
     enable = true;
