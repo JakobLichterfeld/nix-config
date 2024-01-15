@@ -87,7 +87,7 @@
       node = {
         enable = true;
         openFirewall = true;
-        enabledCollectors = [ "zfs" "smartctl" "collectd" ];
+        enabledCollectors = [ "systemd" "zfs" "collectd" ];
       };
     };
   };
