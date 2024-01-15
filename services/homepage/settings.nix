@@ -4,15 +4,15 @@ language = "de";
 color = "stone";
 headerStyle = "underlined";
 statusStyle = "dot";
-hideVersion = true;
+
 layout = {
   "Network" = {
     icon = "mdi-lan";
-    showStats= true;
+    showStats = true;
   };
   "Tesla" = {
     icon = "si-tesla";
-    showStats= true;
+    showStats = true;
   };
   "Other Devices" = {
     icon = "mdi-devices";
@@ -22,7 +22,7 @@ layout = {
   };
   "System" = {
     icon = "mdi-desktop-classic";
-    showStats= true;
+    showStats = true;
   };
   "Health Checks" = {
     icon = "healthchecks-v2";
