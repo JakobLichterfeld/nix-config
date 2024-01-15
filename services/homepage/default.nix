@@ -1,4 +1,4 @@
-{ config, vars, pkgs, ... }:
+{ config, vars, pkgs, machinesSensitiveVars,... }:
 let
 directories = [
 "${vars.serviceConfigRoot}/homepage"
@@ -42,11 +42,11 @@ in
       homepage = {
         image = "ghcr.io/gethomepage/homepage:latest";
         autoStart = true;
-        # extraOptions = [
-        # "-l=traefik.enable=true"
-        # "-l=traefik.http.routers.home.rule=Host(`${vars.domainName}`)"
-        # "-l=traefik.http.services.home.loadbalancer.server.port=3000"
-        # ];
+        extraOptions = [
+        "-l=traefik.enable=true"
+        "-l=traefik.http.routers.home.rule=Host(`${machinesSensitiveVars.MainServer.domainNameTail}`)"
+        "-l=traefik.http.services.home.loadbalancer.server.port=3000"
+        ];
         volumes = [
           "${vars.serviceConfigRoot}/homepage/config:/app/config"
           "${homepageSettings.bookmarks}:/app/config/bookmarks.yaml"
