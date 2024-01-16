@@ -10,7 +10,7 @@
     users = {
       jakob = {
         name = "jakob";
-        home = "/Users/jakob";
+        home = "/home/jakob";
         uid = 1000;
         isNormalUser = true;
         hashedPasswordFile = config.age.secrets.hashedUserPassword.path;
