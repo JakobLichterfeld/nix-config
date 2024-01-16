@@ -80,7 +80,7 @@
   };
 
   fileSystems.${vars.cacheArray} = lib.mkForce
-  { device = "cachepool";
+  { device = "cachepool/cache";
     fsType = "zfs";
   };
 
