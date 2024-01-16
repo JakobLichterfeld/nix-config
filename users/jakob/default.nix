@@ -4,7 +4,7 @@
 
   nix.settings.trusted-users = [ "jakob" ];
 
-  age.identityPaths = ["/Users/jakob/.ssh/id_ed25519"];
+  # age.identityPaths = ["/Users/jakob/.ssh/id_ed25519"];
 
   users = {
     users = {
