@@ -8,6 +8,8 @@ let
   ];
 in
 {
+  networking.firewall.allowedTCPPorts = [ 80 443 ];
+
   age.secrets.dnsApiCredentials.file = ../../secrets/dnsApiCredentials.age; # content is: dnschallengeProvider=<token>
 
   systemd.tmpfiles.rules =  map (x: "d ${x} 0775 share share - -") directories ++ map (x: "f ${x} 0600 share share - -") files;
