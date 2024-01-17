@@ -20,13 +20,16 @@ in
         image = "traefik";
         autoStart = true;
         cmd = [
+          # able to route other containers
           "--api.insecure=true"
           "--providers.docker=true"
           "--providers.docker.exposedbydefault=false"
+          # letsencrypt
           "--certificatesresolvers.letsencrypt.acme.dnschallenge=true"
           "--certificatesresolvers.letsencrypt.acme.dnschallenge.delaybeforecheck=20"
           "--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=${machinesSensitiveVars.MainServer.dnschallengeProvider}"
           "--certificatesresolvers.letsencrypt.acme.email=${machinesSensitiveVars.MainServer.letsencryptEmail}"
+          "--certificatesresolvers.letsencrypt.acme.storage=acme.json"
           # http
           "--entrypoints.web.address=:80"
           "--entrypoints.web.http.redirections.entrypoint.to=websecure"
