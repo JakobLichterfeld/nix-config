@@ -20,6 +20,7 @@ in
         image = "traefik";
         autoStart = true;
         cmd = [
+          "-global.sendAnonymousUsage=false"
           # able to route other containers
           "--api.insecure=true"
           "--providers.docker=true"
