@@ -27,8 +27,9 @@ in
           "--providers.docker.exposedbydefault=false"
           # letsencrypt
           "--certificatesresolvers.letsencrypt.acme.dnschallenge=true"
-          "--certificatesresolvers.letsencrypt.acme.dnschallenge.delaybeforecheck=20"
+          "--certificatesresolvers.letsencrypt.acme.dnschallenge.delaybeforecheck=900"
           "--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=${machinesSensitiveVars.MainServer.dnschallengeProvider}"
+          "--certificatesresolvers.letsencrypt.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
           "--certificatesresolvers.letsencrypt.acme.email=${machinesSensitiveVars.MainServer.letsencryptEmail}"
           "--certificatesresolvers.letsencrypt.acme.storage=acme.json"
           # http
