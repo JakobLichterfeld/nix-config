@@ -40,7 +40,6 @@ with pkgs; [
   # infrastructure
   ansible
 
-
   # File management
   rclone
   unison # Bidirectional file synchronizer
@@ -82,4 +81,7 @@ with pkgs; [
   rectangle # Move and resize windows in macOS using keyboard shortcuts or snap areas
   android-file-transfer
   karabiner-elements # Keyboard customizer for macOS
+
+  # Mobile devices
+  localsend
 ]
