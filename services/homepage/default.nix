@@ -1,42 +1,42 @@
-{ config, vars, pkgs, machinesSensitiveVars,... }:
+{ config, vars, pkgs, machinesSensitiveVars, ... }:
 let
-directories = [
-"${vars.serviceConfigRoot}/homepage"
-"${vars.serviceConfigRoot}/homepage/config"
-];
+  directories = [
+    "${vars.serviceConfigRoot}/homepage"
+    "${vars.serviceConfigRoot}/homepage/config"
+  ];
 
-settingsFormat = pkgs.formats.yaml { };
-homepageCustomCss = pkgs.writeTextFile {
-  name = "custom.css";
-  text = builtins.readFile ./custom.css;
-};
-homepageCustomJs = pkgs.writeTextFile {
-  name = "custom.js";
-  text = builtins.readFile ./custom.js;
-};
-homepageSettings = {
-  bookmarks = pkgs.writeTextFile{
-    name = "bookmarks.yaml";
-    text = builtins.readFile ./bookmarks.yaml;
+  settingsFormat = pkgs.formats.yaml { };
+  homepageCustomCss = pkgs.writeTextFile {
+    name = "custom.css";
+    text = builtins.readFile ./custom.css;
   };
-  docker = settingsFormat.generate "docker.yaml" (import ./docker.nix);
-  kubernetes =  pkgs.writeTextFile{
-    name = "kubernetes.yaml";
-    text = builtins.readFile ./kubernetes.yaml;
+  homepageCustomJs = pkgs.writeTextFile {
+    name = "custom.js";
+    text = builtins.readFile ./custom.js;
   };
-  services = pkgs.writeTextFile {
-    name = "services.yaml";
-    text = builtins.readFile ./services.yaml;
+  homepageSettings = {
+    bookmarks = pkgs.writeTextFile {
+      name = "bookmarks.yaml";
+      text = builtins.readFile ./bookmarks.yaml;
+    };
+    docker = settingsFormat.generate "docker.yaml" (import ./docker.nix);
+    kubernetes = pkgs.writeTextFile {
+      name = "kubernetes.yaml";
+      text = builtins.readFile ./kubernetes.yaml;
+    };
+    services = pkgs.writeTextFile {
+      name = "services.yaml";
+      text = builtins.readFile ./services.yaml;
+    };
+    settings = pkgs.writeTextFile {
+      name = "settings.yaml";
+      text = builtins.readFile ./settings.yaml;
+    };
+    widgets = pkgs.writeTextFile {
+      name = "widgets.yaml";
+      text = builtins.readFile ./widgets.yaml;
+    };
   };
-  settings = pkgs.writeTextFile {
-  name = "settings.yaml";
-  text = builtins.readFile ./settings.yaml;
-  };
-  widgets = pkgs.writeTextFile {
-    name = "widgets.yaml";
-    text = builtins.readFile ./widgets.yaml;
-  };
-};
 in
 {
   systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories;
@@ -46,9 +46,9 @@ in
         image = "ghcr.io/gethomepage/homepage:v0.8.4";
         autoStart = true;
         extraOptions = [
-        "-l=traefik.enable=true"
-        "-l=traefik.http.routers.home.rule=Host(`${machinesSensitiveVars.MainServer.domainNameTail}`)"
-        "-l=traefik.http.services.home.loadbalancer.server.port=3000"
+          "-l=traefik.enable=true"
+          "-l=traefik.http.routers.home.rule=Host(`${machinesSensitiveVars.MainServer.domainNameTail}`)"
+          "-l=traefik.http.services.home.loadbalancer.server.port=3000"
         ];
         volumes = [
           "${vars.serviceConfigRoot}/homepage/config:/app/config"
@@ -72,5 +72,5 @@ in
         # ];
       };
     };
-};
+  };
 }

@@ -14,20 +14,20 @@ in
   home-manager.nix-darwin = {
     useGlobalPkgs = false; # makes hm use nixos's pkgs value
     useUserPackages = true;
-      extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
-      users.jakob = { config, pkgs, ... }: {
-        nixpkgs.overlays = [
+    extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
+    users.jakob = { config, pkgs, ... }: {
+      nixpkgs.overlays = [
         inputs.nur.overlay
-        ];
-        home.homeDirectory = lib.mkForce "/Users/jakob";
-        shell = pkgs.zsh;
+      ];
+      home.homeDirectory = lib.mkForce "/Users/jakob";
+      shell = pkgs.zsh;
 
-        imports = [
-          inputs.nix-index-database.hmModules.nix-index
-          inputs.agenix.homeManagerModules.default
-          ../../users/jakob/dots.nix
-        ];
-      };
+      imports = [
+        inputs.nix-index-database.hmModules.nix-index
+        inputs.agenix.homeManagerModules.default
+        ../../users/jakob/dots.nix
+      ];
+    };
 
     backupFileExtension = "bak";
   };
@@ -51,7 +51,7 @@ in
 
   services.nix-daemon.enable = lib.mkForce true;
 
-    # Setup user, packages, programs
+  # Setup user, packages, programs
   nix = {
     gc = {
       user = "root";
@@ -78,8 +78,8 @@ in
   ] ++ (import ./packages.nix { inherit pkgs; });
 
   # Fully declarative dock using the latest from Nix Store
-    local.dock.enable = true;
-    local.dock.entries = [
+  local.dock.enable = true;
+  local.dock.entries = [
     # Finder
     # { path = "/System/Applications/Finder.app/"; }
     # Launchpad

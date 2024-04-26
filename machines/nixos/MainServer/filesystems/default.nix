@@ -18,7 +18,7 @@
 
       ZED_USE_ENCLOSURE_LEDS = true;
       ZED_SCRUB_AFTER_RESILVER = true;
-  };
+    };
     zed.enableMail = false;
   };
 
@@ -36,67 +36,79 @@
   boot.initrd.systemd.enable = true; # enable systemd in initrd
 
   fileSystems."/" = lib.mkForce
-  { device = "rpool/nixos/empty";
-    fsType = "zfs";
-  };
+    {
+      device = "rpool/nixos/empty";
+      fsType = "zfs";
+    };
 
   fileSystems."/nix" = lib.mkForce
-  { device = "rpool/nixos/nix";
-    fsType = "zfs";
-    neededForBoot = true;
-  };
+    {
+      device = "rpool/nixos/nix";
+      fsType = "zfs";
+      neededForBoot = true;
+    };
 
   fileSystems."/etc/nixos" = lib.mkForce
-  { device = "rpool/nixos/config";
-    fsType = "zfs";
-    neededForBoot = true;
-  };
+    {
+      device = "rpool/nixos/config";
+      fsType = "zfs";
+      neededForBoot = true;
+    };
 
   fileSystems."/boot" = lib.mkForce
-  { device = "bpool/nixos/root";
-    fsType = "zfs";
-  };
+    {
+      device = "bpool/nixos/root";
+      fsType = "zfs";
+    };
 
   fileSystems."/home" = lib.mkForce
-  { device = "rpool/nixos/home";
-    fsType = "zfs";
-    neededForBoot = true;
-  };
+    {
+      device = "rpool/nixos/home";
+      fsType = "zfs";
+      neededForBoot = true;
+    };
 
   fileSystems."/persist" = lib.mkForce
-  { device = "rpool/nixos/persist";
-    fsType = "zfs";
-    neededForBoot = true;
-  };
+    {
+      device = "rpool/nixos/persist";
+      fsType = "zfs";
+      neededForBoot = true;
+    };
 
   fileSystems."/var/log" = lib.mkForce
-  { device = "rpool/nixos/var/log";
-    fsType = "zfs";
-  };
+    {
+      device = "rpool/nixos/var/log";
+      fsType = "zfs";
+    };
 
   fileSystems."/var/lib/containers" = lib.mkForce
-  { device = "/dev/zvol/rpool/docker";
-    fsType = "ext4";
-  };
+    {
+      device = "/dev/zvol/rpool/docker";
+      fsType = "ext4";
+    };
 
   fileSystems.${vars.cacheArray} = lib.mkForce
-  { device = "cachepool/cache";
-    fsType = "zfs";
-  };
+    {
+      device = "cachepool/cache";
+      fsType = "zfs";
+    };
 
   fileSystems."/mnt/data1" =
-  { device = "/dev/disk/by-label/Data1";
-    fsType = "xfs";
-  };
+    {
+      device = "/dev/disk/by-label/Data1";
+      fsType = "xfs";
+    };
 
   fileSystems."/mnt/parity1" =
-  { device = "/dev/disk/by-label/Parity1";
-    fsType = "xfs";
-  };
+    {
+      device = "/dev/disk/by-label/Parity1";
+      fsType = "xfs";
+    };
 
   fileSystems.${vars.slowerArray} =
-  { device = "/mnt/data*";
-    options = [
+    {
+      device = "/mnt/data*";
+      options = [
         "defaults"
         "allow_other"
         "moveonenospc=1"
@@ -107,14 +119,15 @@
         "gid=993"
         "umask=002"
         "x-mount.mkdir"
-    ];
-    fsType = "fuse.mergerfs";
-  };
+      ];
+      fsType = "fuse.mergerfs";
+    };
 
   fileSystems.${vars.mainArray} =
-  { device = "${vars.cacheArray}:${vars.slowerArray}";
-    options = [
-      "category.create=epff"
+    {
+      device = "${vars.cacheArray}:${vars.slowerArray}";
+      options = [
+        "category.create=epff"
         "defaults"
         "allow_other"
         "moveonenospc=1"
@@ -125,7 +138,7 @@
         "gid=993"
         "umask=002"
         "x-mount.mkdir"
-    ];
-    fsType = "fuse.mergerfs";
-  };
+      ];
+      fsType = "fuse.mergerfs";
+    };
 }

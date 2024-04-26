@@ -1,6 +1,6 @@
-{ inputs, config, pkgs, lib, machinesSensitiveVars,... }:
+{ inputs, config, pkgs, lib, machinesSensitiveVars, ... }:
 {
-  age.secrets.hashedUserPassword.file = ../../secrets/hashedUserPassword.age;  # content is result of: `mkpasswd -m sha-512`
+  age.secrets.hashedUserPassword.file = ../../secrets/hashedUserPassword.age; # content is result of: `mkpasswd -m sha-512`
 
   system.stateVersion = "23.11";
 
@@ -24,7 +24,7 @@
   networking.networkmanager.enable = false;
   nixpkgs = {
     overlays = [
-        inputs.nur.overlay
+      inputs.nur.overlay
     ];
     config = {
       allowUnfree = true;
@@ -42,8 +42,8 @@
   services.openssh = {
     enable = lib.mkDefault true;
     settings = {
-    PasswordAuthentication = lib.mkDefault false;
-    PermitRootLogin = "no";
+      PasswordAuthentication = lib.mkDefault false;
+      PermitRootLogin = "no";
     };
     ports = [ machinesSensitiveVars.MainServer.sshPort ];
     hostKeys = [
@@ -83,7 +83,7 @@
     iperf3
     eza # A modern, maintained replacement for ls
     neofetch
-    (python311.withPackages(ps: with ps; [ pip ]))
+    (python311.withPackages (ps: with ps; [ pip ]))
     tmux
     rsync
     iotop

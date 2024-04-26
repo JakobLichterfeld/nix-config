@@ -1,51 +1,51 @@
 [
-    # Clipboard-manager
-    {name = "maccy";}
+  # Clipboard-manager
+  { name = "maccy"; }
 
-    # Communication Tools
-    {name = "microsoft-teams";}
-    {name = "whatsapp";}
-    {name = "skype";}
-    {name = "telegram";}
-    {name = "signal";}
+  # Communication Tools
+  { name = "microsoft-teams"; }
+  { name = "whatsapp"; }
+  { name = "skype"; }
+  { name = "telegram"; }
+  { name = "signal"; }
 
-    # Design Tools
-    {name = "figma";}
-    {name = "sketch";}
+  # Design Tools
+  { name = "figma"; }
+  { name = "sketch"; }
 
-    # File Sharing
-    {name = "rsyncui";}
+  # File Sharing
+  { name = "rsyncui"; }
 
-    # Security
-    {name = "avast-security";}
+  # Security
+  { name = "avast-security"; }
 
-    # System Tools
-    {name = "macfuse";}
+  # System Tools
+  { name = "macfuse"; }
 
-    # Network
-    {name = "zerotier-one";}
+  # Network
+  { name = "zerotier-one"; }
 
-    # Browsers
-    {name = "google-chrome";}
-    {name = "brave-browser";}
+  # Browsers
+  { name = "google-chrome"; }
+  { name = "brave-browser"; }
 
-    # Writing
-    {name = "pdfsam-basic";}
-    {name = "adobe-acrobat-reader";}
-    {name = "libreoffice";}
+  # Writing
+  { name = "pdfsam-basic"; }
+  { name = "adobe-acrobat-reader"; }
+  { name = "libreoffice"; }
 
-    # Image
-    {name = "luminance-hdr";} # HDR imaging application
-    {name = "hugin";} # Panorama photo stitcher
+  # Image
+  { name = "luminance-hdr"; } # HDR imaging application
+  { name = "hugin"; } # Panorama photo stitcher
 
-    # Audio
-    {name = "musicbrainz-picard";} # MusicBrainz tagger
+  # Audio
+  { name = "musicbrainz-picard"; } # MusicBrainz tagger
 
-    # Video
-    {name = "vlc";}
-    {name = "obs";}
+  # Video
+  { name = "vlc"; }
+  { name = "obs"; }
 
-    # Remote Desktop
-    {name = "teamviewer";}
+  # Remote Desktop
+  { name = "teamviewer"; }
 
 ]

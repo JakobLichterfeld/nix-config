@@ -1,9 +1,9 @@
 [
-    # Encryption and security tools
-    {name = "ophcrack";}
-    {name = "tor-browser";}
+  # Encryption and security tools
+  { name = "ophcrack"; }
+  { name = "tor-browser"; }
 
-    # Image
-    {name = "geeqie";} # Image viewer
+  # Image
+  { name = "geeqie"; } # Image viewer
 
 ]

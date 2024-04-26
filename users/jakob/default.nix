@@ -1,6 +1,6 @@
-{ config, pkgs, lib,... }:
+{ config, pkgs, lib, ... }:
 {
-  age.secrets.hashedUserPassword.file = ../../secrets/hashedUserPassword.age;  # content is result of: `mkpasswd -m sha-512`
+  age.secrets.hashedUserPassword.file = ../../secrets/hashedUserPassword.age; # content is result of: `mkpasswd -m sha-512`
 
   nix.settings.trusted-users = [ "jakob" ];
 
@@ -21,7 +21,7 @@
     };
     groups = {
       jakob = {
-        gid= 1000;
+        gid = 1000;
       };
     };
   };

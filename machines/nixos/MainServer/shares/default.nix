@@ -1,4 +1,4 @@
-{ users, pkgs, config, lib, machinesSensitiveVars,...}:
+{ users, pkgs, config, lib, machinesSensitiveVars, ... }:
 let
   smb = {
     share_list = {
@@ -39,14 +39,14 @@ in
 
   environment.systemPackages = [ config.services.samba.package ];
 
-  users.users.jakob.extraGroups = ["share"];
+  users.users.jakob.extraGroups = [ "share" ];
 
-  systemd.tmpfiles.rules = map (x: "d ${x.path} 0775 share share - -") (lib.attrValues smb.share_list) ++ ["d /mnt 0775 share share - -"];
+  systemd.tmpfiles.rules = map (x: "d ${x.path} 0775 share share - -") (lib.attrValues smb.share_list) ++ [ "d /mnt 0775 share share - -" ];
 
   system.activationScripts.samba_user_create = ''
-      smb_password=$(cat "${config.age.secrets.sambaPassword.path}")
-      echo -e "$smb_password\n$smb_password\n" | /run/current-system/sw/bin/smbpasswd -a -s share
-      '';
+    smb_password=$(cat "${config.age.secrets.sambaPassword.path}")
+    echo -e "$smb_password\n$smb_password\n" | /run/current-system/sw/bin/smbpasswd -a -s share
+  '';
 
   networking.firewall = {
     allowedTCPPorts = [ 5357 ]; # Microsoft Network Discovery,
@@ -70,7 +70,7 @@ in
       guest account = nobody
       map to guest = bad user
       passdb backend = tdbsam
-      '';
+    '';
     shares = smb_shares;
   };
   services.avahi = {
@@ -95,7 +95,7 @@ in
         <port>445</port>
         </service>
         </service-group>
-        '';
+      '';
     };
   };
 }
