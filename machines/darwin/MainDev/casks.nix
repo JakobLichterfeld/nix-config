@@ -21,6 +21,9 @@
   # Entertainment Tools
   { name = "steam"; }
 
+  # Writing
+  { name = "mactex"; } # LaTeX
+
   # Image
   { name = "digikam"; } # Photo management application
 
