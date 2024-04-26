@@ -16,6 +16,7 @@ Managed by `nix-darwin` and `home-manager`. Impure packages and applications are
 According to [ne9z's "NixOS Root on ZFS"](https://openzfs.github.io/openzfs-docs/Getting%20Started/NixOS/Root%20on%20ZFS.html)
 
 Elevate privileges, declare target disk array variable, the mountpoint variable, swap size variable and reserved space variable
+
 ```bash
 sudo su
 
@@ -25,12 +26,14 @@ RESERVE=1
 ```
 
 Enable Nix Flakes functionality
+
 ```bash
 mkdir -p ~/.config/nix
 echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 ```
 
 Install programs needed for system installation
+
 ```bash
 if ! command -v git; then nix-env -f '<nixpkgs>' -iA git; fi
 if ! command -v jq;  then nix-env -f '<nixpkgs>' -iA jq; fi
@@ -39,6 +42,7 @@ if ! command -v git-crypt;  then nix-env -f '<nixpkgs>' -iA git-crypt; fi
 ```
 
 Partition the drive
+
 ```bash
 partition_disk () {
  local disk="${1}"
@@ -66,6 +70,7 @@ done
 ```
 
 Setup swap
+
 ```bash
 for i in ${DISK}; do
    mkswap -L "swap" "${i}"-part4
@@ -74,6 +79,7 @@ done
 ```
 
 Create boot pool
+
 ```bash
 zpool create \
     -o compatibility=grub2 \
@@ -95,6 +101,7 @@ zpool create \
 ```
 
 Create root pool
+
 ```bash
 zpool create \
     -o ashift=12 \
@@ -115,6 +122,7 @@ zpool create \
 ```
 
 Create cache pool
+
 ```bash
 zpool create \
     -o ashift=12 \
@@ -135,6 +143,7 @@ zpool create \
 ```
 
 Create root system container
+
 ```bash
 zfs create \
  -o canmount=off \
@@ -143,6 +152,7 @@ rpool/nixos
 ```
 
 Create the system datasets and manage mountpoints
+
 ```bash
 zfs create -o mountpoint=legacy     rpool/nixos/root
 mount -t zfs rpool/nixos/root "${MNT}"/
@@ -183,6 +193,7 @@ zfs snapshot rpool/nixos/empty@start
 ```
 
 Format and mount ESP
+
 ```bash
 for i in ${DISK}; do
  mkfs.vfat -n EFI "${i}"-part1
@@ -192,11 +203,13 @@ done
 ```
 
 Clone this repository
+
 ```bash
 git clone https://github.com/JakobLichterfeld/nix-config.git "${MNT}"/etc/nixos
 ```
 
 Put the private key into place (required for secret management)
+
 ```bash
 mkdir -p "${MNT}"/persist/ssh
 echo "${MNT}"
@@ -211,6 +224,7 @@ git-crypt unlock nix-config_local.key.asc
 ```
 
 Install system and apply configuration
+
 ```bash
 nixos-install \
 --root "${MNT}" \
@@ -219,16 +233,20 @@ nixos-install \
 ```
 
 Unmount the filesystems
+
 ```bash
+umount "${MNT}"/boot/efis/"${i##*/}"-part1
 umount -Rl "${MNT}"
 cd /
 zpool export -a
 ```
 
 Reboot
+
 ```bash
 reboot
 ```
+
 </p></details>
 
 <details><summary>Update to newest config</summary><p>
