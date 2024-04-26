@@ -8,6 +8,7 @@
   { name = "skype"; }
   { name = "telegram"; }
   { name = "signal"; }
+  { name = "threema"; }
 
   # Design Tools
   { name = "figma"; }
