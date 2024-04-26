@@ -25,7 +25,15 @@ in
       description = "Specify boot devices";
       type = types.nonEmptyListOf types.str;
     };
-    immutable.enable = mkOption {
+    availableKernelModules = mkOption {
+      type = types.nonEmptyListOf types.str;
+      default = [ "uas" "nvme" "ahci" ];
+    };
+    kernelParams = mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+    };
+    immutable = mkOption {
       description = "Enable root on ZFS immutable root support";
       type = types.bool;
       default = false;
@@ -67,10 +75,10 @@ in
         "bpool/nixos/root" = "/boot";
       };
     }
-    (mkIf (!cfg.immutable.enable) {
+    (mkIf (!cfg.immutable) {
       zfs-root.fileSystems.datasets = { "rpool/nixos/root" = "/"; };
     })
-    (mkIf cfg.immutable.enable {
+    (mkIf cfg.immutable {
       zfs-root.fileSystems = {
         datasets = {
           "rpool/nixos/empty" = "/";
@@ -81,16 +89,13 @@ in
           "/oldroot/etc/nixos" = "/etc/nixos";
         };
       };
-      boot.initrd.systemd.services.immutable-zfs-root = {
-        description = "Rollback root filesystem to an empty snapshot";
-        unitConfig.DefaultDependencies = false;
-        wantedBy = [ "zfs.target" ];
-        after = [ "zfs-import-rpool.service" ];
-        before = [ "sysroot.mount" ];
-        path = [ pkgs.zfs ];
-        serviceConfig.Type = "oneshot";
-        script = "zfs rollback -r rpool/nixos/empty@start";
-      };
+      boot.initrd.postDeviceCommands = ''
+        if ! grep -q zfs_no_rollback /proc/cmdline; then
+          zpool import -N rpool
+          zfs rollback -r rpool/nixos/empty@start
+          zpool export -a
+        fi
+      '';
     })
     {
       zfs-root.fileSystems = {
@@ -101,6 +106,9 @@ in
           (map (diskName: diskName + cfg.partitionScheme.swap) cfg.bootDevices);
       };
       boot = {
+        kernelPackages = mkDefault config.boot.zfs.package.latestCompatibleLinuxPackages;
+        initrd.availableKernelModules = cfg.availableKernelModules;
+        kernelParams = cfg.kernelParams;
         supportedFilesystems = [ "zfs" ];
         zfs = {
           devNodes = cfg.devNodes;
@@ -109,14 +117,13 @@ in
         loader = {
           efi = {
             canTouchEfiVariables = (if cfg.removableEfi then false else true);
-            efiSysMountPoint = ("/boot/efis/" + (head cfg.bootDevices)
-              + cfg.partitionScheme.efiBoot);
+            efiSysMountPoint = "/boot/esp";
           };
           generationsDir.copyKernels = true;
           grub = {
             enable = true;
             # devices = (map (diskName: cfg.devNodes + diskName) cfg.bootDevices);
-            devices = [ "nodev" ];
+            device = "nodev";
             efiInstallAsRemovable = cfg.removableEfi;
             copyKernels = true;
             efiSupport = true;
@@ -124,7 +131,7 @@ in
             extraInstallCommands = (toString (map
               (diskName: ''
                 set -x
-                ${pkgs.coreutils-full}/bin/cp -r ${config.boot.loader.efi.efiSysMountPoint}/EFI /boot/efis/${diskName}${cfg.partitionScheme.efiBoot}
+                ${pkgs.coreutils-full}/bin/cp -r ${config.boot.loader.efi.efiSysMountPoint}/EFI /boot/esp
                 set +x
               '')
               (tail cfg.bootDevices)));
