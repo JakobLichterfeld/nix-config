@@ -8,7 +8,12 @@
   networking.firewall.trustedInterfaces = [ "tailscale0" ];
   networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
 
-  services.tailscale.enable = true;
+  serviceConfig = {
+      Type = "oneshot";
+      LoadCredential = [
+        "TAILSCALE_AUTH_KEY:${config.age.secrets.tailscaleAuthKey.path}"
+        ];
+    };
 
   systemd.services.tailscale-autoconnect = {
     description = "Automatic connection to Tailscale";
@@ -36,7 +41,7 @@
 
       echo "Authenticating with Tailscale ..."
       # --advertise-exit-node
-      ${tailscale}/bin/tailscale up --auth-key=file:${config.age.secrets.tailscaleAuthKey.path}
+      ${tailscale}/bin/tailscale up --reset --auth-key "$TAILSCALE_AUTH_KEY"
     '';
   };
 }
