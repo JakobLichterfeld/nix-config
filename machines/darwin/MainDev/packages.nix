@@ -24,9 +24,9 @@ with pkgs; [
   ruby
 
   # Python packages
-  python311
-  python311Packages.virtualenv # globally install virtualenv
-  python311Packages.pip # globally install pip
+  python313
+  python313Packages.virtualenv # globally install virtualenv
+  python313Packages.pip # globally install pip
 
   # Node.js development tools
   nodePackages.nodemon

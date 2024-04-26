@@ -83,7 +83,7 @@
     iperf3
     eza # A modern, maintained replacement for ls
     neofetch
-    (python311.withPackages (ps: with ps; [ pip ]))
+    (python313.withPackages (ps: with ps; [ pip ]))
     tmux
     rsync
     iotop
