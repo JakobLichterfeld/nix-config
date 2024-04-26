@@ -22,6 +22,7 @@ in
       ../../dots/zsh/default.nix
       ../../dots/starship/default.nix
       ./packages.nix
+      ./git.nix
   ];
 
   programs.nix-index =
@@ -29,17 +30,6 @@ in
     enable = true;
   };
 
-
-  programs.git = {
-    enable = true;
-    userName  = "Jakob Lichterfeld";
-    userEmail = "jakob-lichterfeld@gmx.de";
-    extraConfig = {
-      init.defaultBranch = "main";
-      commit.gpgsign = true;
-      gpg.format = "ssh";
-    };
-  };
 
   programs.home-manager.enable = true;
 
