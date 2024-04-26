@@ -4,6 +4,22 @@
 
   system.stateVersion = "23.11";
 
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
+
+  system.autoUpgrade = {
+    enable = true;
+    flake = inputs.self.outPath;
+    flags = [
+      "--update-input"
+    ];
+    dates = "06:00";
+    randomizedDelaySec = "45min";
+  };
+
   networking.useDHCP = false;
   networking.networkmanager.enable = false;
   nixpkgs = {
@@ -61,8 +77,6 @@
   };
 
   networking.firewall.allowPing = true;
-
-  system.autoUpgrade.enable = true;
 
   environment.systemPackages = with pkgs; [
     wget
