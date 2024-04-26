@@ -10,7 +10,6 @@
   { name = "logitech-g-hub"; } # adjust Logitech Keyboard Lights
 
   # Writing
-  { name = "remarkable"; }
   { name = "calibre"; }
 
   # Communication
