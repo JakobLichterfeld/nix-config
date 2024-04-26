@@ -1,5 +1,5 @@
 {
-  environment.launchDaemons."limit.maxfiles.plist" ={
+  environment.launchDaemons."limit.maxfiles.plist" = {
     enable = true;
     text = ''
       <?xml version="1.0" encoding="UTF-8"?>
@@ -23,7 +23,7 @@
       <false/>
       </dict>
       </plist>
-      '';
+    '';
   };
   system = {
     stateVersion = 4;
@@ -167,13 +167,13 @@
 
       };
 
-      CustomUserPreferences ={
+      CustomUserPreferences = {
         NSGlobalDomain = {
           # Add a context menu item for showing the Safari Web Inspector in web views
           WebKitDeveloperExtras = true;
         };
 
-        "com.apple.springing" ={
+        "com.apple.springing" = {
           # Enable spring loading for directories
           enabled = true;
 
@@ -211,7 +211,7 @@
       ###############################################################################
       # Safari & WebKit                                                             #
       ###############################################################################
-      CustomUserPreferences={
+      CustomUserPreferences = {
         "com.apple.Safari" = {
           # Enable the Develop menu and the Web Inspector in Safari
           IncludeDevelopMenu = true;
@@ -225,7 +225,7 @@
       ###############################################################################
 
       # Copy email addresses as `foo@example.com` instead of `Foo Bar <foo@example.com>` in Mail.app
-      CustomUserPreferences={
+      CustomUserPreferences = {
         "com.apple.mail" = {
           AddressesIncludeNameOnPasteboard = false;
         };
@@ -254,12 +254,12 @@
       # Messages                                                                    #
       ###############################################################################
 
-      CustomUserPreferences={
+      CustomUserPreferences = {
         "com.apple.messageshelper.MessageController SOInputLineSettings" = {
-            # Disable smart quotes as it’s annoying for messages that contain code
-            automaticQuoteSubstitutionEnabled = false;
-            # Disable continuous spell checking
-            continuousSpellCheckingEnabled = false;
+          # Disable smart quotes as it’s annoying for messages that contain code
+          automaticQuoteSubstitutionEnabled = false;
+          # Disable continuous spell checking
+          continuousSpellCheckingEnabled = false;
         };
       };
 
@@ -268,7 +268,7 @@
       ###############################################################################
 
       # Disable in-app rating requests from apps downloaded from the App Store.
-      CustomUserPreferences={
+      CustomUserPreferences = {
         "com.apple.appstore" = {
           InAppReviewEnabled = 0;
         };
@@ -280,6 +280,6 @@
       /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
       launchctl stop com.apple.Dock.agent
       launchctl start com.apple.Dock.agent
-      '';
+    '';
   };
 }

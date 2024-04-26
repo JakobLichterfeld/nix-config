@@ -1,6 +1,6 @@
 { config, pkgs, lib, ... }:
 {
-programs.zsh = {
+  programs.zsh = {
     enable = true;
     autocd = false;
 

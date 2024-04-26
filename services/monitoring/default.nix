@@ -1,6 +1,6 @@
 { config, vars, ... }:
 {
-# grafana configuration
+  # grafana configuration
   networking.firewall.allowedTCPPorts = [ 9100 ];
 
   services.prometheus = {

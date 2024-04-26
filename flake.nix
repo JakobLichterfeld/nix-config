@@ -26,56 +26,58 @@
     deploy-rs.url = "github:serokell/deploy-rs";
   };
 
-  outputs = { self,
-              nixpkgs,
-              nix-darwin,
-              home-manager,
-              nix-index-database,
-              agenix,
-              deploy-rs,
-              nur,
-              ... }@inputs:
-let
-  machinesSensitiveVars = builtins.fromJSON (builtins.readFile "${self}/machinesSensitiveVars.json");
-in
- {
-    darwinConfigurations."MainDev" = nix-darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
-      specialArgs = {
-        inherit inputs;
-        inherit home-manager;
-        inherit machinesSensitiveVars;
-      };
-      modules = [
-        agenix.darwinModules.default
-        ./machines/darwin
-        ./machines/darwin/MainDev
-        # ./modules/tailscale
+  outputs =
+    { self
+    , nixpkgs
+    , nix-darwin
+    , home-manager
+    , nix-index-database
+    , agenix
+    , deploy-rs
+    , nur
+    , ...
+    }@inputs:
+    let
+      machinesSensitiveVars = builtins.fromJSON (builtins.readFile "${self}/machinesSensitiveVars.json");
+    in
+    {
+      darwinConfigurations."MainDev" = nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        specialArgs = {
+          inherit inputs;
+          inherit home-manager;
+          inherit machinesSensitiveVars;
+        };
+        modules = [
+          agenix.darwinModules.default
+          ./machines/darwin
+          ./machines/darwin/MainDev
+          # ./modules/tailscale
         ];
       };
 
-    deploy.nodes = {
-      MainServer = {
-        hostname = machinesSensitiveVars.MainServer.ipAddress;
-        profiles.system = {
-          sshUser = "jakob";
-          user = machinesSensitiveVars.MainServer.username;
-          sshOpts = [ "-p" machinesSensitiveVars.MainServer.sshPort ];
-          remoteBuild = true;
-          path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.MainServer;
+      deploy.nodes = {
+        MainServer = {
+          hostname = machinesSensitiveVars.MainServer.ipAddress;
+          profiles.system = {
+            sshUser = "jakob";
+            user = machinesSensitiveVars.MainServer.username;
+            sshOpts = [ "-p" machinesSensitiveVars.MainServer.sshPort ];
+            remoteBuild = true;
+            path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.MainServer;
+          };
         };
       };
-    };
 
-    nixosConfigurations = {
-      MainServer = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs;
-          inherit machinesSensitiveVars;
-          vars = import ./machines/nixos/MainServer/vars.nix;
-        };
-        modules = [
+      nixosConfigurations = {
+        MainServer = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            inherit inputs;
+            inherit machinesSensitiveVars;
+            vars = import ./machines/nixos/MainServer/vars.nix;
+          };
+          modules = [
             # Base
             agenix.nixosModules.default
             ./modules/zfs-root
@@ -97,16 +99,16 @@ in
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = false;
-                home-manager.extraSpecialArgs = { inherit inputs; };
-                home-manager.users.jakob.imports = [
-                  agenix.homeManagerModules.default
-                  nix-index-database.hmModules.nix-index
-                  ./users/jakob/dots.nix
-                ];
+              home-manager.extraSpecialArgs = { inherit inputs; };
+              home-manager.users.jakob.imports = [
+                agenix.homeManagerModules.default
+                nix-index-database.hmModules.nix-index
+                ./users/jakob/dots.nix
+              ];
               home-manager.backupFileExtension = "bak";
             }
-        ];
+          ];
+        };
       };
     };
-  };
 }

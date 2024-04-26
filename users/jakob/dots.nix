@@ -1,9 +1,9 @@
-{ inputs, lib, config, pkgs,  ... }:
+{ inputs, lib, config, pkgs, ... }:
 let
   home = {
     username = "jakob";
     stateVersion = "23.11";
-    };
+  };
 in
 {
   nixpkgs = {
@@ -18,20 +18,20 @@ in
   home = home;
 
   imports = [
-      ../../dots/neofetch/default.nix
-      ../../dots/zsh/default.nix
-      ../../dots/starship/default.nix
-      ./packages.nix
-      ./git.nix
+    ../../dots/neofetch/default.nix
+    ../../dots/zsh/default.nix
+    ../../dots/starship/default.nix
+    ./packages.nix
+    ./git.nix
   ];
 
   programs.nix-index =
-  {
-    enable = true;
-  };
+    {
+      enable = true;
+    };
 
 
   programs.home-manager.enable = true;
 
   systemd.user.startServices = "sd-switch";
-  }
+}

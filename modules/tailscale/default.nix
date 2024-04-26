@@ -1,7 +1,7 @@
-{ config, pkgs, lib,... }:
+{ config, pkgs, lib, ... }:
 {
   age.secrets.tailscaleAuthKey.file = ../../secrets/tailscaleAuthKey.age; # generate for max 90 day at https://login.tailscale.com/admin/settings/keys
-                                  # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e tailscaleAuthKey.age
+  # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e tailscaleAuthKey.age
 
   environment.systemPackages = [ pkgs.tailscale ];
 
@@ -9,11 +9,11 @@
   networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
 
   serviceConfig = {
-      Type = "oneshot";
-      LoadCredential = [
-        "TAILSCALE_AUTH_KEY:${config.age.secrets.tailscaleAuthKey.path}"
-        ];
-    };
+    Type = "oneshot";
+    LoadCredential = [
+      "TAILSCALE_AUTH_KEY:${config.age.secrets.tailscaleAuthKey.path}"
+    ];
+  };
 
   systemd.services.tailscale-autoconnect = {
     description = "Automatic connection to Tailscale";

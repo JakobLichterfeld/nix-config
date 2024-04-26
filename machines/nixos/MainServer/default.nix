@@ -1,6 +1,6 @@
-{ lib, config, vars, pkgs, machinesSensitiveVars,... }:
+{ lib, config, vars, pkgs, machinesSensitiveVars, ... }:
 {
-  age.identityPaths = ["/persist/ssh/id_ed25519_main_server"];
+  age.identityPaths = [ "/persist/ssh/id_ed25519_main_server" ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" ];
@@ -14,7 +14,7 @@
   zfs-root = {
     boot = {
       devNodes = "/dev/disk/by-id/";
-      bootDevices = [  "nvme-FIKWOT_FN960_2TB_AA234330561" ];
+      bootDevices = [ "nvme-FIKWOT_FN960_2TB_AA234330561" ];
       immutable.enable = true;
       removableEfi = true;
       sshUnlock = {
@@ -33,7 +33,8 @@
 
   imports = [
     ./filesystems
-    ./shares ];
+    ./shares
+  ];
 
   powerManagement.powertop.enable = false;
 
@@ -49,23 +50,23 @@
   };
 
   networking = {
-  nameservers = [ machinesSensitiveVars.MainServer.nameservers ];
-  defaultGateway = machinesSensitiveVars.MainServer.defaultGateway;
-  interfaces = {
-    enp1s0.ipv4 = {
-      addresses = [{
-        address = machinesSensitiveVars.MainServer.ipAddress;
-        prefixLength = 24;
-      }];
-    };
-    enp2s0.ipv4 = {
-      addresses = [{
-        address = machinesSensitiveVars.MainServer.ipAddress2;
-        prefixLength = 24;
-      }];
+    nameservers = [ machinesSensitiveVars.MainServer.nameservers ];
+    defaultGateway = machinesSensitiveVars.MainServer.defaultGateway;
+    interfaces = {
+      enp1s0.ipv4 = {
+        addresses = [{
+          address = machinesSensitiveVars.MainServer.ipAddress;
+          prefixLength = 24;
+        }];
+      };
+      enp2s0.ipv4 = {
+        addresses = [{
+          address = machinesSensitiveVars.MainServer.ipAddress2;
+          prefixLength = 24;
+        }];
+      };
     };
   };
-};
 
   networking.firewall.allowedTCPPorts = [
     5201 # iperf3
@@ -105,4 +106,4 @@
     gnumake
     gcc
   ];
-  }
+}

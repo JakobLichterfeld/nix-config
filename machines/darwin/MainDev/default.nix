@@ -13,8 +13,8 @@ in
 
   environment.shellInit = ''
     ulimit -n 2048
-    '';
+  '';
 
 
-  environment.systemPackages = pkgs.callPackage ./packages.nix {};
+  environment.systemPackages = pkgs.callPackage ./packages.nix { };
 }
