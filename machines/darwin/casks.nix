@@ -34,6 +34,7 @@
   { name = "pdfsam-basic"; }
   { name = "adobe-acrobat-reader"; }
   { name = "libreoffice"; }
+  { name = "deepl"; }
 
   # Image
   { name = "luminance-hdr"; } # HDR imaging application
