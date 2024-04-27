@@ -36,14 +36,11 @@ mkdir -p ~/.config/nix
 echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 ```
 
-Partition and mount the drives using [disko](https://github.com/nix-community/disko)
+Partition and mount the drives using [disko](https://github.com/nix-community/disko) (declarative disk partitioning and formatting using nix)
 
 ```bash
-DISK='/dev/disk/by-id/nvme-FIKWOT_FN960_2TB_AA234330561'
-
-curl https://raw.githubusercontent.com/JakobLichterfeld/nix-config/main/disko/zfs-root/default.nix \
+curl https://raw.githubusercontent.com/JakobLichterfeld/nix-config/main/machines/nixos/MainServer/filesystems/disko.nix \
     -o /tmp/disko.nix
-sed -i "s|to-be-filled-during-installation|$DISK|" /tmp/disko.nix
 nix --experimental-features "nix-command flakes" run github:nix-community/disko \
     -- --mode disko /tmp/disko.nix
 ```

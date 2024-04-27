@@ -3,7 +3,7 @@
     disk = {
       main = {
         type = "disk";
-        device = "to-be-filled-during-installation";
+        device = "/dev/disk/by-id/nvme-FIKWOT_FN960_2TB_AA234330561";
         content = {
           type = "gpt";
           partitions = {
