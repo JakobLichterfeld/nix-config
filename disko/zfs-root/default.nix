@@ -36,11 +36,11 @@
                 type = "swap";
               };
             };
-            cache = {
+            cachepool = {
               end = "-1M";
               content = {
                 type = "zfs";
-                pool = "cache";
+                pool = "cachepool";
               };
             };
             bios = {
