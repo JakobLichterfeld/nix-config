@@ -6,11 +6,7 @@ After using a shell script to automate my desktop Ubuntu installation from 2011 
 
 End of 2023 I migrated to Nix.
 
-## MainDev (Mac)
-
-Managed by `nix-darwin` and `home-manager`. Impure packages and applications are managed by `homebrew` and `mas`.
-
-## MainServer
+## MainServer (Intel N100)
 
 <details><summary>Installation process</summary><p>
 
@@ -115,7 +111,11 @@ nixos-rebuild switch --flake /etc/nixos#MainServer
 
 </p></details>
 
-## How to use
+## MainDev (Mac)
+
+Managed by `nix-darwin` and `home-manager`. Impure packages and applications are managed by `homebrew` and `mas`.
+
+<details><summary>Installation process</summary><p>
 
 [Make sure nix is installed](https://nixos.org/download#nix-install-macos)
 
@@ -137,6 +137,8 @@ printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
 ```
 
 apply changes: `./result/sw/bin/darwin-rebuild switch --flake .`
+
+</p></details>
 
 ## Contributing
 
