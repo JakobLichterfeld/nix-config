@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD033 -->
 # nix-config
 
 Infrastructure as Code (IaC)
