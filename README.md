@@ -124,11 +124,13 @@ Managed by `nix-darwin` and `home-manager`. Impure packages and applications are
 
 [install home-manager](https://nix-community.github.io/home-manager/index.xhtml#sec-install-standalone)
 
+Enable Rosetta to build x86 binaries with Apple Silicon: `softwareupdate --install-rosetta --agree-to-license`
+
 Update dependencies: `nix --experimental-features 'nix-command flakes' flake update`
 
 build: `nix --experimental-features 'nix-command flakes' build .#darwinConfigurations."MainDev".system`
 
-apply: `darwin-rebuild switch  --flake .`
+install: `nix run nix-darwin -- switch --flake .#darwinConfigurations."MainDev"`
 
 as macOS does not allow writing to `/` write to symlink:
 
