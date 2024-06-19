@@ -1,10 +1,10 @@
 {
   description = "Configuration for MacOS and NixOS";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
     home-manager = {
-      # url = "github:nix-community/home-manager/release-23.11"; # gets timeouts
-      url = "https://github.com/nix-community/home-manager/archive/release-23.11.tar.gz";
+      # url = "github:nix-community/home-manager/release-24.05"; # gets timeouts
+      url = "https://github.com/nix-community/home-manager/archive/release-24.05.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     agenix = {
