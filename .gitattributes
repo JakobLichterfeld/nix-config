@@ -4,4 +4,6 @@ machinesSensitiveVars.nix filter=git-crypt diff=git-crypt
 machinesSensitiveVars.json filter=git-crypt diff=git-crypt
 services/homepage/bookmarks.yaml filter=git-crypt diff=git-crypt
 services/homepage/services.yaml filter=git-crypt diff=git-crypt
+services/blocky/blacklist.txt filter=git-crypt diff=git-crypt
+services/blocky/whitelist.txt filter=git-crypt diff=git-crypt
 users/jakob/git.nix filter=git-crypt diff=git-crypt
