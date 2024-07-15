@@ -1,6 +1,7 @@
 [
   # System
   { name = "gromgit/fuse/sshfs-mac"; } # Mount remote filesystems via SSH
+  { name = "rsync"; } # Fast, versatile, remote (and local) file-copying tool
 
   # Writing
   { name = "klavaro"; } # Free touch typing tutor program
@@ -8,4 +9,5 @@
 
   # Image
   { name = "jpeg-turbo"; } # JPEG image manipulation library
+
 ]
