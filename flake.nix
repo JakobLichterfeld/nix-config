@@ -104,6 +104,7 @@
                 agenix.homeManagerModules.default
                 nix-index-database.hmModules.nix-index
                 ./users/jakob/dots.nix
+                ./users/jakob/syncthing.nix
               ];
               home-manager.backupFileExtension = "bak";
             }
