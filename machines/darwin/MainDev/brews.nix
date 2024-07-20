@@ -1,6 +1,7 @@
 [
   # Development
   { name = "rustup"; } # Rust toolchain installer
+  { name = "lcov"; } # Code coverage
 
   # Encryption and security tools
   { name = "ophcrack"; }
