@@ -48,6 +48,9 @@
         # show status bar
         ShowStatusBar = true;
 
+        # show path bar
+        ShowPathBar = true;
+
         # Display full POSIX path as Finder window title
         _FXShowPosixPathInTitle = true;
 
