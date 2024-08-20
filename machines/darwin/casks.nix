@@ -21,6 +21,7 @@
   { name = "avast-security"; }
 
   # System Tools
+  { name = "applite"; }
   { name = "macfuse"; }
 
   # Network
