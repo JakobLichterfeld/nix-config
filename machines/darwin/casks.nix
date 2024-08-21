@@ -43,6 +43,7 @@
   # Image
   { name = "luminance-hdr"; } # HDR imaging application
   { name = "hugin"; } # Panorama photo stitcher
+  { name = "imageoptim"; } # Image optimizer
 
   # Audio
   { name = "musicbrainz-picard"; } # MusicBrainz tagger
