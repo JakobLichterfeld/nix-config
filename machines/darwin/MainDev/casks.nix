@@ -9,7 +9,7 @@
   # Hardware
   { name = "logitech-g-hub"; } # adjust Logitech Keyboard Lights
 
-  # Writing
+  # Books
   { name = "calibre"; }
 
   # Communication
@@ -23,6 +23,7 @@
 
   # Writing
   { name = "mactex"; } # LaTeX
+  { name = "obsidian"; } # Note taking
 
   # Image
   { name = "digikam"; } # Photo management application
