@@ -23,6 +23,7 @@
   # System Tools
   { name = "applite"; }
   { name = "macfuse"; }
+  { name = "warp"; } # warp terminal
 
   # Network
   { name = "zerotier-one"; }
