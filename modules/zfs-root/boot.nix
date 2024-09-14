@@ -45,12 +45,12 @@ in
     };
     partitionScheme = mkOption {
       default = {
-        biosBoot = "-part6";
-        efiBoot = "-part1";
-        swap = "-part4";
+        biosBoot = "-part1";
+        efiBoot = "-part3";
+        swap = "-part5";
         bootPool = "-part2";
-        rootPool = "-part3";
-        cachePool = "-part5";
+        rootPool = "-part4";
+        cachePool = "-part6";
       };
       description = "Describe on disk partitions";
       type = types.attrsOf types.str;
