@@ -89,13 +89,17 @@ in
           "/oldroot/etc/nixos" = "/etc/nixos";
         };
       };
-      boot.initrd.postDeviceCommands = ''
-        if ! grep -q zfs_no_rollback /proc/cmdline; then
-          zpool import -N rpool
-          zfs rollback -r rpool/nixos/empty@start
-          zpool export -a
-        fi
-      '';
+      boot.initrd.systemd.services."zfs-rollback" = {
+        wantedBy = [ "initrd-root-fs.target" ];
+        script = ''
+          #!/bin/sh
+          if ! grep -q zfs_no_rollback /proc/cmdline; then
+            zpool import -N rpool
+            zfs rollback -r rpool/nixos/empty@start
+            zpool export -a
+          fi
+        '';
+      };
     })
     {
       zfs-root.fileSystems = {
