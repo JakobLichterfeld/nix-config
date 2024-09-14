@@ -8,10 +8,8 @@
           type = "gpt";
           partitions = {
             efi = {
-              start = "2MiB";
-              end = "1GiB";
-              # size = "1G";
-              type = "EF00"; # EFI System Partition
+              size = "1G";
+              type = "EF00";
               content = {
                 type = "filesystem";
                 format = "vfat";
@@ -19,44 +17,35 @@
               };
             };
             bpool = {
-              start = "1GiB";
-              end = "5GiB";
-              # size = "4G";
+              size = "4G";
               content = {
                 type = "zfs";
                 pool = "bpool";
               };
             };
             rpool = {
-              start = "5GiB";
-              end = "261GiB";
-              # size = "256G";
+              size = "256G";
               content = {
                 type = "zfs";
                 pool = "rpool";
               };
             };
             swap = {
-              start = "261GiB";
-              end = "-265GiB";
-              # size = "4G";
+              size = "4G";
               content = {
                 type = "swap";
               };
             };
             cachepool = {
-              start = "265GiB";
-              end = "-1GiB";
+              end = "-1M";
               content = {
                 type = "zfs";
                 pool = "cachepool";
               };
             };
             bios = {
-              start = "1MiB";
-              end = "2MiB";
-              # size = "100%";
-              type = "EF02"; # BIOS boot partition
+              size = "100%";
+              type = "EF02";
             };
           };
         };
