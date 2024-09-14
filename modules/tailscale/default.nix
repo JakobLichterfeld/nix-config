@@ -8,6 +8,10 @@
   networking.firewall.trustedInterfaces = [ "tailscale0" ];
   networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
 
+    services.tailscale = {
+    enable = true;
+  };
+
   serviceConfig = {
     Type = "oneshot";
     LoadCredential = [
