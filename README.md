@@ -11,6 +11,10 @@ End of 2023 I migrated to Nix.
 
 <details><summary>Installation process</summary><p>
 
+Download [NixOS minimal ISO image](https://channels.nixos.org/nixos-24.05/latest-nixos-minimal-x86_64-linux.iso) copy it to a USB stick, using balenaEtcher for example, see [creating bootable USB flash drive with a graphical tool](https://nixos.org/manual/nixos/stable/#sec-booting-from-usb).
+
+Boot into the NixOS live environment
+
 Create a root password using the TTY
 
 ```bash
@@ -21,8 +25,8 @@ passwd
 From your host, copy the public SSH key to the server
 
 ```bash
-ssh-add ~/.ssh/jakob
-ssh-copy-id -i ~/.ssh/jakob root@nixos_installation_ip
+ssh-add ~/.ssh/id_ed25519
+ssh-copy-id -i ~/.ssh/id_ed25519 root@nixos_installation_ip
 ssh root@nixos_installation_ip
 ```
 
