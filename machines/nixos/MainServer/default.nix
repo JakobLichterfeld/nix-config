@@ -15,7 +15,7 @@
     boot = {
       devNodes = "/dev/disk/by-id/";
       bootDevices = [ "nvme-FIKWOT_FN960_2TB_AA234330561" ];
-      immutable.enable = true;
+      immutable = true;
       removableEfi = true;
       sshUnlock = {
         enable = false;
