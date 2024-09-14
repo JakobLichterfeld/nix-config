@@ -7,10 +7,13 @@
         content = {
           type = "gpt";
           partitions = {
+            bios = {
+              size = "1M";
+              type = "EF02"; # for grub MBR
+            };
             efi = {
-              start = "2MiB";
               size = "1G";
-              type = "EF00";
+              type = "EF00"; # EFI System partition
               content = {
                 type = "filesystem";
                 format = "vfat";
@@ -38,15 +41,11 @@
               };
             };
             cachepool = {
-              end = "-1M";
+              size = "100%";
               content = {
                 type = "zfs";
                 pool = "cachepool";
               };
-            };
-            bios = {
-              size = "100%";
-              type = "EF02";
             };
           };
         };
@@ -185,4 +184,3 @@
     };
   };
 }
-
