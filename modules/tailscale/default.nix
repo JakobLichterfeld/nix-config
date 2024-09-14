@@ -8,17 +8,10 @@
   networking.firewall.trustedInterfaces = [ "tailscale0" ];
   networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
 
-    services.tailscale = {
+  services.tailscale = {
     enable = true;
   };
-
-  serviceConfig = {
-    Type = "oneshot";
-    LoadCredential = [
-      "TAILSCALE_AUTH_KEY_FILE:${config.age.secrets.tailscaleAuthKey.path}"
-    ];
-  };
-
+  „
   systemd.services.tailscale-autoconnect = {
     description = "Automatic connection to Tailscale";
 
@@ -26,7 +19,12 @@
     wants = [ "network-pre.target" "tailscale.service" ];
     wantedBy = [ "multi-user.target" ];
 
-    serviceConfig.Type = "oneshot";
+    serviceConfig = {
+      Type = "oneshot";
+      LoadCredential = [
+        "TAILSCALE_AUTH_KEY_FILE:${config.age.secrets.tailscaleAuthKey.path}"
+      ];
+    };
 
     script = with pkgs; ''
 
