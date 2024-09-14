@@ -85,7 +85,7 @@ Install system and apply configuration
 nixos-install \
 --root "/mnt" \
 --no-root-passwd \
---flake "git+file://${MNT}/etc/nixos#MainServer"
+--flake "git+file:///mnt/etc/nixos#MainServer"
 ```
 
 Unmount the filesystems
