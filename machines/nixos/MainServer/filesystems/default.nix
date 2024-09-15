@@ -42,12 +42,12 @@
     };
 
   boot.initrd.systemd.services.rollback = {
-    description = "Rollback ZFS datasets to a pristine state";
+    description = "Rollback root filesystem to a pristine state on boot";
     wantedBy = [
       "initrd.target"
     ];
     after = [
-      "zfs-import-zroot.service"
+      "zfs-import-rpool.service"
     ];
     before = [
       "sysroot.mount"
@@ -58,7 +58,7 @@
     unitConfig.DefaultDependencies = "no";
     serviceConfig.Type = "oneshot";
     script = ''
-      zfs rollback -r rpool/nixos/empty@start
+      zfs rollback -r rpool/nixos/empty@start && echo "  >> >> rollback complete << <<"
     '';
   };
 
