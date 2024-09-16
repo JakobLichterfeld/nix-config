@@ -40,32 +40,9 @@
     mergerfs-tools
   ];
 
-  boot.initrd.systemd.enable = true; # enable systemd in initrd
-
   fileSystems."/" = lib.mkForce {
     device = "rpool/nixos/empty";
     fsType = "zfs";
-  };
-
-  boot.initrd.systemd.services.rollback = {
-    description = "Rollback root filesystem to a pristine state on boot";
-    wantedBy = [
-      "initrd.target"
-    ];
-    after = [
-      "zfs-import-rpool.service"
-    ];
-    before = [
-      "sysroot.mount"
-    ];
-    path = with pkgs; [
-      zfs
-    ];
-    unitConfig.DefaultDependencies = "no";
-    serviceConfig.Type = "oneshot";
-    script = ''
-      zfs rollback -r rpool/nixos/empty@start && echo "  >> >> rollback complete << <<"
-    '';
   };
 
   fileSystems."/nix" = lib.mkForce {

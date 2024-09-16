@@ -112,15 +112,27 @@ in
           "/oldroot/etc/nixos" = "/etc/nixos";
         };
       };
-      boot.initrd.systemd.services."zfs-rollback" = {
-        wantedBy = [ "initrd-root-fs.target" ];
+
+      boot.initrd.systemd.enable = true; # enable systemd in initrd
+
+      boot.initrd.systemd.services.rollback = {
+        description = "Rollback root filesystem to a pristine state on boot";
+        wantedBy = [
+          "initrd.target"
+        ];
+        after = [
+          "zfs-import-rpool.service"
+        ];
+        before = [
+          "sysroot.mount"
+        ];
+        path = with pkgs; [
+          zfs
+        ];
+        unitConfig.DefaultDependencies = "no";
+        serviceConfig.Type = "oneshot";
         script = ''
-          #!/bin/sh
-          if ! grep -q zfs_no_rollback /proc/cmdline; then
-            zpool import -N rpool
-            zfs rollback -r rpool/nixos/empty@start
-            zpool export -a
-          fi
+          zfs rollback -r rpool/nixos/empty@start && echo "  >> >> rollback complete << <<"
         '';
       };
     })
