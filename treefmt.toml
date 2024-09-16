@@ -3,8 +3,7 @@
 [global]
 excludes = [
     ".gitignore",
-    ".gitattributes",
-    "*/.gitattributes",
+    "*.gitattributes",
     "*.gpg",
     "LICENSE",
     "*.dat",
@@ -12,6 +11,7 @@ excludes = [
     "*.txt",
     "*.conf",
     "*.age",
+    "treefmt.toml",
 ]
 
 [formatter.nixfmt-rfc-style]
