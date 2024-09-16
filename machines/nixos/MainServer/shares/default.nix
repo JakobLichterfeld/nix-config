@@ -1,11 +1,26 @@
-{ users, pkgs, config, lib, machinesSensitiveVars, ... }:
+{
+  users,
+  pkgs,
+  config,
+  lib,
+  machinesSensitiveVars,
+  ...
+}:
 let
   smb = {
     share_list = {
-      Backups = { path = "/mnt/user/Backups"; };
-      Documents = { path = "/mnt/user/Documents"; };
-      Media = { path = "/mnt/user/Media"; };
-      MindRooted = { path = "/mnt/user/MindRooted"; };
+      Backups = {
+        path = "/mnt/user/Backups";
+      };
+      Documents = {
+        path = "/mnt/user/Documents";
+      };
+      Media = {
+        path = "/mnt/user/Media";
+      };
+      MindRooted = {
+        path = "/mnt/user/MindRooted";
+      };
     };
     share_params = {
       "browseable" = "yes";
@@ -41,7 +56,9 @@ in
 
   users.users.jakob.extraGroups = [ "share" ];
 
-  systemd.tmpfiles.rules = map (x: "d ${x.path} 0775 share share - -") (lib.attrValues smb.share_list) ++ [ "d /mnt 0775 share share - -" ];
+  systemd.tmpfiles.rules =
+    map (x: "d ${x.path} 0775 share share - -") (lib.attrValues smb.share_list)
+    ++ [ "d /mnt 0775 share share - -" ];
 
   system.activationScripts.samba_user_create = ''
     smb_password=$(cat "${config.age.secrets.sambaPassword.path}")

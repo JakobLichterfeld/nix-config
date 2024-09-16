@@ -6,7 +6,7 @@
   { name = "syncthing"; } # Continuous file synchronization program
 
   # Writing
-  { namne ="diff-pdf"; } # Visually compare two PDF files
+  { namne = "diff-pdf"; } # Visually compare two PDF files
   { name = "klavaro"; } # Free touch typing tutor program
   { name = "languagetool"; } # Grammar checker
 

@@ -1,4 +1,9 @@
-{ inputs, pkgs, lib, ... }:
+{
+  inputs,
+  pkgs,
+  lib,
+  ...
+}:
 let
   masApps = import ./masApps.nix;
   brews = import ./brews.nix;
@@ -14,7 +19,6 @@ in
   environment.shellInit = ''
     ulimit -n 2048
   '';
-
 
   environment.systemPackages = pkgs.callPackage ./packages.nix { };
 }

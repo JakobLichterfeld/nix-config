@@ -1,4 +1,9 @@
-{ config, vars, machinesSensitiveVars, ... }:
+{
+  config,
+  vars,
+  machinesSensitiveVars,
+  ...
+}:
 {
   services.blocky = {
     enable = true;
@@ -10,7 +15,10 @@
       # For initially solving DoH/DoT Requests when no system Resolver is available.
       bootstrapDns = {
         upstream = "https://one.one.one.one/dns-query";
-        ips = [ "1.1.1.1" "1.0.0.1" ];
+        ips = [
+          "1.1.1.1"
+          "1.0.0.1"
+        ];
       };
       #Enable Blocking of certian domains.
       blocking = {
@@ -45,22 +53,25 @@
               text = builtins.readFile ./whitelist.txt;
             }
           ];
-            };
-
-          blockType = zeroIp;
-
-          #Configure what block categories are used
-          clientGroupsBlock = {
-            default = [ "ads" "adult" ];
-          };
-
-          caching = {
-            minTime = "5m";
-            maxTime = "30m";
-            prefetching = true;
-          };
         };
-        clientLookup.upstream = machinesSensitiveVars.MainServer.defaultGateway;
+
+        blockType = zeroIp;
+
+        #Configure what block categories are used
+        clientGroupsBlock = {
+          default = [
+            "ads"
+            "adult"
+          ];
+        };
+
+        caching = {
+          minTime = "5m";
+          maxTime = "30m";
+          prefetching = true;
+        };
       };
+      clientLookup.upstream = machinesSensitiveVars.MainServer.defaultGateway;
     };
-  }
+  };
+}
