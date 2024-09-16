@@ -97,6 +97,8 @@ cd /
 zpool export -a
 ```
 
+Remove the installation media
+
 Reboot
 
 ```bash
