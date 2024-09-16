@@ -44,7 +44,7 @@
               name = "whitelist.txt";
               text = builtins.readFile ./whitelist.txt;
             }
-          ]
+          ];
             };
 
           blockType = zeroIp;
