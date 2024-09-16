@@ -1,6 +1,7 @@
 { pkgs }:
 
-with pkgs; [
+with pkgs;
+[
   # General packages for development and system management
   aspell # Spell checker for many languages
   aspellDicts.en
@@ -13,7 +14,7 @@ with pkgs; [
   curl
   wget
   mkpasswd
-  fd #A simple, fast and user-friendly alternative to find
+  fd # A simple, fast and user-friendly alternative to find
 
   # Encryption and security tools
   age # A simple, modern and secure encryption tool with small explicit keys, no config options, and UNIX-style composability.

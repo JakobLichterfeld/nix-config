@@ -1,4 +1,10 @@
-{ inputs, lib, config, pkgs, ... }:
+{
+  inputs,
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   home = {
     username = "jakob";
@@ -7,8 +13,9 @@ let
 in
 {
   nixpkgs = {
-    overlays = [
-    ];
+    overlays =
+      [
+      ];
     config = {
       allowUnfree = true;
       allowUnfreePredicate = (_: true);
@@ -25,11 +32,9 @@ in
     ./git.nix
   ];
 
-  programs.nix-index =
-    {
-      enable = true;
-    };
-
+  programs.nix-index = {
+    enable = true;
+  };
 
   programs.home-manager.enable = true;
 

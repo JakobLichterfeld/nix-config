@@ -1,4 +1,11 @@
-{ inputs, config, pkgs, lib, machinesSensitiveVars, ... }:
+{
+  inputs,
+  config,
+  pkgs,
+  lib,
+  machinesSensitiveVars,
+  ...
+}:
 {
   age.secrets.hashedUserPassword.file = ../../secrets/hashedUserPassword.age; # content is result of: `mkpasswd -m sha-512`
 
@@ -36,7 +43,6 @@
     };
   };
 
-
   users.users = {
     root = {
       initialHashedPassword = config.age.secrets.hashedUserPassword.path;
@@ -64,7 +70,10 @@
   };
   networking.firewall.allowedTCPPorts = [ machinesSensitiveVars.MainServer.sshPort ];
 
-  nix.settings.experimental-features = lib.mkDefault [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = lib.mkDefault [
+    "nix-command"
+    "flakes"
+  ];
 
   console.keyMap = "de";
 

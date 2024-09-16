@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   age.secrets.tailscaleAuthKey.file = ../../secrets/tailscaleAuthKey.age; # generate for max 90 day at https://login.tailscale.com/admin/settings/keys
   # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e tailscaleAuthKey.age
@@ -15,8 +20,14 @@
   systemd.services.tailscale-autoconnect = {
     description = "Automatic connection to Tailscale";
 
-    after = [ "network-pre.target" "tailscale.service" ];
-    wants = [ "network-pre.target" "tailscale.service" ];
+    after = [
+      "network-pre.target"
+      "tailscale.service"
+    ];
+    wants = [
+      "network-pre.target"
+      "tailscale.service"
+    ];
     wantedBy = [ "multi-user.target" ];
 
     serviceConfig = {

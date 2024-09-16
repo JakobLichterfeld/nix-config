@@ -1,9 +1,26 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 # see: https://github.com/ne9z/dotfiles-flake/blob/openzfs-guide/modules/boot/default.nix
 let
   cfg = config.zfs-root.boot;
-  inherit (lib) mkIf types mkDefault mkOption mkMerge strings;
-  inherit (builtins) head toString map tail;
+  inherit (lib)
+    mkIf
+    types
+    mkDefault
+    mkOption
+    mkMerge
+    strings
+    ;
+  inherit (builtins)
+    head
+    toString
+    map
+    tail
+    ;
 in
 {
   options.zfs-root.boot = {
@@ -15,9 +32,9 @@ in
     devNodes = mkOption {
       description = "Specify where to discover ZFS pools";
       type = types.str;
-      apply = x:
-        assert (strings.hasSuffix "/" x
-          || abort "devNodes '${x}' must have trailing slash!");
+      apply =
+        x:
+        assert (strings.hasSuffix "/" x || abort "devNodes '${x}' must have trailing slash!");
         x;
       default = "/dev/disk/by-id/";
     };
@@ -27,7 +44,11 @@ in
     };
     availableKernelModules = mkOption {
       type = types.nonEmptyListOf types.str;
-      default = [ "uas" "nvme" "ahci" ];
+      default = [
+        "uas"
+        "nvme"
+        "ahci"
+      ];
     };
     kernelParams = mkOption {
       type = types.listOf types.str;
@@ -76,7 +97,9 @@ in
       };
     }
     (mkIf (!cfg.immutable) {
-      zfs-root.fileSystems.datasets = { "rpool/nixos/root" = "/"; };
+      zfs-root.fileSystems.datasets = {
+        "rpool/nixos/root" = "/";
+      };
     })
     (mkIf cfg.immutable {
       zfs-root.fileSystems = {
@@ -103,11 +126,8 @@ in
     })
     {
       zfs-root.fileSystems = {
-        efiSystemPartitions =
-          (map (diskName: diskName + cfg.partitionScheme.efiBoot)
-            cfg.bootDevices);
-        swapPartitions =
-          (map (diskName: diskName + cfg.partitionScheme.swap) cfg.bootDevices);
+        efiSystemPartitions = (map (diskName: diskName + cfg.partitionScheme.efiBoot) cfg.bootDevices);
+        swapPartitions = (map (diskName: diskName + cfg.partitionScheme.swap) cfg.bootDevices);
       };
       boot = {
         kernelPackages = mkDefault config.boot.zfs.package.latestCompatibleLinuxPackages;
@@ -132,13 +152,15 @@ in
             copyKernels = true;
             efiSupport = true;
             zfsSupport = true;
-            extraInstallCommands = (toString (map
-              (diskName: ''
-                set -x
-                ${pkgs.coreutils-full}/bin/cp -r ${config.boot.loader.efi.efiSysMountPoint}/EFI /boot/esp
-                set +x
-              '')
-              (tail cfg.bootDevices)));
+            extraInstallCommands = (
+              toString (
+                map (diskName: ''
+                  set -x
+                  ${pkgs.coreutils-full}/bin/cp -r ${config.boot.loader.efi.efiSysMountPoint}/EFI /boot/esp
+                  set +x
+                '') (tail cfg.bootDevices)
+              )
+            );
           };
         };
       };

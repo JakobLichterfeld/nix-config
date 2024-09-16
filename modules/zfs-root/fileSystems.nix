@@ -2,7 +2,14 @@
 # see: https://github.com/ne9z/dotfiles-flake/blob/openzfs-guide/modules/fileSystems/default.nix
 let
   cfg = config.zfs-root.fileSystems;
-  inherit (lib) mkIf types mkDefault mkOption mkMerge mapAttrsToList;
+  inherit (lib)
+    mkIf
+    types
+    mkDefault
+    mkOption
+    mkMerge
+    mapAttrsToList
+    ;
 in
 {
   options.zfs-root.fileSystems = {
@@ -27,25 +34,30 @@ in
       default = [ ];
     };
   };
-  config.fileSystems = mkMerge (mapAttrsToList
-    (dataset: mountpoint: {
+  config.fileSystems = mkMerge (
+    mapAttrsToList (dataset: mountpoint: {
       "${mountpoint}" = {
         device = "${dataset}";
         fsType = "zfs";
-        options = [ "X-mount.mkdir" "noatime" ];
+        options = [
+          "X-mount.mkdir"
+          "noatime"
+        ];
         neededForBoot = true;
       };
-    })
-    cfg.datasets ++ mapAttrsToList
-    (bindsrc: mountpoint: {
+    }) cfg.datasets
+    ++ mapAttrsToList (bindsrc: mountpoint: {
       "${mountpoint}" = {
         device = "${bindsrc}";
         fsType = "none";
-        options = [ "bind" "X-mount.mkdir" "noatime" ];
+        options = [
+          "bind"
+          "X-mount.mkdir"
+          "noatime"
+        ];
       };
-    })
-    cfg.bindmounts ++ map
-    (esp: {
+    }) cfg.bindmounts
+    ++ map (esp: {
       "/boot/efis/esp" = {
         device = "${config.zfs-root.boot.devNodes}/${esp}";
         fsType = "vfat";
@@ -58,16 +70,16 @@ in
           "X-mount.mkdir"
         ];
       };
-    })
-    cfg.efiSystemPartitions);
-  config.swapDevices = mkDefault (map
-    (swap: {
+    }) cfg.efiSystemPartitions
+  );
+  config.swapDevices = mkDefault (
+    map (swap: {
       device = "${config.zfs-root.boot.devNodes}/${swap}";
       discardPolicy = mkDefault "both";
       randomEncryption = {
         enable = true;
         allowDiscards = mkDefault true;
       };
-    })
-    cfg.swapPartitions);
+    }) cfg.swapPartitions
+  );
 }

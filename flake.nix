@@ -27,15 +27,16 @@
   };
 
   outputs =
-    { self
-    , nixpkgs
-    , nix-darwin
-    , home-manager
-    , nix-index-database
-    , agenix
-    , deploy-rs
-    , nur
-    , ...
+    {
+      self,
+      nixpkgs,
+      nix-darwin,
+      home-manager,
+      nix-index-database,
+      agenix,
+      deploy-rs,
+      nur,
+      ...
     }@inputs:
     let
       machinesSensitiveVars = builtins.fromJSON (builtins.readFile "${self}/machinesSensitiveVars.json");
@@ -62,7 +63,10 @@
           profiles.system = {
             sshUser = "jakob";
             user = machinesSensitiveVars.MainServer.username;
-            sshOpts = [ "-p" machinesSensitiveVars.MainServer.sshPort ];
+            sshOpts = [
+              "-p"
+              machinesSensitiveVars.MainServer.sshPort
+            ];
             remoteBuild = true;
             path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.MainServer;
           };

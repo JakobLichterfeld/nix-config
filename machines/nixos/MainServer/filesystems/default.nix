@@ -1,4 +1,11 @@
-{ inputs, config, lib, vars, pkgs, ... }:
+{
+  inputs,
+  config,
+  lib,
+  vars,
+  pkgs,
+  ...
+}:
 {
 
   imports = [
@@ -35,11 +42,10 @@
 
   boot.initrd.systemd.enable = true; # enable systemd in initrd
 
-  fileSystems."/" = lib.mkForce
-    {
-      device = "rpool/nixos/empty";
-      fsType = "zfs";
-    };
+  fileSystems."/" = lib.mkForce {
+    device = "rpool/nixos/empty";
+    fsType = "zfs";
+  };
 
   boot.initrd.systemd.services.rollback = {
     description = "Rollback root filesystem to a pristine state on boot";
@@ -62,107 +68,94 @@
     '';
   };
 
+  fileSystems."/nix" = lib.mkForce {
+    device = "rpool/nixos/nix";
+    fsType = "zfs";
+    neededForBoot = true;
+  };
 
-  fileSystems."/nix" = lib.mkForce
-    {
-      device = "rpool/nixos/nix";
-      fsType = "zfs";
-      neededForBoot = true;
-    };
+  fileSystems."/etc/nixos" = lib.mkForce {
+    device = "rpool/nixos/config";
+    fsType = "zfs";
+    neededForBoot = true;
+  };
 
-  fileSystems."/etc/nixos" = lib.mkForce
-    {
-      device = "rpool/nixos/config";
-      fsType = "zfs";
-      neededForBoot = true;
-    };
+  fileSystems."/boot" = lib.mkForce {
+    device = "bpool/nixos/root";
+    fsType = "zfs";
+  };
 
-  fileSystems."/boot" = lib.mkForce
-    {
-      device = "bpool/nixos/root";
-      fsType = "zfs";
-    };
+  fileSystems."/home" = lib.mkForce {
+    device = "rpool/nixos/home";
+    fsType = "zfs";
+    neededForBoot = true;
+  };
 
-  fileSystems."/home" = lib.mkForce
-    {
-      device = "rpool/nixos/home";
-      fsType = "zfs";
-      neededForBoot = true;
-    };
+  fileSystems."/persist" = lib.mkForce {
+    device = "rpool/nixos/persist";
+    fsType = "zfs";
+    neededForBoot = true;
+  };
 
-  fileSystems."/persist" = lib.mkForce
-    {
-      device = "rpool/nixos/persist";
-      fsType = "zfs";
-      neededForBoot = true;
-    };
+  fileSystems."/var/log" = lib.mkForce {
+    device = "rpool/nixos/var/log";
+    fsType = "zfs";
+  };
 
-  fileSystems."/var/log" = lib.mkForce
-    {
-      device = "rpool/nixos/var/log";
-      fsType = "zfs";
-    };
+  fileSystems."/var/lib/containers" = lib.mkForce {
+    device = "/dev/zvol/rpool/docker";
+    fsType = "ext4";
+  };
 
-  fileSystems."/var/lib/containers" = lib.mkForce
-    {
-      device = "/dev/zvol/rpool/docker";
-      fsType = "ext4";
-    };
+  fileSystems.${vars.cacheArray} = lib.mkForce {
+    device = "cachepool/cache";
+    fsType = "zfs";
+  };
 
-  fileSystems.${vars.cacheArray} = lib.mkForce
-    {
-      device = "cachepool/cache";
-      fsType = "zfs";
-    };
+  fileSystems."/mnt/data1" = {
+    device = "/dev/disk/by-label/Data1";
+    fsType = "xfs";
+  };
 
-  fileSystems."/mnt/data1" =
-    {
-      device = "/dev/disk/by-label/Data1";
-      fsType = "xfs";
-    };
+  fileSystems."/mnt/parity1" = {
+    device = "/dev/disk/by-label/Parity1";
+    fsType = "xfs";
+  };
 
-  fileSystems."/mnt/parity1" =
-    {
-      device = "/dev/disk/by-label/Parity1";
-      fsType = "xfs";
-    };
+  fileSystems.${vars.slowerArray} = {
+    device = "/mnt/data*";
+    options = [
+      "defaults"
+      "allow_other"
+      "moveonenospc=1"
+      "minfreespace=50G"
+      "func.getattr=newest"
+      "fsname=mergerfs_slower"
+      "uid=994"
+      "gid=993"
+      "umask=002"
+      "x-mount.mkdir"
+    ];
+    fsType = "fuse.mergerfs";
+  };
 
-  fileSystems.${vars.slowerArray} =
-    {
-      device = "/mnt/data*";
-      options = [
-        "defaults"
-        "allow_other"
-        "moveonenospc=1"
-        "minfreespace=50G"
-        "func.getattr=newest"
-        "fsname=mergerfs_slower"
-        "uid=994"
-        "gid=993"
-        "umask=002"
-        "x-mount.mkdir"
-      ];
-      fsType = "fuse.mergerfs";
-    };
-
-  fileSystems.${vars.mainArray} =
-    {
-      device = "${vars.cacheArray}:${vars.slowerArray}";
-      options = [
-        "category.create=epff"
-        "defaults"
-        "allow_other"
-        "moveonenospc=1"
-        "minfreespace=100G"
-        "func.getattr=newest"
-        "fsname=user"
-        "uid=994"
-        "gid=993"
-        "umask=002"
-        "x-mount.mkdir"
-      ];
-      fsType = "fuse.mergerfs";
-    };
+  fileSystems.${vars.mainArray} = {
+    device = "${vars.cacheArray}:${vars.slowerArray}";
+    options = [
+      "category.create=epff"
+      "defaults"
+      "allow_other"
+      "moveonenospc=1"
+      "minfreespace=100G"
+      "func.getattr=newest"
+      "fsname=user"
+      "uid=994"
+      "gid=993"
+      "umask=002"
+      "x-mount.mkdir"
+    ];
+    fsType = "fuse.mergerfs";
+  };
 
   services.smartd = {
     enable = true;

@@ -1,4 +1,9 @@
-{ config, vars, machinesSensitiveVars, ... }:
+{
+  config,
+  vars,
+  machinesSensitiveVars,
+  ...
+}:
 let
   directories = [
     "${vars.serviceConfigRoot}/traefik"
@@ -10,7 +15,11 @@ in
 {
   age.secrets.dnsApiCredentials.file = ../../secrets/dnsApiCredentials.age; # content is: dnschallengeProvider=<token>
 
-  networking.firewall.allowedTCPPorts = [ 80 443 8080 ];
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+    8080
+  ];
 
   security.acme = {
     acceptTerms = true;
@@ -67,9 +76,15 @@ in
     };
   };
 
-  users.users.traefik.extraGroups = [ "docker" "podman" "acme" ];
+  users.users.traefik.extraGroups = [
+    "docker"
+    "podman"
+    "acme"
+  ];
 
-  systemd.tmpfiles.rules = map (x: "d ${x} 0775 share share - -") directories ++ map (x: "f ${x} 0600 share share - -") files;
+  systemd.tmpfiles.rules =
+    map (x: "d ${x} 0775 share share - -") directories
+    ++ map (x: "f ${x} 0600 share share - -") files;
 
   # virtualisation.oci-containers = {
   #   containers = {

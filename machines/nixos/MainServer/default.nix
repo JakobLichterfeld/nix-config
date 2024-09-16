@@ -1,9 +1,28 @@
-{ lib, config, vars, pkgs, machinesSensitiveVars, ... }:
+{
+  lib,
+  config,
+  vars,
+  pkgs,
+  machinesSensitiveVars,
+  ...
+}:
 {
   age.identityPaths = [ "/persist/ssh/id_ed25519_main_server" ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" ];
-  boot.initrd.kernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" ];
+  boot.initrd.availableKernelModules = [
+    "xhci_pci"
+    "ahci"
+    "nvme"
+    "usb_storage"
+    "sd_mod"
+  ];
+  boot.initrd.kernelModules = [
+    "xhci_pci"
+    "ahci"
+    "nvme"
+    "usb_storage"
+    "sd_mod"
+  ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.kernelParams = [ "consoleblank=60" ];
   hardware.cpu.intel.updateMicrocode = true;
@@ -30,7 +49,6 @@
   };
   time.timeZone = "Europe/Berlin";
 
-
   imports = [
     ./filesystems
     ./shares
@@ -54,16 +72,20 @@
     defaultGateway = machinesSensitiveVars.MainServer.defaultGateway;
     interfaces = {
       enp1s0.ipv4 = {
-        addresses = [{
-          address = machinesSensitiveVars.MainServer.ipAddress;
-          prefixLength = 24;
-        }];
+        addresses = [
+          {
+            address = machinesSensitiveVars.MainServer.ipAddress;
+            prefixLength = 24;
+          }
+        ];
       };
       enp2s0.ipv4 = {
-        addresses = [{
-          address = machinesSensitiveVars.MainServer.ipAddress2;
-          prefixLength = 24;
-        }];
+        addresses = [
+          {
+            address = machinesSensitiveVars.MainServer.ipAddress2;
+            prefixLength = 24;
+          }
+        ];
       };
     };
   };
@@ -78,8 +100,9 @@
     cacheArray = vars.cacheArray;
     backingArray = vars.slowerArray;
     percentageFree = 60;
-    excludedPaths = [
-    ];
+    excludedPaths =
+      [
+      ];
   };
 
   services.prometheus = {
@@ -88,11 +111,13 @@
       node = {
         enable = true;
         openFirewall = true;
-        enabledCollectors = [ "systemd" "zfs" ];
+        enabledCollectors = [
+          "systemd"
+          "zfs"
+        ];
       };
     };
   };
-
 
   environment.systemPackages = with pkgs; [
     pciutils # A collection of programs for inspecting and manipulating configuration of PCI devices

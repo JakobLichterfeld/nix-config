@@ -1,4 +1,10 @@
-{ config, vars, pkgs, machinesSensitiveVars, ... }:
+{
+  config,
+  vars,
+  pkgs,
+  machinesSensitiveVars,
+  ...
+}:
 let
   directories = [
     "${vars.serviceConfigRoot}/homepage"
