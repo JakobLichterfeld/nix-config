@@ -128,6 +128,7 @@
     smartmontools # Tools for monitoring the health of hard drives
     powertop # Analyze power consumption on Intel-based laptops
     cpufrequtils # Tools to display or change the CPU governor settings
+    intel-gpu-tools # Tools for debugging the Intel graphics driver
     gnumake
     gcc
   ];
