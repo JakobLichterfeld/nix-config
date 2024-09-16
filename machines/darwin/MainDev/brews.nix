@@ -7,6 +7,7 @@
   { name = "yamlfmt"; } # Extensible command-line tool to format YAML files
   { name = "prettier"; } # Code formatter for JavaScript, CSS, JSON, GraphQL, Markdown, YAML
   { name = "clang-format"; } # Formatting tools for C, C++, Obj-C, Java, JavaScript, TypeScript
+  { name = "ruff"; } # Extremely fast Python linter, written in Rust
 
   # Encryption and security tools
   { name = "ophcrack"; }
