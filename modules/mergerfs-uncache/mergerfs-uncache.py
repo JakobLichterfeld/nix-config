@@ -60,7 +60,7 @@ if __name__ == "__main__":
         dest="atime",
         type=int,
         default=0,
-        help="TODO: Only move files older than N days"
+        help="TODO: Only move files older than N days",
     )
     parser.add_argument(
         "-d",
@@ -138,16 +138,44 @@ if __name__ == "__main__":
 
     def fix_permissions(uid, gid, cache_path, slow_path):
         if len(uid) > 0 and len(gid) > 0:
-            syslog.syslog(
-                    syslog.LOG_INFO, f"Fixing permissions on {cache_path}..."
-                    )
-            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chown", "-R", f"{uid}:{gid}", f"{cache_path}"])
-            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chmod", "-R", "u=rwX,go=rX", f"{cache_path}"])
-            syslog.syslog(
-                    syslog.LOG_INFO, f"Fixing permissions on {slow_path}..."
-                    )
-            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chown", "-R", f"{uid}:{gid}", f"{slow_path}"])
-            subprocess.run(["/run/wrappers/bin/sudo", "/run/current-system/sw/bin/chmod", "-R", "u=rwX,go=rX", f"{slow_path}"])
+            syslog.syslog(syslog.LOG_INFO, f"Fixing permissions on {cache_path}...")
+            subprocess.run(
+                [
+                    "/run/wrappers/bin/sudo",
+                    "/run/current-system/sw/bin/chown",
+                    "-R",
+                    f"{uid}:{gid}",
+                    f"{cache_path}",
+                ]
+            )
+            subprocess.run(
+                [
+                    "/run/wrappers/bin/sudo",
+                    "/run/current-system/sw/bin/chmod",
+                    "-R",
+                    "u=rwX,go=rX",
+                    f"{cache_path}",
+                ]
+            )
+            syslog.syslog(syslog.LOG_INFO, f"Fixing permissions on {slow_path}...")
+            subprocess.run(
+                [
+                    "/run/wrappers/bin/sudo",
+                    "/run/current-system/sw/bin/chown",
+                    "-R",
+                    f"{uid}:{gid}",
+                    f"{slow_path}",
+                ]
+            )
+            subprocess.run(
+                [
+                    "/run/wrappers/bin/sudo",
+                    "/run/current-system/sw/bin/chmod",
+                    "-R",
+                    "u=rwX,go=rX",
+                    f"{slow_path}",
+                ]
+            )
 
     fix_permissions(uid, gid, cache_path, slow_path)
     if args.hc_url != "":
@@ -186,7 +214,7 @@ if __name__ == "__main__":
     async def move_file(c_path, cache_path, slow_path):
         async with semaphore:
             try:
-                async with aiofiles.open(c_path, 'rb'):
+                async with aiofiles.open(c_path, "rb"):
                     src = Path(cache_path) / Path(c_path.relative_to(cache_path))
                     dest = Path(slow_path) / Path(c_path.relative_to(cache_path))
 
@@ -198,13 +226,18 @@ if __name__ == "__main__":
                         shutil.move(src, dest)
                         return os.path.getsize(c_path)
                     else:
-                        syslog.syslog(syslog.LOG_WARNING, f"{c_path} does not exist when trying to move.")
+                        syslog.syslog(
+                            syslog.LOG_WARNING,
+                            f"{c_path} does not exist when trying to move.",
+                        )
                         return 0
             except Exception as e:
                 syslog.syslog(syslog.LOG_WARNING, f"Failed to move {c_path}: {e}")
                 return 0
 
-    async def process_files(candidates, excluded_paths, cache_path, slow_path, target, last_id, time_limit):
+    async def process_files(
+        candidates, excluded_paths, cache_path, slow_path, target, last_id, time_limit
+    ):
         cache_used = sum(c_stat.st_size for _, c_stat in candidates)
         cache_stats = shutil.disk_usage(cache_path)
         t_start = time.monotonic()
@@ -212,7 +245,9 @@ if __name__ == "__main__":
         tasks = []
         for c_id, (c_path, c_stat) in enumerate(candidates):
             if any(excluded_path in str(c_path) for excluded_path in excluded_paths):
-                syslog.syslog(syslog.LOG_DEBUG, f"Skipping {c_path} since it is excluded.")
+                syslog.syslog(
+                    syslog.LOG_DEBUG, f"Skipping {c_path} since it is excluded."
+                )
                 continue
 
             if not os.path.exists(c_path):
@@ -225,25 +260,41 @@ if __name__ == "__main__":
 
             # Evaluate early breaking conditions
             if last_id >= 0 and c_id >= last_id - 1:
-                syslog.syslog(syslog.LOG_INFO, f"Maximum number of moved files reached ({last_id}).")
+                syslog.syslog(
+                    syslog.LOG_INFO,
+                    f"Maximum number of moved files reached ({last_id}).",
+                )
                 break
             if time_limit >= 0 and time.monotonic() - t_start > time_limit:
-                syslog.syslog(syslog.LOG_INFO, f"Time limit reached ({time_limit} seconds).")
+                syslog.syslog(
+                    syslog.LOG_INFO, f"Time limit reached ({time_limit} seconds)."
+                )
                 break
             if (100 * cache_used / cache_stats.total) <= target:
-                syslog.syslog(syslog.LOG_INFO, f"Target of maximum used capacity reached ({target}).")
+                syslog.syslog(
+                    syslog.LOG_INFO,
+                    f"Target of maximum used capacity reached ({target}).",
+                )
                 break
 
         await asyncio.gather(*tasks)
         syslog.syslog(
-                syslog.LOG_INFO,
-                f"Process completed in {round(time.monotonic() - t_start)} seconds. Current usage percentage is {usage_percentage:.2f}%.",
-            )
-
-
+            syslog.LOG_INFO,
+            f"Process completed in {round(time.monotonic() - t_start)} seconds. Current usage percentage is {usage_percentage:.2f}%.",
+        )
 
     syslog.syslog(syslog.LOG_INFO, f"Starting to move files")
-    asyncio.run(process_files(candidates, excluded_paths, cache_path, slow_path, target, last_id, time_limit))
+    asyncio.run(
+        process_files(
+            candidates,
+            excluded_paths,
+            cache_path,
+            slow_path,
+            target,
+            last_id,
+            time_limit,
+        )
+    )
 
     fix_permissions(uid, gid, cache_path, slow_path)
     if args.hc_url != "":
@@ -251,4 +302,3 @@ if __name__ == "__main__":
             urllib.request.urlopen(args.hc_url, timeout=3)
         except socket.error as e:
             syslog.syslog(syslog.LOG_ERR, f"Failed to open {args.hc_url}.")
-
