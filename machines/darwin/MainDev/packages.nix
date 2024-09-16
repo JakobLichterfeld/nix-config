@@ -15,7 +15,7 @@ with pkgs;
   # john # disabled because of Avast quarantine
   shellcheck
   shfmt
-  nixpkgs-fmt
+  nixfmt-rfc-style
   html-tidy
   elixir
   chromedriver
