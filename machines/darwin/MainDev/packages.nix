@@ -23,6 +23,7 @@ with pkgs;
   fastlane
   openssl_3_1
   ruby
+  devenv # Fast, Declarative, Reproducible, and Composable Developer Environments
 
   # Python packages
   python313
