@@ -24,6 +24,7 @@ with pkgs;
   openssl_3_1
   ruby
   devenv # Fast, Declarative, Reproducible, and Composable Developer Environments
+  nil # Nix Language server: An incremental analysis assistant for writing in Nix
 
   # Python packages
   python313
