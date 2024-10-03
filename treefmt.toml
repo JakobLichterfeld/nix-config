@@ -14,7 +14,7 @@ excludes = [
     "treefmt.toml",
 ]
 
-[formatter.nixfmt-rfc-style]
+[formatter.nixfmt]
 command = "nixfmt"
 excludes = []
 includes = ["*.nix"]
