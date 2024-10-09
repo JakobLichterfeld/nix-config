@@ -15,5 +15,5 @@
   "Whisper Transkription" = 1668083311;
 
   # Remote
-  "Microsoft Remote Desktop" = 1295203466;
+  "Windows App" = 1295203466;
 }
