@@ -124,7 +124,7 @@ in
     { path = "/Applications/KeePassXC.app/"; }
     # Join
     { path = "/Users/jakob/Applications/Chrome Apps.localized/Join.app/"; }
-    # Microsoft Remote Desktop
-    { path = "/Applications/Microsoft Remote Desktop.app/"; }
+    # Windows App (formerly Microsoft Remote Desktop)
+    { path = "/Applications/Windows App.app/"; }
   ];
 }
