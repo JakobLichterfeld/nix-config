@@ -120,6 +120,8 @@ in
     { path = "/Applications/System Einstellungen.app/"; }
     # Rechner
     { path = "/Applications/Rechner.app/"; }
+    # Obsidian
+    { path = "/Applications/Obsidian.app/"; }
     # KeepassXC
     { path = "/Applications/KeePassXC.app/"; }
     # Join
