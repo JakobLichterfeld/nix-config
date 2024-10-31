@@ -4,6 +4,7 @@
   { name = "sourcetree"; } # Git GUI
   { name = "android-studio"; }
   { name = "flutter"; }
+  { name = "firebase-cli"; }
   { name = "balenaetcher"; }
 
   # Hardware
