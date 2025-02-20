@@ -12,5 +12,5 @@
 
   # Image
   { name = "jpeg-turbo"; } # JPEG image manipulation library
-
+  { name = "pillow"; } # Python Imaging Library (PIL) fork
 ]
