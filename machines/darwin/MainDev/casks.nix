@@ -14,6 +14,7 @@
   { name = "calibre"; }
 
   # Communication
+  { name = "discord"; }
   { name = "betterdiscord-installer"; }
 
   # Remote
