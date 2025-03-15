@@ -27,7 +27,6 @@ with pkgs;
   fira-code-nerdfont
 
   # Communication Tools
-  discord
   slack
   zoom-us
 
