@@ -1,4 +1,8 @@
 {
+  self,
+  ...
+}:
+{
   environment.launchDaemons."limit.maxfiles.plist" = {
     enable = true;
     text = ''
