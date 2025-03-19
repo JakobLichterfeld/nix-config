@@ -2,6 +2,7 @@
   description = "Configuration for MacOS and NixOS";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
     home-manager = {
       # url = "github:nix-community/home-manager/release-24.05"; # gets timeouts
       url = "https://github.com/nix-community/home-manager/archive/release-24.05.tar.gz";
@@ -30,6 +31,7 @@
     {
       self,
       nixpkgs,
+      nix-homebrew,
       nix-darwin,
       home-manager,
       nix-index-database,
