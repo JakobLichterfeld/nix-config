@@ -46,7 +46,6 @@
     {
       darwinConfigurations."MainDev" = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
-        configurationRevision = self.rev or self.dirtyRev or null; # set git commit hash for darwin-version
         specialArgs = {
           inherit inputs;
           inherit home-manager;
@@ -79,7 +78,6 @@
       nixosConfigurations = {
         MainServer = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          configurationRevision = self.rev or self.dirtyRev or null;
           specialArgs = {
             inherit inputs;
             inherit machinesSensitiveVars;
