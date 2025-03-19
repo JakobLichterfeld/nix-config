@@ -165,6 +165,7 @@
         # General UI/UX                                                               #
         ###############################################################################
         AppleICUForce24HourTime = true; # Use 24 hour time
+        AppleInterfaceStyle = "Dark"; # Enable dark mode
         "com.apple.sound.beep.volume" = 0.000;
         # Expand save panel by default
         NSNavPanelExpandedStateForSaveMode = true;
