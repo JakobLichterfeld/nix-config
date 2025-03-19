@@ -33,6 +33,7 @@
     {
       self,
       nixpkgs,
+      nixpkgs-darwin,
       nix-homebrew,
       nix-darwin,
       home-manager,
