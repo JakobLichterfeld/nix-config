@@ -133,7 +133,7 @@ Update dependencies: `nix --experimental-features 'nix-command flakes' flake upd
 
 build: `nix --experimental-features 'nix-command flakes' build .#darwinConfigurations."MainDev".system`
 
-install: `nix run nix-darwin -- switch --flake .#darwinConfigurations."MainDev"`
+install: `nix run nix-darwin -- switch --flake .#MainDev`
 
 as macOS does not allow writing to `/` write to symlink:
 
@@ -142,7 +142,7 @@ printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
 /System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
 ```
 
-apply changes: `./result/sw/bin/darwin-rebuild switch --flake .darwinConfigurations."MainDev"`
+apply changes: `./result/sw/bin/darwin-rebuild switch --flake .#MainDev`
 
 </p></details>
 
