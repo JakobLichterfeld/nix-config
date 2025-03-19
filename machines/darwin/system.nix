@@ -164,6 +164,7 @@
         ###############################################################################
         # General UI/UX                                                               #
         ###############################################################################
+        AppleICUForce24HourTime = true; # Use 24 hour time
         "com.apple.sound.beep.volume" = 0.000;
         # Expand save panel by default
         NSNavPanelExpandedStateForSaveMode = true;
