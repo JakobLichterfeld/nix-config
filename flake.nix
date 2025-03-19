@@ -1,11 +1,13 @@
 {
   description = "Configuration for MacOS and NixOS";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-24.11-darwin";
+    # nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
     home-manager = {
-      # url = "github:nix-community/home-manager/release-24.05"; # gets timeouts
-      url = "https://github.com/nix-community/home-manager/archive/release-24.05.tar.gz";
+      # url = "github:nix-community/home-manager/release-24.11"; # gets timeouts
+      url = "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     agenix = {
@@ -14,8 +16,8 @@
       inputs.home-manager.follows = "home-manager";
     };
     nix-darwin = {
-      url = "github:LnL7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:LnL7/nix-darwin/nix-darwin-24.11";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
