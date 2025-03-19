@@ -80,6 +80,7 @@ with pkgs;
   rectangle # Move and resize windows in macOS using keyboard shortcuts or snap areas
   android-file-transfer
   karabiner-elements # Keyboard customizer for macOS
+  mkalias # Create and manage aliases for files and directories
 
   # Mobile devices
   localsend
