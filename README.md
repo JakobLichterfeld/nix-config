@@ -127,10 +127,6 @@ Managed by `nix-darwin` and `home-manager`. Impure packages and applications are
 
 [Make sure nix is installed](https://nixos.org/download#nix-install-macos)
 
-[install nix-darwin](https://github.com/LnL7/nix-darwin?tab=readme-ov-file#flakes)
-
-[install home-manager](https://nix-community.github.io/home-manager/index.xhtml#sec-install-standalone)
-
 Enable Rosetta to build x86 binaries with Apple Silicon: `softwareupdate --install-rosetta --agree-to-license`
 
 Update dependencies: `nix --experimental-features 'nix-command flakes' flake update`
@@ -146,7 +142,7 @@ printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
 /System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
 ```
 
-apply changes: `./result/sw/bin/darwin-rebuild switch --flake .`
+apply changes: `./result/sw/bin/darwin-rebuild switch --flake .darwinConfigurations."MainDev"`
 
 </p></details>
 
