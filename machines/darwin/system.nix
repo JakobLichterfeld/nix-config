@@ -28,7 +28,7 @@
   system = {
     configurationRevision = self.rev or self.dirtyRev or null; # set git commit hash for darwin-version
 
-    stateVersion = 4;
+    stateVersion = 5;
 
     # link nix installed applications to /Applications
     # This results in the apps installed by nix to be available in spotlight search as well
