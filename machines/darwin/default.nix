@@ -40,12 +40,23 @@ in
     backupFileExtension = "bak";
   };
 
+  nix-homebrew = {
+    # Install Homebrew under the default prefix
+    enable = true;
+
+    # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
+    enableRosetta = true;
+
+    # Automatically migrate existing Homebrew installations
+    autoMigrate = true;
+  };
+
   homebrew = {
     enable = true;
     onActivation = {
-      autoUpdate = true;
-      cleanup = "zap";
-      upgrade = true;
+      autoUpdate = true; # update homebrew on activation of the flake
+      cleanup = "zap"; # cleanup all formulae not in the flake
+      upgrade = true; # upgrade all formulae on activation of the flake
     };
     brewPrefix = "/opt/homebrew/bin";
     caskArgs = {
@@ -72,10 +83,6 @@ in
       options = "--delete-older-than 30d";
     };
 
-    # # Turn this on to make command line easier
-    # extraOptions = ''
-    #   experimental-features = nix-command flakes
-    # '';
     settings.experimental-features = [
       "nix-command"
       "flakes"

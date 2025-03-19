@@ -11,6 +11,8 @@
 
   # age.identityPaths = ["/Users/jakob/.ssh/id_ed25519"];
 
+  nix-homebrew.users = "jakob"; # User owning the Homebrew prefix
+
   users = {
     users = {
       jakob = {
