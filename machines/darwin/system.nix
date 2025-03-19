@@ -26,6 +26,8 @@
     '';
   };
   system = {
+    configurationRevision = self.rev or self.dirtyRev or null; # set git commit hash for darwin-version
+
     stateVersion = 4;
 
     # link nix installed applications to /Applications
