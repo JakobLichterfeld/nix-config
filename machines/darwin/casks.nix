@@ -48,6 +48,7 @@
   { name = "luminance-hdr"; } # HDR imaging application
   { name = "hugin"; } # Panorama photo stitcher
   { name = "imageoptim"; } # Image optimizer
+  { name = "gimp"; } # GNU Image Manipulation Program
 
   # Audio
   { name = "musicbrainz-picard"; } # MusicBrainz tagger
