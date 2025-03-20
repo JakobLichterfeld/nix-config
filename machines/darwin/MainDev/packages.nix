@@ -10,7 +10,6 @@ with pkgs;
   docker-compose
 
   # Development tools
-  vscode
   wireshark
   # john # disabled because of Avast quarantine
   shellcheck
