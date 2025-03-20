@@ -21,7 +21,7 @@ with pkgs;
   chromedriver
   cocoapods
   fastlane
-  openssl_3_1
+  openssl_3
   ruby
   devenv # Fast, Declarative, Reproducible, and Composable Developer Environments
   nil # Nix Language server: An incremental analysis assistant for writing in Nix
