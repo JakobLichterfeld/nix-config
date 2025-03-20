@@ -9,6 +9,7 @@
   { name = "telegram"; }
   { name = "signal"; }
   { name = "threema"; }
+  { name = "discord"; }
   { name = "slack"; }
   { name = "zoom"; }
 
