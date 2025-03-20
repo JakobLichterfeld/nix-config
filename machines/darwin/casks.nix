@@ -52,6 +52,7 @@
 
   # Audio
   { name = "musicbrainz-picard"; } # MusicBrainz tagger
+  { name = "spotify"; } # Music streaming service
 
   # Video
   { name = "vlc"; }
