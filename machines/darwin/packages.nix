@@ -55,7 +55,6 @@ with pkgs;
   # Audio
   normalize # Tool for adjusting the volume of wave files
   timidity # Software synthesizer
-  spotify # Music streaming service
   ffmpeg # Audio/video encoder
   audacity # Audio editor
 
