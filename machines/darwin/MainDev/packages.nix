@@ -18,7 +18,7 @@ with pkgs;
   html-tidy
   elixir
   chromedriver
-  cocoapods
+  # cocoapods #do not use, use gem install cocoapods
   fastlane
   openssl_3
   ruby
