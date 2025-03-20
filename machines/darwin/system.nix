@@ -60,7 +60,7 @@
       '';
 
     defaults = {
-      loginwindow.guestEnabled = false; # Disable the guest account
+      loginwindow.GuestEnabled = false; # Disable the guest account
 
       trackpad = {
         Clicking = true;
