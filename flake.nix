@@ -93,6 +93,7 @@
             home-manager.users.jakob.home.homeDirectory = inputs.nixpkgs-darwin.lib.mkForce "/Users/jakob";
             home-manager.users.jakob.home.stateVersion = "24.11";
           })
+          nix-homebrew.darwinModules.nix-homebrew
           ./machines/darwin
           ./machines/darwin/MainDev
           # ./modules/tailscale

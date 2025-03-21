@@ -3,6 +3,7 @@
   pkgs,
   lib,
   home-manager,
+  nix-homebrew,
   ...
 }:
 let
@@ -25,6 +26,9 @@ in
 
     # Automatically migrate existing Homebrew installations
     autoMigrate = true;
+
+    # User owning the Homebrew prefix
+    user = "jakob";
   };
 
   homebrew = {
