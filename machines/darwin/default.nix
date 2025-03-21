@@ -92,9 +92,6 @@ in
   # allow packages with unfree licenses
   nixpkgs.config.allowUnfree = true;
 
-  # Enable fonts dir
-  fonts.fontDir.enable = true;
-
   environment.systemPackages =
     with pkgs;
     [
