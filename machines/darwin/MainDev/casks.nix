@@ -28,7 +28,8 @@
   { name = "obsidian"; } # Note taking
 
   # Image
-  { name = "digikam"; } # Photo management application
+  { name = "digikam"; } # Photo management applicatio
+  { name = "flowvision"; } # Image viewer
 
   # Other
   { name = "tradingview"; }
