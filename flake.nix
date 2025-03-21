@@ -10,6 +10,11 @@
       url = "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    home-manager-darwin = {
+      # url = "github:nix-community/home-manager/release-24.11"; # gets timeouts
+      url = "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
+    };
     agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -37,6 +42,7 @@
       nix-homebrew,
       nix-darwin,
       home-manager,
+      home-manager-darwin,
       nix-index-database,
       agenix,
       deploy-rs,
@@ -45,17 +51,48 @@
     }@inputs:
     let
       machinesSensitiveVars = builtins.fromJSON (builtins.readFile "${self}/machinesSensitiveVars.json");
+
+      homeManagerCfg = userPackages: extraImports: {
+        home-manager = {
+          useGlobalPkgs = false; # makes hm use nixos's pkgs value
+          useUserPackages = userPackages;
+          extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
+          users.jakob =
+            { config, pkgs, ... }:
+            {
+              nixpkgs.overlays = [
+                inputs.nur.overlay
+              ];
+              #home.homeDirectory = nixpkgs-darwin.lib.mkForce "/Users/jakob";
+              shell = pkgs.zsh;
+
+              imports = [
+                inputs.nix-index-database.hmModules.nix-index
+                inputs.agenix.homeManagerModules.default
+                inputs.nixpkgs-darwin
+                ./users/jakob/dots.nix
+              ];
+            };
+
+          backupFileExtension = "bak";
+        };
+      };
     in
     {
-      darwinConfigurations."MainDev" = nix-darwin.lib.darwinSystem {
+      darwinConfigurations."MainDev" = inputs.nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         specialArgs = {
           inherit inputs;
-          inherit home-manager;
+          inherit self;
           inherit machinesSensitiveVars;
         };
         modules = [
-          agenix.darwinModules.default
+          inputs.agenix.darwinModules.default
+          inputs.home-manager-darwin.darwinModules.home-manager
+          (inputs.nixpkgs-darwin.lib.attrsets.recursiveUpdate (homeManagerCfg true [ ]) {
+            home-manager.users.jakob.home.homeDirectory = inputs.nixpkgs-darwin.lib.mkForce "/Users/jakob";
+            home-manager.users.jakob.home.stateVersion = "24.11";
+          })
           ./machines/darwin
           ./machines/darwin/MainDev
           # ./modules/tailscale
@@ -83,6 +120,7 @@
           system = "x86_64-linux";
           specialArgs = {
             inherit inputs;
+            inherit self;
             inherit machinesSensitiveVars;
             vars = import ./machines/nixos/MainServer/vars.nix;
           };
