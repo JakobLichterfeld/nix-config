@@ -27,6 +27,7 @@
   { name = "applite"; }
   { name = "macfuse"; }
   { name = "warp"; } # warp terminal
+  { name = "rectangle" } # Move and resize windows in macOS using keyboard shortcuts or snap areas
 
   # Network
   { name = "zerotier-one"; }
