@@ -19,7 +19,7 @@ with pkgs;
   elixir
   chromedriver
   # cocoapods #do not use, use gem install cocoapods
-  fastlane
+  # fastlane # do not use, use with gem bundler
   openssl_3
   ruby
   devenv # Fast, Declarative, Reproducible, and Composable Developer Environments
