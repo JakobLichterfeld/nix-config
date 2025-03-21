@@ -16,30 +16,6 @@ in
     ./dock
     ./system.nix
   ];
-
-  home-manager.nix-darwin = {
-    useGlobalPkgs = false; # makes hm use nixos's pkgs value
-    useUserPackages = true;
-    extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
-    users.jakob =
-      { config, pkgs, ... }:
-      {
-        nixpkgs.overlays = [
-          inputs.nur.overlay
-        ];
-        home.homeDirectory = lib.mkForce "/Users/jakob";
-        shell = pkgs.zsh;
-
-        imports = [
-          inputs.nix-index-database.hmModules.nix-index
-          inputs.agenix.homeManagerModules.default
-          ../../users/jakob/dots.nix
-        ];
-      };
-
-    backupFileExtension = "bak";
-  };
-
   nix-homebrew = {
     # Install Homebrew under the default prefix
     enable = true;
