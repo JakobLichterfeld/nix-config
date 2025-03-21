@@ -5,6 +5,11 @@
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-24.11-darwin";
     # nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+    # automatically update Homebrew, installed via declarative tap management of nix-homebrew
+    domt4-autoupdate = {
+      url = "https://github.com/DomT4/homebrew-autoupdate";
+      flake = false;
+    };
     home-manager = {
       # url = "github:nix-community/home-manager/release-24.11"; # gets timeouts
       url = "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz";

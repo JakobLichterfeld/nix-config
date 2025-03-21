@@ -29,6 +29,16 @@ in
 
     # User owning the Homebrew prefix
     user = "jakob";
+
+    # Declarative tap management
+    taps = {
+      "domt4/homebrew-autoupdate" = inputs.domt4-autoupdate;
+    };
+
+    # Optional: Enable fully-declarative tap management
+    #
+    # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
+    mutableTaps = true;
   };
 
   homebrew = {

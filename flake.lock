@@ -84,6 +84,18 @@
         "type": "github"
       }
     },
+    "domt4-autoupdate": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-4aphI2ny5K8nMm09J4fXlyN+Jz9Lbe8Heg/GZF7m7r4=",
+        "type": "file",
+        "url": "https://github.com/DomT4/homebrew-autoupdate"
+      },
+      "original": {
+        "type": "file",
+        "url": "https://github.com/DomT4/homebrew-autoupdate"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -351,6 +363,7 @@
       "inputs": {
         "agenix": "agenix",
         "deploy-rs": "deploy-rs",
+        "domt4-autoupdate": "domt4-autoupdate",
         "home-manager": "home-manager",
         "home-manager-darwin": "home-manager-darwin",
         "nix-darwin": "nix-darwin",
