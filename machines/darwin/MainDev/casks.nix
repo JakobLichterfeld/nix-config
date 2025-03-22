@@ -32,7 +32,6 @@
 
   # Image
   { name = "digikam"; } # Photo management applicatio
-  { name = "flowvision"; } # Image viewer
 
   # Other
   { name = "tradingview"; }
