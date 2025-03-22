@@ -110,9 +110,11 @@ in
     { path = "/Applications/Figma.app/"; }
     # App Store
     { path = "/System/Applications/App Store.app/"; }
+    # Applite
+    { path = "/Applications/Applite.app/"; }
     # System Settings
     { path = "/System/Applications/System Settings.app/"; }
-    # Rechner
+    # Calculator
     { path = "/System/Applications/Calculator.app/"; }
     # Obsidian
     { path = "/Applications/Obsidian.app/"; }
