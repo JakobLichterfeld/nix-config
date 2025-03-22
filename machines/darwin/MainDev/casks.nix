@@ -28,6 +28,9 @@
   { name = "mactex"; } # LaTeX
   { name = "obsidian"; } # Note taking
 
+  # Encryption and security tools
+  { name = "tor-browser"; }
+
   # Image
   { name = "digikam"; } # Photo management applicatio
   { name = "flowvision"; } # Image viewer
