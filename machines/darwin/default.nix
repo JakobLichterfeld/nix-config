@@ -105,22 +105,31 @@ in
     # Discord
     { path = "/Applications/Discord.app/"; }
     # Mail
-    { path = "/Applications/Mail.app/"; }
+    { path = "/System/Applications/Mail.app/"; }
     # Figma
     { path = "/Applications/Figma.app/"; }
     # App Store
-    { path = "/Applications/App Store.app/"; }
+    { path = "/System/Applications/App Store.app/"; }
     # System Settings
-    { path = "/Applications/System Einstellungen.app/"; }
+    { path = "/System/Applications/System Settings.app/"; }
     # Rechner
-    { path = "/Applications/Rechner.app/"; }
+    { path = "/System/Applications/Calculator.app/"; }
     # Obsidian
     { path = "/Applications/Obsidian.app/"; }
     # KeepassXC
     { path = "/Applications/KeePassXC.app/"; }
     # Join
-    { path = "/Users/jakob/Applications/Chrome Apps.localized/Join.app/"; }
+    { path = "/Users/jakob/Applications/Chrome Apps.localized/Join by Joaoapps.app/"; }
     # Windows App (formerly Microsoft Remote Desktop)
     { path = "/Applications/Windows App.app/"; }
+    # DeepL
+    { path = "/Applications/DeepL.app/"; }
+    # ChatGPT
+    { path = "/Applications/ChatGPT.app/"; }
+    # Telegram
+    { path = "/Applications/Telegram.app/"; }
+    # Downloads
+    { path = "/Users/jakob/Downloads/"; }
+
   ];
 }
