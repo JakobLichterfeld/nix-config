@@ -7,6 +7,7 @@
   { name = "flutter"; }
   { name = "firebase-cli"; }
   { name = "balenaetcher"; }
+  { name = "orbstack"; } # Fast, light, powerful way to run containers
 
   # Hardware
   { name = "logitech-g-hub"; } # adjust Logitech Keyboard Lights
