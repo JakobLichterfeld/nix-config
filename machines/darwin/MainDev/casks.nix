@@ -5,7 +5,6 @@
   { name = "sourcetree"; } # Git GUI
   { name = "android-studio"; }
   { name = "flutter"; }
-  { name = "firebase-cli"; }
   { name = "balenaetcher"; }
   { name = "orbstack"; } # Fast, light, powerful way to run containers
 
