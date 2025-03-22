@@ -2,7 +2,6 @@
   # System
   { name = "gromgit/fuse/sshfs-mac"; } # Mount remote filesystems via SSH
   { name = "rsync"; } # Fast, versatile, remote (and local) file-copying tool
-  { name = "stats"; } # system monitor in mac menu bar
   { name = "syncthing"; } # Continuous file synchronization program
 
   # Writing
