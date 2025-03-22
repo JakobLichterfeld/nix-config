@@ -83,7 +83,7 @@ in
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages =
-    with pkgs;
+    with inputs.nixpkgs-unstable.legacyPackages."${pkgs.system}";
     [
       inputs.agenix.packages."${pkgs.system}".default
     ]
