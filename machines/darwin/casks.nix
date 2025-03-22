@@ -51,6 +51,7 @@
   { name = "hugin"; } # Panorama photo stitcher
   { name = "imageoptim"; } # Image optimizer
   { name = "gimp"; } # GNU Image Manipulation Program
+  { name = "flowvision"; } # Image viewer
 
   # Audio
   { name = "musicbrainz-picard"; } # MusicBrainz tagger
