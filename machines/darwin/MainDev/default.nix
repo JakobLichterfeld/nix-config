@@ -20,5 +20,7 @@ in
     ulimit -n 2048
   '';
 
-  environment.systemPackages = pkgs.callPackage ./packages.nix { };
+  environment.systemPackages =
+    with inputs.nixpkgs-unstable.legacyPackages."${pkgs.system}";
+    pkgs.callPackage ./packages.nix { };
 }
