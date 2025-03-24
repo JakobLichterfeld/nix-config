@@ -58,7 +58,6 @@ in
     casks = casks;
   };
 
-
   # Setup user, packages, programs
   nix = {
     gc = {
@@ -75,6 +74,11 @@ in
     settings.experimental-features = [
       "nix-command"
       "flakes"
+    ];
+
+    settings.trusted-users = [
+      "root"
+      "@admin"
     ];
   };
 
