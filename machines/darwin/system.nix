@@ -85,6 +85,7 @@
 
       };
       CustomUserPreferences = {
+        # Finder
         "com.apple.finder" = {
           # Set Home as the default location for new Finder windows
           # Computer     : "PfCm"
@@ -109,6 +110,67 @@
 
           # show hidden files by default
           # AppleShowAllFiles = true;
+        };
+
+        "com.apple.springing" = {
+          # Enable spring loading for directories
+          enabled = true;
+
+          # Remove the spring loading delay for directories
+          delay = 0.1;
+        };
+
+        # Automatically quit printer app once the print jobs complete
+        "com.apple.print.PrintingPrefs" = {
+          QuitWhenFinished = true;
+        };
+
+        "com.apple.desktopservices" = {
+          # Avoid creating .DS_Store files on network volumes
+          DSDontWriteNetworkStores = true;
+        };
+
+        ###############################################################################
+        # Safari & WebKit                                                             #
+        ###############################################################################
+        NSGlobalDomain = {
+          # Add a context menu item for showing the Safari Web Inspector in web views
+          WebKitDeveloperExtras = true;
+        };
+
+        "com.apple.Safari" = {
+          # Enable the Develop menu and the Web Inspector in Safari
+          IncludeDevelopMenu = true;
+          WebKitDeveloperExtrasEnabledPreferenceKey = true;
+          WebKit2DeveloperExtrasEnabled = true;
+        };
+
+        ###############################################################################
+        # Mail                                                                        #
+        ###############################################################################
+
+        # Copy email addresses as `foo@example.com` instead of `Foo Bar <foo@example.com>` in Mail.app
+        "com.apple.mail" = {
+          AddressesIncludeNameOnPasteboard = false;
+        };
+
+        #   ###############################################################################
+        #   # Messages                                                                    #
+        #   ###############################################################################
+        "com.apple.messageshelper.MessageController"."SOInputLineSettings" = {
+          # Disable smart quotes as it’s annoying for messages that contain code
+          automaticQuoteSubstitutionEnabled = false;
+          # Disable continuous spell checking
+          continuousSpellCheckingEnabled = false;
+        };
+
+        ###############################################################################
+        # App Store                                                                   #
+        ###############################################################################
+
+        # Disable in-app rating requests from apps downloaded from the App Store.
+        "com.apple.appstore" = {
+          InAppReviewEnabled = 0;
         };
 
       };
@@ -194,35 +256,6 @@
 
       };
 
-      CustomUserPreferences = {
-        NSGlobalDomain = {
-          # Add a context menu item for showing the Safari Web Inspector in web views
-          WebKitDeveloperExtras = true;
-        };
-
-        "com.apple.springing" = {
-          # Enable spring loading for directories
-          enabled = true;
-
-          # Remove the spring loading delay for directories
-          delay = 0.1;
-        };
-      };
-
-      # Automatically quit printer app once the print jobs complete
-      CustomUserPreferences = {
-        "com.apple.print.PrintingPrefs" = {
-          QuitWhenFinished = true;
-        };
-      };
-
-      CustomUserPreferences = {
-        "com.apple.desktopservices" = {
-          # Avoid creating .DS_Store files on network volumes
-          DSDontWriteNetworkStores = true;
-        };
-      };
-
       # Enable the 'reduce transparency' option. Save GPU cycles.
       universalaccess.reduceTransparency = true;
 
@@ -234,29 +267,6 @@
 
       # Disable shadow in screenshots
       screencapture.disable-shadow = true;
-
-      ###############################################################################
-      # Safari & WebKit                                                             #
-      ###############################################################################
-      CustomUserPreferences = {
-        "com.apple.Safari" = {
-          # Enable the Develop menu and the Web Inspector in Safari
-          IncludeDevelopMenu = true;
-          WebKitDeveloperExtrasEnabledPreferenceKey = true;
-          WebKit2DeveloperExtrasEnabled = true;
-        };
-      };
-
-      ###############################################################################
-      # Mail                                                                        #
-      ###############################################################################
-
-      # Copy email addresses as `foo@example.com` instead of `Foo Bar <foo@example.com>` in Mail.app
-      CustomUserPreferences = {
-        "com.apple.mail" = {
-          AddressesIncludeNameOnPasteboard = false;
-        };
-      };
 
       ###############################################################################
       # Activity Monitor                                                            #
@@ -276,30 +286,6 @@
       # * 106: Inactive Processes
       # * 107: Windowed Processes
       ActivityMonitor.ShowCategory = 100;
-
-      ###############################################################################
-      # Messages                                                                    #
-      ###############################################################################
-
-      CustomUserPreferences = {
-        "com.apple.messageshelper.MessageController SOInputLineSettings" = {
-          # Disable smart quotes as it’s annoying for messages that contain code
-          automaticQuoteSubstitutionEnabled = false;
-          # Disable continuous spell checking
-          continuousSpellCheckingEnabled = false;
-        };
-      };
-
-      ###############################################################################
-      # App Store                                                                   #
-      ###############################################################################
-
-      # Disable in-app rating requests from apps downloaded from the App Store.
-      CustomUserPreferences = {
-        "com.apple.appstore" = {
-          InAppReviewEnabled = 0;
-        };
-      };
     };
   };
 }
