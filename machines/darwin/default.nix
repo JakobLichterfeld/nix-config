@@ -58,7 +58,6 @@ in
     casks = casks;
   };
 
-  services.nix-daemon.enable = lib.mkForce true;
 
   # Setup user, packages, programs
   nix = {
