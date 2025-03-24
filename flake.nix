@@ -1,8 +1,8 @@
 {
   description = "Configuration for MacOS and NixOS";
 
-    nixConfig = {
-      # only use trusted substituters
+  nixConfig = {
+    # only use trusted substituters
     trusted-substituters = [
       "https://cachix.cachix.org"
       "https://nixpkgs.cachix.org"
@@ -20,8 +20,17 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable"; # see overlay in overlays/default.nix
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-24.11-darwin";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-darwin-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin/nix-darwin-24.11";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
+    };
+    nix-darwin-unstable = {
+      url = "github:LnL7/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
+    };
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
     # automatically update Homebrew, installed via declarative tap management of nix-homebrew
     domt4-autoupdate = {
@@ -38,14 +47,14 @@
       url = "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
+    home-manager-darwin-unstable = {
+      url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
+    };
     agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
-    };
-    nix-darwin = {
-      url = "github:LnL7/nix-darwin/nix-darwin-24.11";
-      inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
@@ -61,15 +70,19 @@
     {
       self,
       nixpkgs,
+      nixpkgs-unstable,
       nixpkgs-darwin,
+      nixpkgs-darwin-unstable,
       nix-homebrew,
       nix-darwin,
+      nix-darwin-unstable,
       home-manager,
       home-manager-darwin,
-      nix-index-database,
+      home-manager-darwin-unstable,
       agenix,
-      deploy-rs,
+      nix-index-database,
       nur,
+      deploy-rs,
       ...
     }@inputs:
     let
