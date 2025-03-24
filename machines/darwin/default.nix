@@ -131,7 +131,11 @@ in
     # Telegram
     { path = "/Applications/Telegram.app/"; }
     # Downloads
-    { path = "/Users/jakob/Downloads/"; }
+    {
+      path = "/Users/jakob/Downloads/";
+      section = "others";
+      options = "--sort dateadded --view grid --display stack";
+    }
 
   ];
 }
