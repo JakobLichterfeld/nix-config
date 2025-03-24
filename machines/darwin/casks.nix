@@ -45,6 +45,7 @@
   { name = "adobe-acrobat-reader"; }
   { name = "libreoffice"; }
   { name = "libreoffice-language-pack"; }
+  { name = "microsoft-auto-update"; }
   { name = "deepl"; }
 
   # Image
