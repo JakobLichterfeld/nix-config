@@ -62,7 +62,7 @@ in
   # Setup user, packages, programs
   nix = {
     gc = {
-      user = "root";
+      #user = "root"; # default since 25.05
       automatic = true;
       interval = {
         Weekday = 0;
