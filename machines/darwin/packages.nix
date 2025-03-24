@@ -43,7 +43,7 @@ with pkgs;
 
   # Writing
   pstoedit # Translates PostScript and PDF graphics into other vector formats
-  xournalpp
+  xournalpp # handwriting Notetaking software with PDF annotation support
 
   # Image
   exiv2 # Image metadata manipulation tool
