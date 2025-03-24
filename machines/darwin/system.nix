@@ -36,28 +36,17 @@
 
     stateVersion = 5;
 
-    # link nix installed applications to /Applications
-    # This results in the apps installed by nix to be available in spotlight search as well
-    activationScripts.applications.text =
-      let
-        env = pkgs.buildEnv {
-          name = "system-applications";
-          paths = config.environment.systemPackages;
-          pathsToLink = "/Applications";
-        };
-      in
-      pkgs.lib.mkForce ''
-        # Set up applications.
-        echo "setting up /Applications..." >&2
-        rm -rf /Applications/Nix\ Apps
-        mkdir -p /Applications/Nix\ Apps
-        find ${env}/Applications -maxdepth 1 -type l -exec readlink '{}' + |
-        while read -r src; do
-          app_name=$(basename "$src")
-          echo "copying $src" >&2
-          ${pkgs.mkalias}/bin/mkalias "$src" "/Applications/Nix Apps/$app_name"
-        done
-      '';
+    # Nix-darwin does not link installed applications to the user environment. This means apps will not show up
+    # in spotlight, and when launched through the dock they come with a terminal window. This is a workaround.
+    # Upstream issue: https://github.com/LnL7/nix-darwin/issues/214
+    activationScripts.applications.text = ''
+      apps_source="${config.system.build.applications}/Applications"
+      moniker="Nix Trampolines"
+      app_target_base="$HOME/Applications"
+      app_target="$app_target_base/$moniker"
+      mkdir -p "$app_target"
+      ${pkgs.rsync}/bin/rsync --archive --checksum --chmod=-w --copy-unsafe-links --delete "$apps_source/" "$app_target"
+    '';
 
     defaults = {
       loginwindow.GuestEnabled = false; # Disable the guest account
