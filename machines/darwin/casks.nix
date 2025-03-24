@@ -44,6 +44,7 @@
   { name = "pdfsam-basic"; }
   { name = "adobe-acrobat-reader"; }
   { name = "libreoffice"; }
+  { name = "libreoffice-language-pack"; }
   { name = "deepl"; }
 
   # Image
