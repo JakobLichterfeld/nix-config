@@ -85,12 +85,13 @@ in
   # allow packages with unfree licenses
   nixpkgs.config.allowUnfree = true;
 
-  environment.systemPackages =
+  environment.systemPackages = (
     with inputs.nixpkgs-unstable.legacyPackages."${pkgs.system}";
     [
       inputs.agenix.packages."${pkgs.system}".default
     ]
-    ++ (import ./packages.nix { inherit pkgs; });
+    ++ (import ./packages.nix { inherit pkgs; })
+  );
 
   # Fully declarative dock using the latest from Nix Store
   local.dock.enable = true;
