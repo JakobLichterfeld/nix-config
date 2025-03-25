@@ -46,7 +46,6 @@ with pkgs;
   binwalk
 
   # Remote desktop
-  xquartz
   freerdp
   scrcpy # Android screen mirroring
 

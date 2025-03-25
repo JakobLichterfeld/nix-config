@@ -39,4 +39,6 @@
   # Other
   { name = "tradingview"; }
 
+  # Remote desktop
+  { name = "xquartz"; }
 ]
