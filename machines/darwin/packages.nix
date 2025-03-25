@@ -49,7 +49,6 @@ with pkgs;
   graphicsmagick # Image processing tools collection
   jhead # JPEG Exif header manipulation tool
   jpegoptim # Utility to optimize/compress JPEG files
-  inkscape-with-extensions # Vector graphics editor
 
   # Audio
   normalize # Tool for adjusting the volume of wave files
