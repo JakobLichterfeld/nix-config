@@ -58,6 +58,7 @@
   { name = "flowvision"; } # Image viewer
 
   # Audio
+  { name = " audacity"; } # Audio editor
   { name = "musicbrainz-picard"; } # MusicBrainz tagger
   { name = "spotify"; } # Music streaming service
 
