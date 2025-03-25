@@ -9,6 +9,7 @@
   { name = "flutter"; }
   { name = "balenaetcher"; }
   { name = "orbstack"; } # Fast, light, powerful way to run containers
+  { name = "wireshark"; } # Network protocol analyzer
 
   # Hardware
   { name = "logitech-g-hub"; } # adjust Logitech Keyboard Lights
