@@ -20,7 +20,6 @@ with pkgs;
   age # A simple, modern and secure encryption tool with small explicit keys, no config options, and UNIX-style composability.
   gnupg
   pinentry-curses # GnuPG’s interface to passphrase input
-  keepassxc
 
   # Fonts
   dejavu_fonts
