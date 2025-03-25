@@ -26,6 +26,7 @@
   # System Tools
   { name = "applite"; }
   { name = "alt-tab"; } # Enable Windows-like alt-tab
+  { name = "karabiner-elements"; } # Keyboard customizer for macOS
   { name = "macfuse"; }
   { name = "warp"; } # warp terminal
   { name = "rectangle"; } # Move and resize windows in macOS using keyboard shortcuts or snap areas
