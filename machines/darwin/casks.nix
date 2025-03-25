@@ -68,4 +68,6 @@
   # Remote Desktop
   { name = "teamviewer"; }
 
+  # Mobile devices
+  { name = "localsend"; } # cross-platform alternative to AirDrop
 ]
