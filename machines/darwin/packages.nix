@@ -69,6 +69,5 @@ with pkgs;
   starship
 
   # System tools
-  karabiner-elements # Keyboard customizer for macOS
   mkalias # Create and manage aliases for files and directories
 ]
