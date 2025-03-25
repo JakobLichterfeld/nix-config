@@ -38,7 +38,6 @@ with pkgs;
 
   # infrastructure
   ansible-lint
-  gpsbabel-gui
 
   # Writing
   texliveFull
