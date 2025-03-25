@@ -55,7 +55,6 @@ with pkgs;
   normalize # Tool for adjusting the volume of wave files
   timidity # Software synthesizer
   ffmpeg # Audio/video encoder
-  audacity # Audio editor
 
   # Text and terminal utilities
   htop
