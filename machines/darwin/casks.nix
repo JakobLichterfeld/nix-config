@@ -54,6 +54,7 @@
   { name = "luminance-hdr"; } # HDR imaging application
   { name = "hugin"; } # Panorama photo stitcher
   { name = "imageoptim"; } # Image optimizer
+  { name = "inkscape"; } # Vector graphics editor
   { name = "gimp"; } # GNU Image Manipulation Program
   { name = "flowvision"; } # Image viewer
 
