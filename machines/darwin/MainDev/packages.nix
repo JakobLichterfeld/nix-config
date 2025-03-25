@@ -10,7 +10,6 @@ with pkgs;
   docker-compose
 
   # Development tools
-  wireshark
   # john # disabled because of Avast quarantine
   shellcheck
   shfmt
