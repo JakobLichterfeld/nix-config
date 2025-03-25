@@ -31,7 +31,6 @@ with pkgs;
   git
   git-crypt
   android-tools
-  meld
 
   # infrastructure
   ansible

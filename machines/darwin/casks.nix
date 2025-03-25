@@ -13,6 +13,9 @@
   { name = "slack"; }
   { name = "zoom"; }
 
+  # Development
+  { name = "dehesselle-meld"; } # Visual diff and merge tool
+
   # Design Tools
   { name = "figma"; }
   { name = "sketch"; }
