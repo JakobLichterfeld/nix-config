@@ -47,6 +47,7 @@
   { name = "libreoffice-language-pack"; }
   { name = "microsoft-auto-update"; }
   { name = "deepl"; }
+  { name = "xournal++"; } # handwriting Notetaking software with PDF annotation support
 
   # Image
   { name = "luminance-hdr"; } # HDR imaging application
