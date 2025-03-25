@@ -36,6 +36,7 @@ with pkgs;
   nodejs
 
   # infrastructure
+  ansible
   ansible-lint
 
   # Writing

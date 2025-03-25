@@ -32,9 +32,6 @@ with pkgs;
   git-crypt
   android-tools
 
-  # infrastructure
-  ansible
-
   # File management
   rclone
   unison # Bidirectional file synchronizer
