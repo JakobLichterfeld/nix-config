@@ -16,4 +16,7 @@
   # Image
   { name = "geeqie"; } # Image viewer
 
+  # GPS
+  { name = "gpsbabel"; } # GPS data conversion
+
 ]
