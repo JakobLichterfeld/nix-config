@@ -25,6 +25,7 @@
 
   # System Tools
   { name = "applite"; }
+  { name = "alt-tab"; } # Enable Windows-like alt-tab
   { name = "macfuse"; }
   { name = "warp"; } # warp terminal
   { name = "rectangle"; } # Move and resize windows in macOS using keyboard shortcuts or snap areas
