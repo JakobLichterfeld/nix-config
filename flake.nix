@@ -42,6 +42,12 @@
       url = "github:KRTirtho/homebrew-apps";
       flake = false;
     };
+    # sshfs-mac
+    homebrew-fuse = {
+      url = "github:gromgit/homebrew-fuse";
+      flake = false;
+    };
+
     home-manager = {
       # url = "github:nix-community/home-manager/release-24.11"; # gets timeouts
       url = "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz";

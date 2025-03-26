@@ -192,6 +192,22 @@
         "type": "github"
       }
     },
+    "homebrew-fuse": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1742480725,
+        "narHash": "sha256-45EEWHvQzbc9ueXLx5BAH1OzzTGLjAFtIc8gd4YZS4s=",
+        "owner": "gromgit",
+        "repo": "homebrew-fuse",
+        "rev": "897ca8b863d12edafc25a28d0536aa038b17dcf3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gromgit",
+        "repo": "homebrew-fuse",
+        "type": "github"
+      }
+    },
     "homebrew-spotube": {
       "flake": false,
       "locked": {
@@ -460,7 +476,8 @@
         "home-manager": "home-manager",
         "home-manager-darwin": "home-manager-darwin",
         "home-manager-darwin-unstable": "home-manager-darwin-unstable",
-        "homebrew-domt4-autoupdate": "homebrew-domt4-autoupdate",,
+        "homebrew-domt4-autoupdate": "homebrew-domt4-autoupdate",
+        "homebrew-fuse": "homebrew-fuse",
         "homebrew-spotube": "homebrew-spotube",
         "nix-darwin": "nix-darwin",
         "nix-darwin-unstable": "nix-darwin-unstable",
