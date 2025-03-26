@@ -34,6 +34,7 @@ in
     taps = {
       "domt4/homebrew-autoupdate" = inputs.homebrew-domt4-autoupdate;
       "krtirtho/homebrew-apps" = inputs.homebrew-spotube;
+      "gromgit/homebrew-fuse" = inputs.homebrew-fuse;
     };
 
     # Optional: Enable fully-declarative tap management

@@ -1,6 +1,6 @@
 [
   # System
-  { name = "gromgit/fuse/sshfs-mac"; } # Mount remote filesystems via SSH
+  { name = "sshfs-mac"; } # Mount remote filesystems via SSH, via gromgit/fuse tap
   { name = "rsync"; } # Fast, versatile, remote (and local) file-copying tool
   { name = "syncthing"; } # Continuous file synchronization program
 
