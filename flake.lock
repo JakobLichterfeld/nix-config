@@ -84,18 +84,6 @@
         "type": "github"
       }
     },
-    "domt4-autoupdate": {
-      "flake": false,
-      "locked": {
-        "narHash": "sha256-I078yQL74pd9GW9WNwkaeLVSV8NjnWdJPM5pj0zAF88=",
-        "type": "file",
-        "url": "https://github.com/DomT4/homebrew-autoupdate"
-      },
-      "original": {
-        "type": "file",
-        "url": "https://github.com/DomT4/homebrew-autoupdate"
-      }
-    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -185,6 +173,22 @@
         "owner": "nix-community",
         "ref": "master",
         "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "homebrew-domt4-autoupdate": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1740075617,
+        "narHash": "sha256-t3yXOepQeaKCPhufOOeW5lxn72q0efjPP6UGdjg2UO8=",
+        "owner": "DomT4",
+        "repo": "homebrew-autoupdate",
+        "rev": "2cb700aa873e9c0d66b9f462093b75ad0ddb735e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "DomT4",
+        "repo": "homebrew-autoupdate",
         "type": "github"
       }
     },
@@ -453,10 +457,10 @@
       "inputs": {
         "agenix": "agenix",
         "deploy-rs": "deploy-rs",
-        "domt4-autoupdate": "domt4-autoupdate",
         "home-manager": "home-manager",
         "home-manager-darwin": "home-manager-darwin",
         "home-manager-darwin-unstable": "home-manager-darwin-unstable",
+        "homebrew-domt4-autoupdate": "homebrew-domt4-autoupdate",,
         "homebrew-spotube": "homebrew-spotube",
         "nix-darwin": "nix-darwin",
         "nix-darwin-unstable": "nix-darwin-unstable",

@@ -32,7 +32,7 @@ in
 
     # Declarative tap management
     taps = {
-      "domt4/homebrew-autoupdate" = inputs.domt4-autoupdate;
+      "domt4/homebrew-autoupdate" = inputs.homebrew-domt4-autoupdate;
       "krtirtho/homebrew-apps" = inputs.homebrew-spotube;
     };
 
