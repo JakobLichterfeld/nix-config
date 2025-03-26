@@ -37,6 +37,11 @@
       url = "https://github.com/DomT4/homebrew-autoupdate";
       flake = false;
     };
+    # Spotube
+    homebrew-spotube = {
+      url = "github:KRTirtho/homebrew-apps";
+      flake = false;
+    };
     home-manager = {
       # url = "github:nix-community/home-manager/release-24.11"; # gets timeouts
       url = "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz";

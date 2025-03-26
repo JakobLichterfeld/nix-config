@@ -188,6 +188,22 @@
         "type": "github"
       }
     },
+    "homebrew-spotube": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1742149892,
+        "narHash": "sha256-k17QfC+ElG4J+LORvgj7EiAVFgKrgdhA9qftOckz+A0=",
+        "owner": "KRTirtho",
+        "repo": "homebrew-apps",
+        "rev": "99bc74919da7ab81df731144fe42227d47b42f8f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "KRTirtho",
+        "repo": "homebrew-apps",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -441,6 +457,7 @@
         "home-manager": "home-manager",
         "home-manager-darwin": "home-manager-darwin",
         "home-manager-darwin-unstable": "home-manager-darwin-unstable",
+        "homebrew-spotube": "homebrew-spotube",
         "nix-darwin": "nix-darwin",
         "nix-darwin-unstable": "nix-darwin-unstable",
         "nix-homebrew": "nix-homebrew",

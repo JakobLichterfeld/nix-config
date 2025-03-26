@@ -68,6 +68,7 @@
   { name = "audacity"; } # Audio editor
   { name = "musicbrainz-picard"; } # MusicBrainz tagger
   { name = "spotify"; } # Music streaming service
+  { name = "spotube"; } # Open source Spotify client, via krtirtho/homebrew-apps
 
   # Video
   { name = "vlc"; }
