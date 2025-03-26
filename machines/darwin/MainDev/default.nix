@@ -2,6 +2,7 @@
   inputs,
   pkgs,
   lib,
+  machinesSensitiveVars,
   ...
 }:
 let
@@ -10,6 +11,9 @@ let
   casks = import ./casks.nix;
 in
 {
+  networking = {
+    hostName = machinesSensitiveVars.MainDev.hostName;
+  };
   homebrew = {
     masApps = masApps;
     brews = brews;
