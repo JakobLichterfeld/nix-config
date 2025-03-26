@@ -14,6 +14,8 @@ in
   networking = {
     hostName = machinesSensitiveVars.MainDev.hostName;
   };
+  time.timeZone = "Europe/Berlin";
+
   homebrew = {
     masApps = masApps;
     brews = brews;
