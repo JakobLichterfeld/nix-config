@@ -21,6 +21,7 @@
   { name = "sketch"; }
 
   # File Sharing
+  { name = "google-drive"; }
   { name = "rsyncui"; }
 
   # Security
