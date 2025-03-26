@@ -33,8 +33,8 @@
     };
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
     # automatically update Homebrew, installed via declarative tap management of nix-homebrew
-    domt4-autoupdate = {
-      url = "https://github.com/DomT4/homebrew-autoupdate";
+    homebrew-domt4-autoupdate = {
+      url = "github:DomT4/homebrew-autoupdate";
       flake = false;
     };
     # Spotube
