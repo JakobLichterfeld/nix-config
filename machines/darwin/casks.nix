@@ -78,4 +78,7 @@
   # Mobile devices
   { name = "android-file-transfer"; }
   { name = "localsend"; } # cross-platform alternative to AirDrop
+
+  # AI
+  { name = "chatgpt"; }
 ]
