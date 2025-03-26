@@ -176,6 +176,38 @@
         "type": "github"
       }
     },
+    "homebrew-cask": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1742998938,
+        "narHash": "sha256-H01lTCc3YQ962lrYhX535JQcAygAqBeHW/kuTuAaLLo=",
+        "owner": "homebrew",
+        "repo": "homebrew-cask",
+        "rev": "41aafd5347c7aac3f79042139a3e94d08ef0ac4c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "homebrew",
+        "repo": "homebrew-cask",
+        "type": "github"
+      }
+    },
+    "homebrew-core": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1742999283,
+        "narHash": "sha256-//kgrmUSwSc0VARpZ3wws7GQCbPWuZsSGrq9A1bsEGY=",
+        "owner": "homebrew",
+        "repo": "homebrew-core",
+        "rev": "03fa17bb7f9a89e623fc64910240993d0c701b15",
+        "type": "github"
+      },
+      "original": {
+        "owner": "homebrew",
+        "repo": "homebrew-core",
+        "type": "github"
+      }
+    },
     "homebrew-domt4-autoupdate": {
       "flake": false,
       "locked": {
@@ -476,6 +508,8 @@
         "home-manager": "home-manager",
         "home-manager-darwin": "home-manager-darwin",
         "home-manager-darwin-unstable": "home-manager-darwin-unstable",
+        "homebrew-cask": "homebrew-cask",
+        "homebrew-core": "homebrew-core",
         "homebrew-domt4-autoupdate": "homebrew-domt4-autoupdate",
         "homebrew-fuse": "homebrew-fuse",
         "homebrew-spotube": "homebrew-spotube",

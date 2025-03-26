@@ -1,4 +1,5 @@
 {
+  config,
   inputs,
   pkgs,
   lib,
@@ -32,15 +33,17 @@ in
 
     # Declarative tap management
     taps = {
+      "homebrew/homebrew-core" = inputs.homebrew-core;
+      "homebrew/homebrew-cask" = inputs.homebrew-cask;
       "domt4/homebrew-autoupdate" = inputs.homebrew-domt4-autoupdate;
       "krtirtho/homebrew-apps" = inputs.homebrew-spotube;
       "gromgit/homebrew-fuse" = inputs.homebrew-fuse;
     };
 
-    # Optional: Enable fully-declarative tap management
+    # Enable fully-declarative tap management
     #
     # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
-    mutableTaps = true;
+    mutableTaps = false;
   };
 
   homebrew = {
@@ -55,6 +58,7 @@ in
       no_quarantine = true;
     };
 
+    taps = builtins.attrNames config.nix-homebrew.taps;
     masApps = masApps;
     brews = brews;
     casks = casks;
