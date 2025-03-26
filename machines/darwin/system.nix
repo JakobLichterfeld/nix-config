@@ -76,12 +76,12 @@
         # Display full POSIX path as Finder window title
         _FXShowPosixPathInTitle = true;
 
-        # Use column view in all Finder windows by default
+        # Use list view in all Finder windows by default
         # Icon View   : `icnv`
         # List View   : `Nlsv`
         # Column View : `clmv`
         # Cover Flow  : `Flwv`
-        FXPreferredViewStyle = "clmnv";
+        FXPreferredViewStyle = "Nlsv";
 
       };
       CustomUserPreferences = {
