@@ -20,6 +20,7 @@ with pkgs;
   age # A simple, modern and secure encryption tool with small explicit keys, no config options, and UNIX-style composability.
   gnupg
   pinentry-curses # GnuPG’s interface to passphrase input
+  pinentry-tty # GnuPG’s interface to passphrase input
   pinentry_mac # GnuPG’s interface to passphrase input on Mac
 
   # Fonts
