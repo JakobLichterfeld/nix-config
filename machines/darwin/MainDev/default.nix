@@ -9,6 +9,7 @@ let
   masApps = import ./masApps.nix;
   brews = import ./brews.nix;
   casks = import ./casks.nix;
+  manualSensitive = import ./manualSensitive.nix { };
 in
 {
   networking = {
@@ -29,4 +30,8 @@ in
   environment.systemPackages =
     with inputs.nixpkgs-unstable.legacyPackages."${pkgs.system}";
     pkgs.callPackage ./packages.nix { };
+
+  system.activationScripts.postUserActivation =
+    manualSensitive.system.activationScripts.postUserActivation;
+
 }

@@ -11,6 +11,7 @@ let
   masApps = import ./masApps.nix;
   brews = import ./brews.nix;
   casks = import ./casks.nix;
+  manualSensitive = import ./manualSensitive.nix { };
 in
 {
   imports = [
@@ -148,4 +149,7 @@ in
     }
 
   ];
+
+  system.activationScripts.postUserActivation =
+    manualSensitive.system.activationScripts.postUserActivation;
 }
