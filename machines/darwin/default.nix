@@ -16,7 +16,7 @@ in
 {
   imports = [
     ../../modules/cachix
-    ./dock
+    ./../../modules/darwin/dock
     ./system.nix
   ];
   nix-homebrew = {
