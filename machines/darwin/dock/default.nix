@@ -5,6 +5,8 @@
   ...
 }:
 
+# Original source: https://gist.github.com/antifuchs/10138c4d838a63c0a05e725ccd7bccdd
+
 with lib;
 let
   cfg = config.local.dock;
