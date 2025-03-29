@@ -23,10 +23,6 @@ with pkgs;
   pinentry-tty # GnuPG’s interface to passphrase input
   pinentry_mac # GnuPG’s interface to passphrase input on Mac
 
-  # Fonts
-  dejavu_fonts
-  fira-code-nerdfont
-
   # Communication Tools
 
   # Development tools
