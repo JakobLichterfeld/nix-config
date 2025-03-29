@@ -150,6 +150,12 @@ in
 
   ];
 
+  # Fonts
+  fonts.packages = with pkgs; [
+    dejavu_fonts
+    fira-code-nerdfont # nerd-fonts.fira-code
+  ];
+
   system.activationScripts.postUserActivation =
     manualSensitive.system.activationScripts.postUserActivation;
 }
