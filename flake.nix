@@ -132,6 +132,7 @@
           inherit machinesSensitiveVars;
         };
         modules = [
+          # Base
           inputs.agenix.darwinModules.default
           nix-homebrew.darwinModules.nix-homebrew
 
@@ -147,6 +148,11 @@
           (inputs.nixpkgs-darwin.lib.attrsets.recursiveUpdate (homeManagerCfg true [ ]) {
             home-manager.users.jakob.home.homeDirectory = inputs.nixpkgs-darwin.lib.mkForce "/Users/jakob";
             home-manager.users.jakob.home.stateVersion = "24.11";
+            home-manager.users.jakob.imports = [
+              agenix.homeManagerModules.default
+              nix-index-database.hmModules.nix-index
+              ./users/jakob/dots.nix
+            ];
           })
         ];
       };
