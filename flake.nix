@@ -133,15 +133,21 @@
         };
         modules = [
           inputs.agenix.darwinModules.default
+          nix-homebrew.darwinModules.nix-homebrew
+
+          # Imports
+          ./machines/darwin
+          ./machines/darwin/MainDev
+
+          # Services
+          # ./modules/tailscale
+
+          # Users
           inputs.home-manager-darwin.darwinModules.home-manager
           (inputs.nixpkgs-darwin.lib.attrsets.recursiveUpdate (homeManagerCfg true [ ]) {
             home-manager.users.jakob.home.homeDirectory = inputs.nixpkgs-darwin.lib.mkForce "/Users/jakob";
             home-manager.users.jakob.home.stateVersion = "24.11";
           })
-          nix-homebrew.darwinModules.nix-homebrew
-          ./machines/darwin
-          ./machines/darwin/MainDev
-          # ./modules/tailscale
         ];
       };
 
