@@ -15,6 +15,7 @@ with pkgs;
   wget
   mkpasswd
   fd # A simple, fast and user-friendly alternative to find
+  difftastic # A syntax-aware diff tool
 
   # Encryption and security tools
   age # A simple, modern and secure encryption tool with small explicit keys, no config options, and UNIX-style composability.
