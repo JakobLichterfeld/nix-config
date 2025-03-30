@@ -35,6 +35,23 @@
       shell() {
           nix-shell '<nixpkgs>' -A "$1"
       }
+
+      # enable frum
+      # eval "$(frum init)"
+
+      # TeX
+      export PATH="/Library/TeX/texbin:$PATH"
+
+      export GPG_TTY=$(tty)
+
+      # Dart
+      export PATH="$PATH:/usr/local/opt/dart/libexec/bin"
+      # add dart pub cache to path
+      export PATH="$PATH":"$HOME/.pub-cache/bin"
+
+      # Flutter
+      # add flutter to path if using manual install
+      #export PATH="$PATH":"$HOME/development/flutter/bin"
     '';
   };
 }
