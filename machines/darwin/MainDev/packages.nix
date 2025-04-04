@@ -21,6 +21,7 @@ with pkgs;
   # fastlane # do not use, use with gem bundler
   openssl_3
   ruby
+  rubyPackages.cocoapods
   devenv # Fast, Declarative, Reproducible, and Composable Developer Environments
   nil # Nix Language server: An incremental analysis assistant for writing in Nix
 
