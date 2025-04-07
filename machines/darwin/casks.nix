@@ -5,7 +5,6 @@
   # Communication Tools
   { name = "microsoft-teams"; }
   { name = "whatsapp"; }
-  { name = "skype"; }
   { name = "telegram"; }
   { name = "signal"; }
   { name = "threema"; }
