@@ -14,6 +14,9 @@
   "Aiko" = 1672085276;
   "Whisper Transkription" = 1668083311;
 
+  # Video
+  "DaVinci Resolve" = 571213070;
+
   # Remote
   "Windows App" = 1295203466;
 }
