@@ -11,7 +11,7 @@
   "Xcode" = 497799835;
   "Apple Developer" = 640199958;
   "Transporter" = 1450874784;
-  "TesFlight" = 899247664;
+  "TestFlight" = 899247664;
 
   # Writing
   "reMarkable desktop" = 1276493162;
