@@ -80,6 +80,9 @@
   { name = "android-file-transfer"; }
   { name = "localsend"; } # cross-platform alternative to AirDrop
 
+  # Marketing
+  { name = "google-ads-editor"; }
+
   # AI
   { name = "chatgpt"; }
 ]
