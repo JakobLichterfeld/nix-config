@@ -17,11 +17,10 @@ with pkgs;
   html-tidy
   elixir
   chromedriver
-  # cocoapods #do not use, use gem install cocoapods
+  cocoapods # or use, gem install cocoapods
   # fastlane # do not use, use with gem bundler
   openssl_3
   ruby
-  rubyPackages.cocoapods
   bundler # Ruby dependency manager
   rubocop # Ruby static code analyzer and formatter
   devenv # Fast, Declarative, Reproducible, and Composable Developer Environments
