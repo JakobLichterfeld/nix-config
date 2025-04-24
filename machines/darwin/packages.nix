@@ -16,6 +16,7 @@ with pkgs;
   mkpasswd
   fd # A simple, fast and user-friendly alternative to find
   difftastic # A syntax-aware diff tool
+  undollar # eats the dollar sign in the command you just pasted into your terminal
 
   # Encryption and security tools
   age # A simple, modern and secure encryption tool with small explicit keys, no config options, and UNIX-style composability.
