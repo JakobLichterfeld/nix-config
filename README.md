@@ -135,13 +135,6 @@ build: `nix --experimental-features 'nix-command flakes' build .#darwinConfigura
 
 install: `nix run nix-darwin -- switch --flake .#MainDev`
 
-as macOS does not allow writing to `/` write to symlink:
-
-```shell
-printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
-/System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
-```
-
 apply changes: `./result/sw/bin/darwin-rebuild switch --flake .#MainDev`
 
 </p></details>
