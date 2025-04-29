@@ -216,5 +216,42 @@
           ];
         };
       };
+
+      # Update dependencies and switch
+      # This is a shell script that updates the flake.lock file, commits it, pushes it to the remote repository, and then switches to the new configuration.
+      # run with `nix run .#updateDependenciesAndSwitch`
+      apps = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (system: {
+        updateDependenciesAndSwitch = let
+          pkgs = import nixpkgs { inherit system; };
+        in
+          let app = pkgs.writeShellApplication {
+            name = "update-dependencies-and-switch";
+            text = ''
+              set -e
+
+              echo "[1/4] Updating flake.lock..."
+              nix --experimental-features 'nix-command flakes' flake update
+
+              echo "[2/4] Committing lockfile..."
+              git add flake.lock
+              git commit -m "chore: update flake.lock with new dependency revisions" || true
+
+              echo "[3/4] Pushing to remote..."
+              #git push
+
+              if [[ "$(uname)" == "Darwin" ]]; then
+                echo "[4/4] Switching to new config with nix-darwin..."
+                nix run nix-darwin -- switch --flake .#
+              else
+                echo "[4/4] Not running nix-darwin switch on non-macOS system."
+              fi
+            '';
+          };
+          in {
+            type = "app";
+            program = "${app}/bin/update-dependencies-and-switch";
+          };
+      });
     };
 }
+
