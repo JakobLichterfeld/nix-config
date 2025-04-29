@@ -161,7 +161,7 @@
         MainServer = {
           hostname = machinesSensitiveVars.MainServer.ipAddress;
           profiles.system = {
-            sshUser = "jakob";
+            sshUser = machinesSensitiveVars.MainServer.username;
             user = machinesSensitiveVars.MainServer.username;
             sshOpts = [
               "-p"
