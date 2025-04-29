@@ -20,7 +20,7 @@
           "1.0.0.1"
         ];
       };
-      #Enable Blocking of certian domains.
+      #Enable Blocking of certain domains.
       blocking = {
         blackLists = {
           ads = [
