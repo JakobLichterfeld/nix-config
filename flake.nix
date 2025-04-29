@@ -142,6 +142,7 @@
 
           # Services
           # ./modules/tailscale
+          # ./modules/zerotier
 
           # Users
           inputs.home-manager-darwin.darwinModules.home-manager
@@ -187,6 +188,7 @@
             agenix.nixosModules.default
             ./modules/zfs-root
             ./modules/tailscale
+            ./modules/zerotier
             ./modules/mergerfs-uncache
             ./modules/podman
 
