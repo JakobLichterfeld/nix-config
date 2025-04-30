@@ -39,6 +39,11 @@
             "https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt"
             "https://v.firebog.net/hosts/Easyprivacy.txt"
             "https://v.firebog.net/hosts/Prigent-Ads.txt"
+            pkgs.writeTextFile
+            {
+              name = "blacklist.txt";
+              text = builtins.readFile ./blacklist.txt;
+            }
           ];
           adult = [
             "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts"
