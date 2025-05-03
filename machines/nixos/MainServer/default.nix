@@ -96,13 +96,15 @@
 
   virtualisation.docker.storageDriver = "overlay2";
 
-  mover = {
+  services.mover = {
+    enable = true;
     cacheArray = vars.cacheArray;
     backingArray = vars.slowerArray;
     percentageFree = 60;
-    excludedPaths =
-      [
-      ];
+    excludedPaths = [
+      ".DS_Store"
+      ".cache"
+    ];
   };
 
   services.prometheus = {
