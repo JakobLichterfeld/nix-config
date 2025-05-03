@@ -189,7 +189,7 @@
             ./modules/zfs-root
             ./modules/tailscale
             ./modules/zerotier
-            ./modules/mergerfs-uncache
+            ./modules/mover
             ./modules/podman
 
             # Imports
