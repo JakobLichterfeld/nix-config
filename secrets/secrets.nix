@@ -11,6 +11,7 @@ in
   "sambaPassword.age".publicKeys = allKeys;
   "tailscaleAuthKey.age".publicKeys = allKeys;
   "dnsApiCredentials.age".publicKeys = allKeys;
+  "tgNotifyCredentials.age".publicKeys = allKeys;
 }
 
 # to add a secret run `EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e hashedUserPassword.age`

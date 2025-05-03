@@ -105,7 +105,7 @@ in
           Group = config.services.mover.group;
         };
         onFailure = lib.lists.optionals (config ? tg-notify && config.tg-notify.enable) [
-          # "tg-notify@%i.service"
+          "tg-notify@%i.service"
         ];
       };
       timers.mergerfs-uncache = {
