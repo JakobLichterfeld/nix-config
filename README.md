@@ -44,7 +44,7 @@ Partition and mount the drives using [disko](https://github.com/nix-community/di
 curl https://raw.githubusercontent.com/JakobLichterfeld/nix-config/main/machines/nixos/MainServer/filesystems/disko.nix \
     -o /tmp/disko.nix
 nix --experimental-features "nix-command flakes" run github:nix-community/disko \
-    -- --mode disko /tmp/disko.nix
+    -- --mode destroy,format,mount /tmp/disko.nix
 ```
 
 Install programs needed for system installation
