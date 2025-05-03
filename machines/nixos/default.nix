@@ -112,4 +112,9 @@
     gnupg
     pinentry
   ];
+
+  tg-notify = {
+    enable = true;
+    credentialsFile = config.age.secrets.tgNotifyCredentials.path;
+  };
 }
