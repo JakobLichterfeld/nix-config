@@ -36,10 +36,6 @@
       bootDevices = [ "nvme-FIKWOT_FN960_2TB_AA234330561" ];
       immutable = true;
       removableEfi = true;
-      sshUnlock = {
-        enable = false;
-        authorizedKeys = [ ];
-      };
     };
   };
   networking = {
