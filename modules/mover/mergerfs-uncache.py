@@ -142,9 +142,9 @@ if __name__ == "__main__":
             subprocess.run(
                 [
                     "/run/wrappers/bin/sudo",
-                    "/run/current-system/sw/bin/chown",
+                    "/run/current-system/sw/bin/chgrp",
                     "-R",
-                    f"{uid}:{gid}",
+                    f"{gid}",
                     f"{cache_path}",
                 ]
             )
@@ -161,9 +161,9 @@ if __name__ == "__main__":
             subprocess.run(
                 [
                     "/run/wrappers/bin/sudo",
-                    "/run/current-system/sw/bin/chown",
+                    "/run/current-system/sw/bin/chgrp",
                     "-R",
-                    f"{uid}:{gid}",
+                    f"{gid}",
                     f"{slow_path}",
                 ]
             )
