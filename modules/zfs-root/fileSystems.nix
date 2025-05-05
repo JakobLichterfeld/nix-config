@@ -2,30 +2,17 @@
 # see: https://github.com/ne9z/dotfiles-flake/blob/openzfs-guide/modules/fileSystems/default.nix
 let
   cfg = config.zfs-root.fileSystems;
-  inherit (lib)
-    mkIf
-    types
-    mkDefault
-    mkOption
-    mkMerge
-    mapAttrsToList
-    ;
 in
 {
   options.zfs-root.fileSystems = {
-    datasets = mkOption {
+    datasets = lib.mkOption {
       description = "Set mountpoint for datasets";
-      type = types.attrsOf types.str;
+      type = lib.types.attrsOf lib.types.str;
       default = { };
     };
-    bindmounts = mkOption {
-      description = "Set mountpoint for bindmounts";
-      type = types.attrsOf types.str;
-      default = { };
-    };
-    efiSystemPartitions = mkOption {
+    efiSystemPartitions = lib.mkOption {
       description = "Set mountpoint for efi system partitions";
-      type = types.listOf types.str;
+      type = lib.types.listOf lib.types.str;
       default = [ ];
     };
     swapPartitions = mkOption {
@@ -33,32 +20,27 @@ in
       type = types.listOf types.str;
       default = [ ];
     };
+    enableDockerZvol = lib.mkOption {
+      description = "Enable a separate ext4 zvol for Docker/Podman data";
+      type = lib.types.bool;
+      default = true;
+    };
+    bindmounts = lib.mkOption {
+      description = "Set mountpoint for bindmounts";
+      type = lib.types.attrsOf lib.types.str;
+      default = { };
+    };
   };
-  config.fileSystems = mkMerge (
-    mapAttrsToList (dataset: mountpoint: {
+  config.fileSystems = lib.mkMerge (
+    lib.mapAttrsToList (dataset: mountpoint: {
       "${mountpoint}" = {
         device = "${dataset}";
         fsType = "zfs";
-        options = [
-          "X-mount.mkdir"
-          "noatime"
-        ];
         neededForBoot = true;
       };
     }) cfg.datasets
-    ++ mapAttrsToList (bindsrc: mountpoint: {
-      "${mountpoint}" = {
-        device = "${bindsrc}";
-        fsType = "none";
-        options = [
-          "bind"
-          "X-mount.mkdir"
-          "noatime"
-        ];
-      };
-    }) cfg.bindmounts
     ++ map (esp: {
-      "/boot/esp" = {
+      "/boot/efis/${esp}" = {
         device = "${config.zfs-root.boot.devNodes}/${esp}";
         fsType = "vfat";
         options = [
@@ -71,6 +53,23 @@ in
         ];
       };
     }) cfg.efiSystemPartitions
+    ++ lib.mapAttrsToList (bindsrc: mountpoint: {
+      "${mountpoint}" = {
+        device = "${bindsrc}";
+        fsType = "none";
+        options = [
+          "bind"
+          "X-mount.mkdir"
+          "noatime"
+        ];
+      };
+    }) cfg.bindmounts
+    ++ lib.lists.optional cfg.enableDockerZvol {
+      "/var/lib/containers" = {
+        device = "/dev/zvol/rpool/docker";
+        fsType = "ext4";
+      };
+    }
   );
   config.swapDevices = mkDefault (
     map (swap: {
