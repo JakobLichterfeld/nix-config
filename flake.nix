@@ -190,15 +190,12 @@
             ./modules/tailscale
             ./modules/zerotier
             ./modules/mover
-            ./modules/podman
 
             # Imports
-            ./machines/nixos
             ./machines/nixos/MainServer
 
             # Services
-            ./services/traefik
-            ./services/monitoring
+            ./services/traefik #TODO: replace with caddy
             ./services/homepage
 
             # Users
