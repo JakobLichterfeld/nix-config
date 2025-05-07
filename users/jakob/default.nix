@@ -1,15 +1,15 @@
 {
   config,
+  inputs,
   pkgs,
-  lib,
   ...
 }:
 {
-  age.secrets.hashedUserPassword.file = ../../secrets/hashedUserPassword.age; # content is result of: `mkpasswd -m sha-512`
-
   nix.settings.trusted-users = [ "jakob" ];
 
-  # age.identityPaths = ["/Users/jakob/.ssh/id_ed25519"];
+  age.secrets.hashedUserPassword = {
+    file = "${inputs.secrets}/hashedUserPassword.age"; # content is result of: `mkpasswd -m sha-512`
+  };
 
   nix-homebrew.users = "jakob"; # User owning the Homebrew prefix
 
@@ -26,6 +26,7 @@
           "users"
           "video"
           "podman"
+          "input"
         ];
         group = "jakob";
         openssh.authorizedKeys.keys = [

@@ -1,5 +1,4 @@
 {
-  inputs,
   config,
   lib,
   vars,
@@ -12,23 +11,6 @@
     ./snapraid.nix
   ];
 
-  services.zfs = {
-    autoScrub.enable = true;
-    zed.settings = {
-      ZED_DEBUG_LOG = "/tmp/zed.debug.log";
-      ZED_EMAIL_ADDR = [ "noreply" ];
-      ZED_EMAIL_PROG = "/run/current-system/sw/bin/notify";
-      ZED_EMAIL_OPTS = "-t '@SUBJECT@' -m";
-
-      ZED_NOTIFY_INTERVAL_SECS = 3600;
-      ZED_NOTIFY_VERBOSE = true;
-
-      ZED_USE_ENCLOSURE_LEDS = true;
-      ZED_SCRUB_AFTER_RESILVER = true;
-    };
-    zed.enableMail = false;
-  };
-
   programs.fuse.userAllowOther = true;
 
   environment.systemPackages = with pkgs; [
@@ -40,51 +22,10 @@
     mergerfs-tools
   ];
 
-  fileSystems."/" = lib.mkForce {
-    device = "rpool/nixos/empty";
-    fsType = "zfs";
-  };
+  # This fixes the weird mergerfs permissions issue
+  boot.initrd.systemd.enable = true;
 
-  fileSystems."/nix" = lib.mkForce {
-    device = "rpool/nixos/nix";
-    fsType = "zfs";
-    neededForBoot = true;
-  };
-
-  fileSystems."/etc/nixos" = lib.mkForce {
-    device = "rpool/nixos/config";
-    fsType = "zfs";
-    neededForBoot = true;
-  };
-
-  fileSystems."/boot" = lib.mkForce {
-    device = "bpool/nixos/root";
-    fsType = "zfs";
-  };
-
-  fileSystems."/home" = lib.mkForce {
-    device = "rpool/nixos/home";
-    fsType = "zfs";
-    neededForBoot = true;
-  };
-
-  fileSystems."/persist" = lib.mkForce {
-    device = "rpool/nixos/persist";
-    fsType = "zfs";
-    neededForBoot = true;
-  };
-
-  fileSystems."/var/log" = lib.mkForce {
-    device = "rpool/nixos/var/log";
-    fsType = "zfs";
-  };
-
-  fileSystems."/var/lib/containers" = lib.mkForce {
-    device = "/dev/zvol/rpool/docker";
-    fsType = "ext4";
-  };
-
-  fileSystems.${vars.cacheArray} = lib.mkForce {
+  fileSystems.${vars.cacheArray} = {
     device = "cachepool/cache";
     fsType = "zfs";
   };
