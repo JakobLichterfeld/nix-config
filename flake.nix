@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable"; # see overlay in overlays/default.nix
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-24.11-darwin";
     nixpkgs-darwin-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     nix-darwin = {
@@ -97,6 +97,15 @@
     let
       machinesSensitiveVars = builtins.fromJSON (builtins.readFile "${self}/machinesSensitiveVars.json");
 
+      # overlay to use nodejs 22 as fallback to mitigate build issue with nodejs20, see bug report https://github.com/NixOS/nixpkgs/issues/402079
+      nodeOverlay = final: prev: {
+        nodejs = prev.nodejs_22;
+        nodejs-slim = prev.nodejs-slim_22;
+
+        nodejs_20 = prev.nodejs_22;
+        nodejs-slim_20 = prev.nodejs-slim_22;
+      };
+
       homeManagerCfg = userPackages: extraImports: {
         home-manager = {
           useGlobalPkgs = false; # makes hm use nixos's pkgs value
@@ -107,6 +116,7 @@
             {
               nixpkgs.overlays = [
                 inputs.nur.overlay
+                nodeOverlay
               ];
               #home.homeDirectory = nixpkgs-darwin.lib.mkForce "/Users/jakob";
               shell = pkgs.zsh;
@@ -132,6 +142,12 @@
           inherit machinesSensitiveVars;
         };
         modules = [
+          {
+            nixpkgs.overlays = [
+              nodeOverlay
+            ];
+          }
+
           # Base
           inputs.agenix.darwinModules.default
           nix-homebrew.darwinModules.nix-homebrew
