@@ -7,52 +7,39 @@
   ...
 }:
 {
-  age.secrets.hashedUserPassword.file = ../../secrets/hashedUserPassword.age; # content is result of: `mkpasswd -m sha-512`
-
-  system.stateVersion = "23.11";
-
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 30d";
-  };
-  nix.optimise = {
-    automatic = true;
-    dates = [ "weekly" ];
-  };
-
+  system.stateVersion = "22.11";
   system.autoUpgrade = {
-    enable = true;
-    flake = inputs.self.outPath;
+    enable = false;
+    flake = "/etc/nixos\\?submodules=1";
     flags = [
       "--update-input"
+      "nixpkgs"
+      "-L" # print build logs
     ];
-    dates = "06:00";
+    dates = "Sat *-*-* 06:00:00";
     randomizedDelaySec = "45min";
+    allowReboot = false;
   };
 
-  networking.useDHCP = false;
-  networking.networkmanager.enable = false;
-  nixpkgs = {
-    overlays = [
-      inputs.nur.overlay
-    ];
-    config = {
-      allowUnfree = true;
-      allowUnfreePredicate = (_: true);
-    };
-  };
+  imports = [
+    ./filesystems
+    ./nix
+  ];
+
+  time.timeZone = "Europe/Berlin";
+
+  console.keyMap = "de";
 
   users.users = {
     root = {
       initialHashedPassword = config.age.secrets.hashedUserPassword.path;
-      openssh.authorizedKeys.keys = [ "sshKey_placeholder" ];
     };
   };
   services.openssh = {
     enable = lib.mkDefault true;
     settings = {
       PasswordAuthentication = lib.mkDefault false;
+      LoginGraceTime = 0;
       PermitRootLogin = "no";
     };
     ports = [ machinesSensitiveVars.MainServer.sshPort ];
@@ -68,34 +55,41 @@
       }
     ];
   };
-  networking.firewall.allowedTCPPorts = [ machinesSensitiveVars.MainServer.sshPort ];
-
-  nix.settings.experimental-features = lib.mkDefault [
-    "nix-command"
-    "flakes"
-  ];
-
-  console.keyMap = "de";
 
   programs.git.enable = true;
   programs.mosh.enable = true;
   programs.htop.enable = true;
+  # programs.neovim = {
+  #   enable = true;
+  #   viAlias = true;
+  #   vimAlias = true;
+  #   defaultEditor = true;
+  # };
+
+  email = {
+    enable = false;
+    # fromAddress = "";
+    # toAddress = "";
+    # smtpServer = "";
+    # smtpUsername = "";
+    # smtpPasswordPath = config.age.secrets.smtpPassword.path;
+  };
 
   security = {
     doas.enable = lib.mkDefault false;
     sudo = {
       enable = lib.mkDefault true;
-      wheelNeedsPassword = lib.mkDefault true;
+      wheelNeedsPassword = lib.mkDefault false;
     };
   };
 
-  networking.firewall.allowPing = true;
+  # homelab.motd.enable = true;
 
   environment.systemPackages = with pkgs; [
     wget
     iperf3
     eza # A modern, maintained replacement for ls
-    neofetch
+    fastfetch
     (python312.withPackages (ps: with ps; [ pip ]))
     tmux
     rsync
@@ -104,17 +98,16 @@
     nmap
     jq
     ripgrep
+    sqlite
     inputs.agenix.packages."${system}".default
     lm_sensors
     jc
     moreutils
+    lsof
+    fatrace
     git-crypt
     gnupg
-    pinentry
+    bfg-repo-cleaner
   ];
 
-  tg-notify = {
-    enable = true;
-    credentialsFile = config.age.secrets.tgNotifyCredentials.path;
-  };
 }

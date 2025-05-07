@@ -1,82 +1,64 @@
 {
-  lib,
   config,
-  vars,
+  lib,
   pkgs,
+  vars,
   machinesSensitiveVars,
   ...
 }:
 {
   age.identityPaths = [ "/persist/ssh/id_ed25519_main_server" ];
 
-  boot.initrd.availableKernelModules = [
-    "xhci_pci"
-    "ahci"
-    "nvme"
-    "usb_storage"
-    "sd_mod"
-  ];
-  boot.initrd.kernelModules = [
-    "xhci_pci"
-    "ahci"
-    "nvme"
-    "usb_storage"
-    "sd_mod"
-  ];
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.kernelParams = [ "consoleblank=60" ];
-  hardware.cpu.intel.updateMicrocode = true;
-  hardware.enableRedistributableFirmware = true;
-  hardware.opengl.enable = true;
-  hardware.opengl.driSupport = true;
-  boot.zfs.forceImportRoot = true;
-  zfs-root = {
-    boot = {
-      devNodes = "/dev/disk/by-id/";
-      bootDevices = [ "nvme-FIKWOT_FN960_2TB_AA234330561" ];
-      immutable = true;
-      removableEfi = true;
+  nixpkgs.config.packageOverrides = pkgs: {
+    vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+  };
+  hardware = {
+    enableRedistributableFirmware = true;
+    cpu.intel.updateMicrocode = true;
+    graphics = {
+      enable = true;
+      extraPackages = with pkgs; [
+        intel-media-driver
+        intel-vaapi-driver
+        vaapiVdpau
+        intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
+        vpl-gpu-rt # QSV on 11th gen or newer
+      ];
     };
   };
+  boot = {
+    zfs.forceImportRoot = true;
+    kernelParams = [
+      "consoleblank=60"
+      "acpi_enforce_resources=lax"
+    ];
+    kernelModules = [
+      "kvm-intel"
+      "coretemp"
+      "jc42"
+      "lm78"
+      "xhci_pci"
+      "ahci"
+      "nvme"
+      "usb_storage"
+      "sd_mod"
+    ];
+  };
   networking = {
+    useDHCP = true;
+    networkmanager.enable = false;
     hostName = machinesSensitiveVars.MainServer.hostName;
-    hostId = machinesSensitiveVars.MainServer.hostId;
-    firewall.enable = true;
-  };
-  time.timeZone = "Europe/Berlin";
-
-  imports = [
-    ./filesystems
-    ./shares
-  ];
-
-  powerManagement.powertop.enable = false;
-
-  systemd.enableEmergencyMode = false; # as we have no console of any kind attached to the server, we don't want to end up in emergency mode
-
-  systemd.services.hd-idle = {
-    description = "HD spin down daemon";
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "${pkgs.hd-idle}/bin/hd-idle -i 900";
-    };
-  };
-
-  networking = {
-    nameservers = [ machinesSensitiveVars.MainServer.nameservers ];
-    defaultGateway = machinesSensitiveVars.MainServer.defaultGateway;
     interfaces = {
-      enp1s0.ipv4 = {
-        addresses = [
+      enp1s0 = {
+        ipv4.addresses = [
           {
             address = machinesSensitiveVars.MainServer.ipAddress;
             prefixLength = 24;
           }
         ];
       };
-      enp2s0.ipv4 = {
-        addresses = [
+      enp2s0 = {
+        ipv4.addresses = [
           {
             address = machinesSensitiveVars.MainServer.ipAddress2;
             prefixLength = 24;
@@ -84,18 +66,60 @@
         ];
       };
     };
+    nameservers = [ machinesSensitiveVars.MainServer.nameservers ];
+    defaultGateway = {
+      address = machinesSensitiveVars.MainServer.defaultGateway;
+      interface = "enp1s0";
+    };
+    hostId = machinesSensitiveVars.MainServer.hostId;
+    firewall = {
+      enable = true;
+      allowPing = true;
+      trustedInterfaces = [
+        "enp1s0"
+        "enp2s0"
+        "tailscale0"
+      ];
+    };
   };
-
-  networking.firewall.allowedTCPPorts = [
-    5201 # iperf3
+  zfs-root = {
+    boot = {
+      partitionScheme = {
+        biosBoot = "-part1";
+        efiBoot = "-part3";
+        swap = "-part5";
+        bootPool = "-part2";
+        rootPool = "-part4";
+        cachePool = "-part6";
+      };
+      bootDevices = [ "nvme-FIKWOT_FN960_2TB_AA234330561" ];
+      immutable = true;
+      availableKernelModules = [
+        "xhci_pci"
+        "ahci"
+        "nvme"
+        "usb_storage"
+        "sd_mod"
+      ];
+      removableEfi = true;
+    };
+  };
+  imports = [
+    ./filesystems
+    ./backup
+    ./homelab
   ];
 
   virtualisation.docker.storageDriver = "overlay2";
+
+  system.autoUpgrade.enable = true;
 
   services.mover = {
     enable = true;
     cacheArray = vars.cacheArray;
     backingArray = vars.slowerArray;
+    user = config.homelab.user;
+    group = config.homelab.group;
     percentageFree = 60;
     excludedPaths = [
       ".DS_Store"
@@ -103,19 +127,7 @@
     ];
   };
 
-  services.prometheus = {
-    enable = true;
-    exporters = {
-      node = {
-        enable = true;
-        openFirewall = true;
-        enabledCollectors = [
-          "systemd"
-          "zfs"
-        ];
-      };
-    };
-  };
+  powerManagement.powertop.enable = false;
 
   environment.systemPackages = with pkgs; [
     pciutils # A collection of programs for inspecting and manipulating configuration of PCI devices
@@ -124,10 +136,16 @@
     hd-idle # Spins down external disks after a period of idle time
     hddtemp # Tool for displaying hard disk temperature
     smartmontools # Tools for monitoring the health of hard drives
-    powertop # Analyze power consumption on Intel-based laptops
     cpufrequtils # Tools to display or change the CPU governor settings
-    intel-gpu-tools # Tools for debugging the Intel graphics driver
     gnumake
     gcc
+    intel-gpu-tools # Tools for debugging the Intel graphics driver
+    powertop # Analyze power consumption on Intel-based laptops
   ];
+
+  tg-notify = {
+    enable = true;
+    credentialsFile = config.age.secrets.tgNotifyCredentials.path;
+  };
+
 }

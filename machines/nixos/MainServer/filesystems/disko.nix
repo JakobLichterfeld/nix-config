@@ -1,9 +1,13 @@
+{ config, builtins, ... }:
+let
+  diskMain = builtins.head config.zfs-root.bootDevices;
+in
 {
   disko.devices = {
     disk = {
       main = {
         type = "disk";
-        device = "/dev/disk/by-id/nvme-FIKWOT_FN960_2TB_AA234330561";
+        device = "/dev/disk/by-id/${diskMain}";
         content = {
           type = "gpt";
           partitions = {
@@ -17,7 +21,7 @@
               content = {
                 type = "filesystem";
                 format = "vfat";
-                mountpoint = "/boot/esp";
+                mountpoint = "/boot/efis/${diskMain}-part3";
               };
             };
             bpool = {
@@ -85,6 +89,7 @@
 
       rpool = {
         type = "zpool";
+        # mode = "mirror";
         options = {
           ashift = "12";
           autotrim = "on";
@@ -100,7 +105,6 @@
           "com.sun:auto-snapshot" = "false";
         };
         mountpoint = "/";
-
         datasets = {
           nixos = {
             type = "zfs_fs";
@@ -128,7 +132,8 @@
           };
           "nixos/var/lib" = {
             type = "zfs_fs";
-            options.mountpoint = "none";
+            options.mountpoint = "legacy";
+            mountpoint = "/var/log";
           };
           "nixos/config" = {
             type = "zfs_fs";
