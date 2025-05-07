@@ -184,21 +184,20 @@
             vars = import ./machines/nixos/MainServer/vars.nix;
           };
           modules = [
-            # Base
-            agenix.nixosModules.default
+            ./homelab
+
+            ./machines/nixos/_common
+            ./machines/nixos/MainServer
+
             ./modules/zfs-root
             ./modules/tailscale
             ./modules/zerotier
+            ./modules/tg-notify
             ./modules/mover
 
-            # Imports
-            ./machines/nixos/MainServer
+            #"${inputs.secrets}/default.nix" #TODO: add default.nix to secrets folder
+            agenix.nixosModules.default
 
-            # Services
-            ./services/traefik #TODO: replace with caddy
-            ./services/homepage
-
-            # Users
             ./users/jakob
             home-manager.nixosModules.home-manager
             {
