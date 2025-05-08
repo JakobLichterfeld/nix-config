@@ -7,7 +7,7 @@
   { name = "android-commandlinetools"; }
   { name = "android-platform-tools"; }
   { name = "flutter"; }
-  { name = "usbimager"; } # minimal GUI app that can write/read to disk images and USB drives
+  { name = "balenaetcher"; }
   { name = "orbstack"; } # Fast, light, powerful way to run containers
   { name = "wireshark"; } # Network protocol analyzer
 
