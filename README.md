@@ -31,6 +31,12 @@ ssh-copy-id -i ~/.ssh/id_ed25519 root@nixos_installation_ip
 ssh root@nixos_installation_ip
 ```
 
+SSH into the host with agent forwarding enabled
+
+```bash
+ssh -A root@nixos_installation_ip
+```
+
 Enable Nix Flakes functionality
 
 ```bash
@@ -77,10 +83,11 @@ Unlock the git-crypt vault
 
 ```bash
 cd /mnt/etc/nixos
+chown -R root:root .
 git-crypt unlock nix-config_local.key.asc
 ```
 
-Install system and apply configuration
+Install system
 
 ```bash
 nixos-install \
@@ -92,7 +99,7 @@ nixos-install \
 Unmount the filesystems
 
 ```bash
-umount "/mnt/boot/esp"
+umount "/mnt/boot/efis/*"
 umount -Rl "/mnt"
 cd /
 zpool export -a
