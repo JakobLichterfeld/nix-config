@@ -268,6 +268,37 @@
             type = "app";
             program = "${app}/bin/update-dependencies-and-switch";
           };
+
+        pullAndSwitch =
+          let
+            pkgs = import nixpkgs { inherit system; };
+          in
+          let
+            app = pkgs.writeShellApplication {
+              name = "pull-and-switch";
+              text = ''
+                set -e
+
+                echo "[1/2] Pulling latest config from Git..."
+                if [[ "$(uname)" != "Darwin" ]]; then
+                  cd /etc/nixos
+                fi
+                git pull
+
+                if [[ "$(uname)" == "Darwin" ]]; then
+                  echo "[2/2] Rebuilding and switching macOS system..."
+                  nix run nix-darwin -- switch --flake .#
+                else
+                  echo "[2/2] Rebuilding and switching Linux system..."
+                  nixos-rebuild switch --flake .#
+                fi
+              '';
+            };
+          in
+          {
+            type = "app";
+            program = "${app}/bin/pull-and-switch";
+          };
       });
     };
 }

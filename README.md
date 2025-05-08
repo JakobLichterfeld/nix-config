@@ -117,6 +117,12 @@ git pull
 nixos-rebuild switch --flake /etc/nixos#MainServer
 ```
 
+or use the flake command
+
+```bash
+nix --experimental-features 'nix-command flakes' run .#pullAndSwitch
+```
+
 </p></details>
 
 ## MainDev (Mac)
