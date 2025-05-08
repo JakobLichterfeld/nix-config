@@ -135,7 +135,9 @@ Managed by `nix-darwin` and `home-manager`. Impure packages and applications are
 
 Enable Rosetta to build x86 binaries with Apple Silicon: `softwareupdate --install-rosetta --agree-to-license`
 
-Update dependencies: `nix --experimental-features 'nix-command flakes' run .#updateDependenciesAndSwitch`
+Update dependencies and install: `nix --experimental-features 'nix-command flakes' run .#updateDependenciesAndSwitch`
+
+or
 
 build: `nix --experimental-features 'nix-command flakes' build .#darwinConfigurations."MainDev".system`
 
