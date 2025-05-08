@@ -124,7 +124,7 @@ in
     # App Store
     { path = "/System/Applications/App Store.app/"; }
     # Applite
-    { path = "/Applications/Applite.app/"; }
+    # { path = "/Applications/Applite.app/"; }
     # System Settings
     { path = "/System/Applications/System Settings.app/"; }
     # Calculator
