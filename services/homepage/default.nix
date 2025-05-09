@@ -53,7 +53,7 @@ in
         autoStart = true;
         extraOptions = [
           "-l=traefik.enable=true"
-          "-l=traefik.http.routers.home.rule=Host(`${machinesSensitiveVars.MainServer.domainNameTail}`)"
+          "-l=traefik.http.routers.home.rule=Host(`${machinesSensitiveVars.MainServer.baseDomain}`)"
           "-l=traefik.http.services.home.loadbalancer.server.port=3000"
         ];
         volumes = [

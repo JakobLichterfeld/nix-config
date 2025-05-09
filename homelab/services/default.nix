@@ -18,16 +18,32 @@
     security.acme = {
       acceptTerms = true;
       defaults.email = "${machinesSensitiveVars.MainServer.letsencryptEmail}";
-      certs.${config.homelab.baseDomain} = {
-        reloadServices = [ "caddy.service" ];
-        domain = "${config.homelab.baseDomain}";
-        extraDomainNames = [ "*.${config.homelab.baseDomain}" ];
-        dnsProvider = "${machinesSensitiveVars.MainServer.dnschallengeProvider}";
-        dnsResolver = "1.1.1.1:53";
-        dnsPropagationCheck = true;
-        group = config.services.caddy.group;
-        environmentFile = config.age.secrets.dnsApiCredentials.path;
-      };
+      certs = lib.mergeAttrs [
+        {
+          "${config.homelab.baseDomain}" = {
+            reloadServices = [ "caddy.service" ];
+            domain = "${config.homelab.baseDomain}";
+            extraDomainNames = [ "*.${config.homelab.baseDomain}" ];
+            dnsProvider = "${machinesSensitiveVars.MainServer.dnschallengeProvider}";
+            dnsResolver = "1.1.1.1:53";
+            dnsPropagationCheck = true;
+            group = config.services.caddy.group;
+            environmentFile = config.age.secrets.dnsApiCredentials.path;
+          };
+        }
+        (lib.optionalAttrs config.homelab.baseDomainFallback {
+          "${config.homelab.baseDomainFallback}" = {
+            reloadServices = [ "caddy.service" ];
+            domain = "${config.homelab.baseDomainFallback}";
+            extraDomainNames = [ "*.${config.homelab.baseDomainFallback}" ];
+            dnsProvider = "${machinesSensitiveVars.MainServer.dnschallengeProvider}";
+            dnsResolver = "1.1.1.1:53";
+            dnsPropagationCheck = true;
+            group = config.services.caddy.group;
+            environmentFile = config.age.secrets.dnsApiCredentials.path;
+          };
+        })
+      ];
     };
     services.caddy = {
       enable = true;
