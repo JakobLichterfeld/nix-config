@@ -21,9 +21,11 @@ in
       enable = true;
       group = hl.group; # Group to run Syncthing as
       user = hl.user; # User to run Syncthing as
-      dataDir = "/mnt/data1/sync"; # Default folder for new synced folders
-      configDir = "/mnt/data1/sync/.config/syncthing"; # Folder for Syncthing's settings and keys
+      dataDir = "${vars.mainArray}/sync"; # Default folder for new synced folders
+      configDir = "${vars.serviceConfigRoot}/syncthing"; # Folder for Syncthing's settings and keys
       guiAddress = "0.0.0.0:8384"; # Listen on all interfaces
+      overrideFolders = false;
+      overrideDevices = false;
     };
   };
 }
