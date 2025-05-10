@@ -48,6 +48,9 @@ in
     };
     services = {
       enable = true;
+
+      blocky.enable = true;
+
       homepage = {
         enable = true;
         misc = [
