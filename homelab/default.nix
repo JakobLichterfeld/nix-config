@@ -1,4 +1,10 @@
-{ lib, config, vars,... }:
+{
+  lib,
+  config,
+  vars,
+  machinesSensitiveVars,
+  ...
+}:
 let
   cfg = config.homelab;
 in
