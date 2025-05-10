@@ -10,6 +10,8 @@ End of 2023 I migrated to Nix.
 
 ## MainServer (Intel N100)
 
+[Hardware documentation](machines/nixos/MainServer/HARDWARE.md) | [System design documentation](machines/nixos/MainServer/design.md)
+
 <details><summary>Installation process</summary><p>
 
 Download [NixOS minimal ISO image](https://channels.nixos.org/nixos-24.11/latest-nixos-minimal-x86_64-linux.iso) copy it to a USB stick, using USBImager for example, see [creating bootable USB flash drive with a graphical tool](https://nixos.org/manual/nixos/stable/#sec-booting-from-usb).
