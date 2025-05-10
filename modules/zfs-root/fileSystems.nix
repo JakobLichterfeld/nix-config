@@ -15,9 +15,9 @@ in
       type = lib.types.listOf lib.types.str;
       default = [ ];
     };
-    swapPartitions = mkOption {
+    swapPartitions = lib.mkOption {
       description = "Set swap partitions";
-      type = types.listOf types.str;
+      type = lib.types.listOf lib.types.str;
       default = [ ];
     };
     enableDockerZvol = lib.mkOption {
@@ -71,13 +71,13 @@ in
       };
     }
   );
-  config.swapDevices = mkDefault (
+  config.swapDevices = lib.mkDefault (
     map (swap: {
       device = "${config.zfs-root.boot.devNodes}/${swap}";
-      discardPolicy = mkDefault "both";
+      discardPolicy = lib.mkDefault "both";
       randomEncryption = {
         enable = true;
-        allowDiscards = mkDefault true;
+        allowDiscards = lib.mkDefault true;
       };
     }) cfg.swapPartitions
   );
