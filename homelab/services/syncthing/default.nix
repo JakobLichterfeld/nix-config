@@ -3,6 +3,7 @@
   lib,
   vars,
   machinesSensitiveVars,
+  ...
 }:
 let
   service = "syncthing";
