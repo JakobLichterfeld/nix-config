@@ -64,6 +64,8 @@ in
           }
         ];
       };
+
+      syncthing.enable = true;
     };
   };
 }
