@@ -112,7 +112,7 @@
 
   virtualisation.docker.storageDriver = "overlay2";
 
-  system.autoUpgrade.enable = true;
+  system.autoUpgrade.enable = false;
 
   services.mover = {
     enable = true;
