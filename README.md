@@ -75,7 +75,7 @@ mkdir -p /mnt/persist/ssh
 exit
 scp ~/.ssh/id_ed25519_main_server root@nixos_installation_ip:/mnt/persist/ssh/id_ed25519_main_server
 scp ~/.ssh/nix-config_local.key.asc root@nixos_installation_ip:/mnt/etc/nixos/nix-config_local.key.asc
-ssh nixos@nixos_installation_ip
+ssh -A nixos@nixos_installation_ip
 chmod 700 /mnt/persist/ssh
 chmod 600 /mnt/persist/ssh/*
 ```
