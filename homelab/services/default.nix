@@ -18,7 +18,7 @@
     security.acme = {
       acceptTerms = true;
       defaults.email = "${machinesSensitiveVars.MainServer.letsencryptEmail}";
-      certs = lib.mergeAttrs [
+      certs = lib.mkMerge [
         {
           "${config.homelab.baseDomain}" = {
             reloadServices = [ "caddy.service" ];
@@ -31,7 +31,7 @@
             environmentFile = config.age.secrets.dnsApiCredentials.path;
           };
         }
-        (lib.optionalAttrs config.homelab.baseDomainFallback {
+        (lib.optionalAttrs (config.homelab.baseDomainFallback != null) {
           "${config.homelab.baseDomainFallback}" = {
             reloadServices = [ "caddy.service" ];
             domain = "${config.homelab.baseDomainFallback}";
