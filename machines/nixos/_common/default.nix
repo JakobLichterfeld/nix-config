@@ -66,14 +66,14 @@
   #   defaultEditor = true;
   # };
 
-  email = {
-    enable = false;
-    # fromAddress = "";
-    # toAddress = "";
-    # smtpServer = "";
-    # smtpUsername = "";
-    # smtpPasswordPath = config.age.secrets.smtpPassword.path;
-  };
+  # email = {
+  #   enable = true;
+  #   fromAddress = "";
+  #   toAddress = "";
+  #   smtpServer = "";
+  #   smtpUsername = "";
+  #   smtpPasswordPath = config.age.secrets.smtpPassword.path;
+  # };
 
   security = {
     doas.enable = lib.mkDefault false;
