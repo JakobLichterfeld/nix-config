@@ -30,7 +30,6 @@ From your host, copy the public SSH key to the server
 ```bash
 ssh-add ~/.ssh/id_ed25519
 ssh-copy-id -i ~/.ssh/id_ed25519 root@nixos_installation_ip
-ssh root@nixos_installation_ip
 ```
 
 SSH into the host with agent forwarding enabled
