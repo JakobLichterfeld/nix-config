@@ -1,6 +1,6 @@
-{ config, builtins, ... }:
+{ ... }:
 let
-  diskMain = builtins.head config.zfs-root.bootDevices;
+  diskMain = "nvme-FIKWOT_FN960_2TB_AA234330561";
 in
 {
   disko.devices = {
