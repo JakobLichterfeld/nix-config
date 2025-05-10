@@ -74,7 +74,7 @@ in
             ];
           };
 
-          blockType = zeroIp;
+          blockType = "zeroIp";
 
           #Configure what block categories are used
           clientGroupsBlock = {
