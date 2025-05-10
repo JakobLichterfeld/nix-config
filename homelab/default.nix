@@ -1,4 +1,4 @@
-{ lib, config, ... }:
+{ lib, config, vars,... }:
 let
   cfg = config.homelab;
 in
