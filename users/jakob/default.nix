@@ -11,8 +11,6 @@
     file = "${inputs.secrets}/hashedUserPassword.age"; # content is result of: `mkpasswd -m sha-512`
   };
 
-  nix-homebrew.users = "jakob"; # User owning the Homebrew prefix
-
   users = {
     users = {
       jakob = {

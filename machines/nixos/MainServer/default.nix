@@ -112,8 +112,6 @@
 
   virtualisation.docker.storageDriver = "overlay2";
 
-  system.autoUpgrade.enable = false;
-
   services.mover = {
     enable = true;
     cacheArray = vars.cacheArray;
