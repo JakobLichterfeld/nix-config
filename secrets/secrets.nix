@@ -7,10 +7,10 @@ let
   ];
 in
 {
+  "dnsApiCredentials.age".publicKeys = allKeys;
   "hashedUserPassword.age".publicKeys = allKeys;
   "sambaPassword.age".publicKeys = allKeys;
   "tailscaleAuthKey.age".publicKeys = allKeys;
-  "dnsApiCredentials.age".publicKeys = allKeys;
   "tgNotifyCredentials.age".publicKeys = allKeys;
 }
 

@@ -208,7 +208,7 @@
             ./modules/tg-notify
             ./modules/mover
 
-            #"${inputs.secrets}/default.nix" #TODO: add default.nix to secrets folder
+            secrets/default.nix
             agenix.nixosModules.default
 
             ./users/jakob

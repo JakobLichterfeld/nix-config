@@ -7,10 +7,6 @@
 {
   nix.settings.trusted-users = [ "jakob" ];
 
-  age.secrets.hashedUserPassword = {
-    file = "${inputs.secrets}/hashedUserPassword.age"; # content is result of: `mkpasswd -m sha-512`
-  };
-
   users = {
     users = {
       jakob = {

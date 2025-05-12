@@ -5,9 +5,6 @@
   ...
 }:
 {
-  age.secrets.tailscaleAuthKey.file = ../../secrets/tailscaleAuthKey.age; # generate for max 180 day at https://login.tailscale.com/admin/settings/keys
-  # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e tailscaleAuthKey.age
-
   environment.systemPackages = [ pkgs.tailscale ];
 
   networking.firewall.trustedInterfaces = [ "tailscale0" ];
