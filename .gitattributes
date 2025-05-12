@@ -2,10 +2,19 @@
 machines.nix filter=git-crypt diff=git-crypt
 machinesSensitiveVars.nix filter=git-crypt diff=git-crypt
 machinesSensitiveVars.json filter=git-crypt diff=git-crypt
+
 services/homepage/bookmarks.yaml filter=git-crypt diff=git-crypt
 services/homepage/services.yaml filter=git-crypt diff=git-crypt
+
 services/blocky/blacklist.txt filter=git-crypt diff=git-crypt
 services/blocky/whitelist.txt filter=git-crypt diff=git-crypt
+homelab/services/blocky/blacklist.txt filter=git-crypt diff=git-crypt
+homelab/services/blocky/whitelist.txt filter=git-crypt diff=git-crypt
+**/blacklist.txt filter=git-crypt diff=git-crypt
+**/whitelist.txt filter=git-crypt diff=git-crypt
+
 users/jakob/git.nix filter=git-crypt diff=git-crypt
+
 machines/darwin/MainDev/manualSensitive.nix filter=git-crypt diff=git-crypt
 machines/darwin/manualSensitive.nix filter=git-crypt diff=git-crypt
+manualSensitive.nix filter=git-crypt diff=git-crypt
