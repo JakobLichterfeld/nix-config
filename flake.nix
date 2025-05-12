@@ -65,8 +65,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nur.url = "github:nix-community/nur"; # Nix User Repository: User contributed nix packages
-
     deploy-rs.url = "github:serokell/deploy-rs";
   };
 
@@ -115,7 +113,6 @@
             { config, pkgs, ... }:
             {
               nixpkgs.overlays = [
-                inputs.nur.overlay
                 nodeOverlay
               ];
               #home.homeDirectory = nixpkgs-darwin.lib.mkForce "/Users/jakob";
