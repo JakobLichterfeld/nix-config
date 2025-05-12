@@ -53,11 +53,10 @@ in
               "https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt"
               "https://v.firebog.net/hosts/Easyprivacy.txt"
               "https://v.firebog.net/hosts/Prigent-Ads.txt"
-              pkgs.writeTextFile
-              {
+              (pkgs.writeTextFile {
                 name = "blacklist.txt";
                 text = builtins.readFile ./blacklist.txt;
-              }
+              }).outPath
             ];
             adult = [
               "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts"
@@ -66,11 +65,10 @@ in
           };
           whiteLists = {
             ads = [
-              pkgs.writeTextFile
-              {
+              (pkgs.writeTextFile {
                 name = "whitelist.txt";
                 text = builtins.readFile ./whitelist.txt;
-              }
+              }).outPath
             ];
           };
 
