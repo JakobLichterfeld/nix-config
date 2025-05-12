@@ -57,8 +57,8 @@ nix --experimental-features "nix-command flakes" run github:nix-community/disko 
 Install programs needed for system installation
 
 ```bash
-if ! command -v git; then nix-env -f '<nixpkgs>' -iA git; fi
-if ! command -v git-crypt;  then nix-env -f '<nixpkgs>' -iA git-crypt; fi
+nix-env -f '<nixpkgs>' -iA git
+nix-env -f '<nixpkgs>' -iA git-crypt
 ```
 
 Clone this repository
