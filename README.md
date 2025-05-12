@@ -74,7 +74,7 @@ Put the private and GPG key into place (required for secret management)
 mkdir -p /mnt/persist/ssh
 exit
 scp ~/.ssh/id_ed25519_main_server root@nixos_installation_ip:/mnt/persist/ssh/id_ed25519_main_server
-scp ~/.ssh/nix-config_local.key.asc root@nixos_installation_ip:/mnt/etc/nixos/nix-config_local.key.asc
+scp ~/.ssh/nix-config_local.key.asc root@nixos_installation_ip:/mnt/persist/ssh/nix-config_local.key.asc
 ssh -A nixos@nixos_installation_ip
 chmod 700 /mnt/persist/ssh
 chmod 600 /mnt/persist/ssh/*
@@ -85,7 +85,7 @@ Unlock the git-crypt vault
 ```bash
 cd /mnt/etc/nixos
 chown -R root:root .
-git-crypt unlock nix-config_local.key.asc
+git-crypt unlock /mnt/persist/ssh/nix-config_local.key.asc
 ```
 
 Install system
