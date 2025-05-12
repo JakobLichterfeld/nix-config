@@ -1,4 +1,4 @@
-{ }:
+{ ... }:
 {
   age.secrets.dnsApiCredentials = {
     file = "dnsApiCredentials.age"; # content is according to the provider, see https://go-acme.github.io/lego/dns/
