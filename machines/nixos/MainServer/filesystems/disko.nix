@@ -177,7 +177,7 @@ in
           xattr = "sa";
           "com.sun:auto-snapshot" = "false";
         };
-        mountpoint = "none";
+        mountpoint = null;
 
         datasets = {
           cache = {
