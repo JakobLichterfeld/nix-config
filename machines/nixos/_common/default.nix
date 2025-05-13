@@ -56,6 +56,10 @@
     ];
   };
 
+  networking.firewall.allowedTCPPorts = [
+    machinesSensitiveVars.MainServer.sshPort
+  ];
+
   programs.git.enable = true;
   programs.mosh.enable = true;
   programs.htop.enable = true;
