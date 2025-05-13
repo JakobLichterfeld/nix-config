@@ -28,6 +28,7 @@
   fileSystems.${vars.cacheArray} = {
     device = "cachepool/cache";
     fsType = "zfs";
+    options = [ "zfsutil" ];
   };
 
   fileSystems."/mnt/data1" = {
