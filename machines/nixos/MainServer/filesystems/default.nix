@@ -28,7 +28,12 @@
   fileSystems.${vars.cacheArray} = {
     device = "cachepool/cache";
     fsType = "zfs";
-    options = [ "zfsutil" ];
+    options = [
+      "zfsutil"
+      "x-systemd.requires=zfs-import-cache.service"
+      "x-systemd.after=zfs-import-cache.service"
+      "x-systemd.after=zfs-mount.service"
+    ];
   };
 
   fileSystems."/mnt/data1" = {
