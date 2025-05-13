@@ -100,7 +100,7 @@ nixos-install \
 Unmount the filesystems
 
 ```bash
-umount "/mnt/boot/efis/*"
+umount /mnt/boot/efis/nvme-FIKWOT_FN960_2TB_AA234330561-part3/
 umount -Rl "/mnt"
 cd /
 zpool export -a
