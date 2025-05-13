@@ -32,7 +32,7 @@
 
   users.users = {
     root = {
-      initialHashedPassword = config.age.secrets.hashedUserPassword.path;
+      hashedPasswordFile = config.age.secrets.hashedUserPassword.path;
     };
   };
   services.openssh = {
