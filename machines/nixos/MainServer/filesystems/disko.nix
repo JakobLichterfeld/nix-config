@@ -177,12 +177,13 @@ in
           xattr = "sa";
           "com.sun:auto-snapshot" = "false";
         };
-        mountpoint = "/mnt/cache";
+        mountpoint = "none";
 
         datasets = {
           cache = {
             type = "zfs_fs";
-            options.mountpoint = "none";
+            options.mountpoint = "legacy";
+            mountpoint = "/mnt/cache";
           };
         };
       };
