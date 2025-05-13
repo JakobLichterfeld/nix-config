@@ -8,6 +8,7 @@ in
   services = lib.mkIf zfsEnabled {
     zfs = {
       autoScrub.enable = true;
+      trim.enable = true;
       zed.settings = {
         ZED_DEBUG_LOG = "/tmp/zed.debug.log";
         ZED_EMAIL_ADDR = lib.lists.optionals (config ? email) [ config.email.toAddress ];
