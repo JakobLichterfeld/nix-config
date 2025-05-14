@@ -71,7 +71,7 @@ in
             Glances = {
               header = false;
               style = "row";
-              columns = 4;
+              columns = 5;
             };
           }
           # {
@@ -174,6 +174,17 @@ in
                 }
                 {
                   Network = {
+                    widget = {
+                      type = "glances";
+                      url = "http://localhost:${port}";
+                      metric = "network:enp1s0";
+                      chart = false;
+                      version = 4;
+                    };
+                  };
+                }
+                {
+                  "Network 2" = {
                     widget = {
                       type = "glances";
                       url = "http://localhost:${port}";
