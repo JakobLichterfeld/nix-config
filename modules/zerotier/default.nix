@@ -12,4 +12,7 @@
       machinesSensitiveVars.MainServer.zerotierNetworkId
     ];
   };
+
+  networking.firewall.trustedInterfaces = [ machinesSensitiveVars.MainServer.zerotierNetworkAdapter ];
+  networking.firewall.allowedUDPPorts = [ config.services.zerotierone.port ];
 }
