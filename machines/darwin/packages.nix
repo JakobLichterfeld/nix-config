@@ -30,6 +30,7 @@ with pkgs;
   # Development tools
   git
   git-crypt
+  git-filter-repo
   android-tools
 
   # File management
