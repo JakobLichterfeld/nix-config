@@ -95,5 +95,10 @@ in
         group = cfg.group;
       };
     };
+
+    # Create config directory with the correct permissions and ownership.
+    systemd.tmpfiles.rules = lib.mkBefore [
+      "d ${cfg.mounts.config} 0775 ${cfg.user} ${cfg.group} - -"
+    ];
   };
 }
