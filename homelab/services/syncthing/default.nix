@@ -9,6 +9,10 @@ let
   service = "syncthing";
   cfg = config.homelab.services.syncthing;
   homelab = config.homelab;
+  configDir = "${vars.serviceConfigRoot}/syncthing";
+  directories = [
+  configDir
+];
 in
 {
   options.homelab.services.syncthing = {
@@ -17,6 +21,10 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
+
+    # Create directories for Syncthing with the correct permissions and ownership.
+    systemd.tmpfiles.rules = map (x: "d ${x} 0775 ${homelab.user} ${homelab.group} - -") directories;
+
     # Syncthing ports: 8384 for remote access to GUI
     # 22000 TCP and/or UDP for sync traffic
     # 21027/UDP for discovery
@@ -35,7 +43,7 @@ in
       group = homelab.group; # Group to run Syncthing as
       user = homelab.user; # User to run Syncthing as
       dataDir = "${vars.mainArray}/sync"; # Default folder for new synced folders
-      configDir = "${vars.serviceConfigRoot}/syncthing"; # Folder for Syncthing's settings and keys
+      configDir = configDir; # Folder for Syncthing's settings and keys
       guiAddress = "0.0.0.0:8384"; # Listen on all interfaces
       overrideFolders = false;
       overrideDevices = false;
