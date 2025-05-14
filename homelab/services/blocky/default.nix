@@ -81,13 +81,14 @@ in
               "adult"
             ];
           };
-
-          caching = {
-            minTime = "5m";
-            maxTime = "30m";
-            prefetching = true;
-          };
         };
+
+        caching = {
+          minTime = "5m";
+          maxTime = "30m";
+          prefetching = true;
+        };
+
         clientLookup.upstream = machinesSensitiveVars.MainServer.defaultGateway;
       };
 
