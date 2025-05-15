@@ -144,7 +144,7 @@ in
           {
             "Health Checks" = {
               header = true;
-              icon = "healthchecks-v2";
+              icon = "https://healthchecks.io/static/img/logo.svg";
               style = "column";
             };
           }
