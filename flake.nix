@@ -66,6 +66,11 @@
     };
 
     deploy-rs.url = "github:serokell/deploy-rs";
+
+    teslamate = {
+      url = "github:teslamate-org/teslamate?rev=c37638b320e0beea97c5d51fea51cd9fdbd07ce0"; # v2.0.0
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

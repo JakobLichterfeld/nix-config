@@ -66,6 +66,8 @@ in
       };
 
       syncthing.enable = true;
+
+      teslamate.enable = true;
     };
   };
 }

@@ -3,6 +3,7 @@
   lib,
   pkgs,
   machinesSensitiveVars,
+  inputs,
   ...
 }:
 {
@@ -97,8 +98,9 @@
   };
 
   imports = [
-    ./homepage
     ./blocky
+    ./homepage
     ./syncthing
+    ./teslamate
   ];
 }

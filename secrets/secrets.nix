@@ -11,6 +11,8 @@ in
   "hashedUserPassword.age".publicKeys = allKeys;
   "sambaPassword.age".publicKeys = allKeys;
   "tailscaleAuthKey.age".publicKeys = allKeys;
+  "teslamateEnv.age".publicKeys = allKeys;
+  "teslamateEnvABRP.age".publicKeys = allKeys;
   "tgNotifyCredentials.age".publicKeys = allKeys;
 }
 
