@@ -66,6 +66,11 @@ in
         };
       '';
       settings = {
+        theme = "dark";
+        language = "de";
+        color = "stone";
+        headerStyle = "underlined";
+
         layout = [
           {
             Glances = {
@@ -97,6 +102,7 @@ in
               header = true;
               icon = "mdi-lan";
               style = "column";
+              showStats = true;
             };
           }
           {
@@ -104,6 +110,7 @@ in
               header = true;
               icon = "si-tesla";
               style = "column";
+              showStats = true;
             };
           }
           {
@@ -131,6 +138,7 @@ in
               header = true;
               icon = "mdi-desktop-classic";
               style = "column";
+              showStats = true;
             };
           }
           {
