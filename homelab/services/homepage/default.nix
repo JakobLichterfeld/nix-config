@@ -93,8 +93,57 @@ in
           #   };
           # }
           {
+            Network = {
+              header = true;
+              icon = "mdi-lan";
+              style = "column";
+            };
+          }
+          {
+            Tesla = {
+              header = true;
+              icon = "si-tesla";
+              style = "column";
+            };
+          }
+          {
+            "Other Devices" = {
+              header = true;
+              icon = "mdi-devices";
+              style = "column";
+            };
+          }
+          {
+            Mobile = {
+              header = true;
+              icon = "si-oneplus";
+              style = "column";
+            };
+          }
+          {
             Services = {
               header = true;
+              style = "column";
+            };
+          }
+          {
+            System = {
+              header = true;
+              icon = "mdi-desktop-classic";
+              style = "column";
+            };
+          }
+          {
+            "Health Checks" = {
+              header = true;
+              icon = "healthchecks-v2";
+              style = "column";
+            };
+          }
+          {
+            "External Services" = {
+              header = true;
+              icon = "mdi-open-in-new";
               style = "column";
             };
           }
@@ -109,7 +158,14 @@ in
             # "Arr"
             # "Media"
             # "Downloads"
+            "Network"
+            "Tesla"
+            "Other Devices"
+            "Mobile"
             "Services"
+            "System"
+            "Health Checks"
+            "External Services"
             # "Smart Home"
           ];
           hl = config.homelab.services;
