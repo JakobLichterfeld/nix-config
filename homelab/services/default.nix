@@ -103,5 +103,6 @@
     ./syncthing
     ./teslamate
     ./teslamate-abrp
+    ./teslamate-telegram-bot
   ];
 }

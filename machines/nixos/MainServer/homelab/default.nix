@@ -149,6 +149,7 @@ in
 
       teslamate.enable = true;
       teslamate-abrp.enable = true;
+      teslamate-telegram-bot.enable = true;
     };
   };
 }

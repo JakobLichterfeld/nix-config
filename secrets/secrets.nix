@@ -13,6 +13,7 @@ in
   "tailscaleAuthKey.age".publicKeys = allKeys;
   "teslamateEnv.age".publicKeys = allKeys;
   "teslamateEnvABRP.age".publicKeys = allKeys;
+  "teslamateEnvTelegramBot.age".publicKeys = allKeys;
   "tgNotifyCredentials.age".publicKeys = allKeys;
 }
 

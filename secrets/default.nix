@@ -30,6 +30,11 @@
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e teslamateEnvABRP.age
   };
 
+  age.secrets.teslamateEnvTelegramBot = {
+    file = ./teslamateEnvTelegramBot.age; # content is the Teslamate Telegram Bot env file, so TELEGRAM_BOT_API_KEY= and TELEGRAM_BOT_CHAT_ID=
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e teslamateEnvABRP.age
+  };
+
   age.secrets.tgNotifyCredentials = {
     file = ./tgNotifyCredentials.age; # content is the telegram bot token and chat id according to modules/tg-notify
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e tgNotifyCredentials.age
