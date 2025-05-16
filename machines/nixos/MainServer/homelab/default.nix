@@ -53,14 +53,15 @@ in
 
       homepage = {
         enable = true;
-        misc = [
+        extraServices = [
           {
-            FritzBox = {
-              href = "http://${machinesSensitiveVars.MainServer.defaultGateway}";
-              siteMonitor = "http://${machinesSensitiveVars.MainServer.defaultGateway}";
-              description = "DSL/Cable Modem WebUI";
-              icon = "avm-fritzbox.png";
-            };
+            category = "Other Devices";
+            name = "FritzBox";
+            description = "DSL/Cable Modem WebUI";
+            href = "http://${machinesSensitiveVars.MainServer.defaultGateway}";
+            siteMonitor = "http://${machinesSensitiveVars.MainServer.defaultGateway}";
+
+            icon = "avm-fritzbox.png";
           }
         ];
       };

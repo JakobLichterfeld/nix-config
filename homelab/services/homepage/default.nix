@@ -34,6 +34,23 @@ in
       description = "Categories to group services on the homepage.";
     };
 
+    extraServices = lib.mkOption {
+      default = [ ];
+      type = lib.types.listOf (
+        lib.types.submodule {
+          options = {
+            category = lib.mkOption { type = lib.types.str; };
+            name = lib.mkOption { type = lib.types.str; };
+            description = lib.mkOption { type = lib.types.str; };
+            href = lib.mkOption { type = lib.types.str; };
+            siteMonitor = lib.mkOption { type = lib.types.str; };
+            icon = lib.mkOption { type = lib.types.str; };
+          };
+        }
+      );
+      description = "A list of extra services to show on the homepage.";
+    };
+
     misc = lib.mkOption {
       default = [ ];
       type = lib.types.listOf (
@@ -218,6 +235,17 @@ in
             (lib.attrsets.filterAttrs (
               name: value: value ? homepage && value.homepage.category == x
             ) homelab.services);
+
+          extraServicesByCategory =
+            cat:
+            lib.lists.forEach (lib.lists.filter (l: l.category == cat) cfg.extraServices) (l: {
+              "${l.name}" = {
+                icon = l.icon;
+                description = l.description;
+                href = l.href;
+                siteMonitor = l.siteMonitor;
+              };
+            });
         in
         lib.lists.forEach homepageCategories (cat: {
           "${cat}" =
@@ -229,7 +257,8 @@ in
                   href = "https://${hl.${x}.url}";
                   siteMonitor = "https://${hl.${x}.url}";
                 };
-              });
+              })
+            ++ extraServicesByCategory cat;
         })
         ++ [ { Misc = cfg.misc; } ]
         ++ [
