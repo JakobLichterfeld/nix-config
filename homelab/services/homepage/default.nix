@@ -14,6 +14,26 @@ in
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
     };
+
+    homepageCategories = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [
+        # "Arr"
+        # "Media"
+        # "Downloads"
+        "Network"
+        "Tesla"
+        "Other Devices"
+        "Mobile"
+        "Services"
+        "System"
+        "Health Checks"
+        "External Services"
+        # "Smart Home"
+      ];
+      description = "Categories to group services on the homepage.";
+    };
+
     misc = lib.mkOption {
       default = [ ];
       type = lib.types.listOf (
@@ -191,20 +211,7 @@ in
       };
       services =
         let
-          homepageCategories = [
-            # "Arr"
-            # "Media"
-            # "Downloads"
-            "Network"
-            "Tesla"
-            "Other Devices"
-            "Mobile"
-            "Services"
-            "System"
-            "Health Checks"
-            "External Services"
-            # "Smart Home"
-          ];
+          homepageCategories = cfg.homepageCategories;
           hl = config.homelab.services;
           homepageServices =
             x:
