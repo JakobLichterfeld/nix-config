@@ -213,7 +213,7 @@ in
           {
             "Health Checks" = {
               header = true;
-              icon = "check-network-outline";
+              icon = "mdi-check-network-outline";
               style = "column";
             };
           }
