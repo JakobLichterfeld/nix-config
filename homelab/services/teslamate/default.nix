@@ -126,7 +126,7 @@ in
               MQTT_SERVER = "127.0.0.1:${toString cfg.listenPortMqtt}";
             };
             log-driver = "journald";
-            dependsOn = [ "mosquitto.service" ];
+            dependsOn = [ "mosquitto.service" "teslamate.service" ];
           };
         };
       };
