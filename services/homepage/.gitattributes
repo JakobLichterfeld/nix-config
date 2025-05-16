@@ -1,3 +1,0 @@
-.gitattributes !filter !diff
-bookmarks.yaml filter=git-crypt diff=git-crypt
-services.yaml filter=git-crypt diff=git-crypt
