@@ -72,6 +72,7 @@ in
         headerStyle = "clean";
         statusStyle = "dot";
         hideVersion = "true";
+        disableUpdateCheck = "true";
 
         layout = [
           {
