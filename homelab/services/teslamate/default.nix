@@ -3,14 +3,12 @@
   lib,
   vars,
   inputs,
-  machinesSensitiveVars,
   ...
 }:
 let
   service = "teslamate";
   cfg = config.homelab.services.teslamate;
   homelab = config.homelab;
-  teslamate-abrp-version = "3.3.0";
 in
 {
   options.homelab.services.${service} = {
@@ -112,25 +110,6 @@ in
     };
 
     networking.firewall.allowedTCPPorts = [ cfg.listenPortMqtt ];
-
-    #ABRP integration
-    virtualisation = {
-      podman.enable = true;
-      oci-containers = {
-        containers = {
-          teslamate-abrp = {
-            image = "fetzu/teslamate-abrp:${teslamate-abrp-version}";
-            autoStart = true;
-            environmentFiles = [ config.age.secrets.teslamateEnvABRP.path ];
-            environment = {
-              MQTT_SERVER = "127.0.0.1:${toString cfg.listenPortMqtt}";
-            };
-            log-driver = "journald";
-            dependsOn = [ "mosquitto.service" "teslamate.service" ];
-          };
-        };
-      };
-    };
 
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;

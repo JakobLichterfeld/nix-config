@@ -102,5 +102,6 @@
     ./homepage
     ./syncthing
     ./teslamate
+    ./teslamate-abrp
   ];
 }

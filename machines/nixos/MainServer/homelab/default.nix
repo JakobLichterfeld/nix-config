@@ -148,6 +148,7 @@ in
       syncthing.enable = true;
 
       teslamate.enable = true;
+      teslamate-abrp.enable = true;
     };
   };
 }
