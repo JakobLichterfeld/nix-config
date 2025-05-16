@@ -60,8 +60,77 @@ in
             description = "DSL/Cable Modem WebUI";
             href = "http://${machinesSensitiveVars.MainServer.defaultGateway}";
             siteMonitor = "http://${machinesSensitiveVars.MainServer.defaultGateway}";
-
             icon = "avm-fritzbox.png";
+          }
+          {
+            category = "Other Devices";
+            name = "Devolo Powerline Adapter Wohnzimmer";
+            description = "Powerline Adapter im Wohnzimmer";
+            icon = "mdi-lan";
+            href = "http://${machinesSensitiveVars.Powerline.ipAddressLivingRoom}";
+          }
+          {
+            category = "Other Devices";
+            name = "Devolo Powerline Adapter Schlafzimmer";
+            description = "Powerline Adapter im Schlafzimmer";
+            icon = "mdi-lan";
+            href = "http://${machinesSensitiveVars.Powerline.ipAddressBedroom}";
+          }
+          {
+            category = "Mobile";
+            name = "Join";
+            description = "Service to seamless share clipboard, files, notifications";
+            icon = "https://play-lh.googleusercontent.com/hXPaRP8HSOYVgaMHCYx7mYOqb8hhcpVxFFz0_n61v543ZzxCME98chPwFlElv9M3D7U=w240-h480-rw";
+            href = "https://joinjoaomgcd.appspot.com";
+          }
+          {
+            category = "Mobile";
+            name = "WhatsApp Web";
+            description = "Quickly send and receive WhatsApp messages right from your browser";
+            icon = "whatsapp";
+            href = "https://web.whatsapp.com";
+          }
+          {
+            category = "Mobile";
+            name = "AirDroid ${machinesSensitiveVars.MobileMainDev.name}";
+            description = "Dateiübertragung und -verwaltung";
+            icon = "https://cdn.icon-icons.com/icons2/278/PNG/512/AirDroid_30195.png";
+            href = "https://${machinesSensitiveVars.MobileMainDev.ipAddress}:${machinesSensitiveVars.MobileMainDev.airDroidPort}";
+          }
+          {
+            category = "Mobile";
+            name = "AirDroid ${machinesSensitiveVars.MobileMainDevTablet.name}";
+            description = "Dateiübertragung und -verwaltung";
+            icon = "https://cdn.icon-icons.com/icons2/278/PNG/512/AirDroid_30195.png";
+            href = "https://${machinesSensitiveVars.MobileMainDevTablet.ipAddress}:${machinesSensitiveVars.MobileMainDevTablet.airDroidPort}";
+          }
+          {
+            category = "External Services";
+            name = "DuckDNS";
+            description = "Dynamic DNS for fixed public IP";
+            icon = "duckdns";
+            href = "https://www.duckdns.org/domains";
+          }
+          {
+            category = "External Services";
+            name = "Tailscale";
+            description = "Secure networks between devices";
+            icon = "tailscale";
+            href = "https://login.tailscale.com/admin/machines";
+          }
+          {
+            category = "External Services";
+            name = "Zerotier";
+            description = "Secure networks between devices";
+            icon = "si-zerotier";
+            href = "https://my.zerotier.com";
+          }
+          {
+            category = "External Services";
+            name = "HealthChecks";
+            description = "Cron Job Monitorings";
+            icon = "https://healthchecks.io/static/img/logo.svg";
+            href = "https://healthchecks.io/projects/fad147f3-3d1c-4a26-8a22-48dfd032b9f5/checks/";
           }
         ];
       };

@@ -213,7 +213,7 @@ in
           {
             "Health Checks" = {
               header = true;
-              icon = "https://healthchecks.io/static/img/logo.svg";
+              icon = "check-network-outline";
               style = "column";
             };
           }
