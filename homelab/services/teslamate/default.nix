@@ -7,8 +7,10 @@
 }:
 let
   service = "teslamate";
-  cfg = config.homelab.services.teslamate;
+  cfg = config.homelab.services.${service};
   homelab = config.homelab;
+  serviceSubService = "teslamate_grafana";
+  cfgSubService = config.homelab.services.${serviceSubService};
 in
 {
   options.homelab.services.${service} = {
@@ -47,10 +49,6 @@ in
       type = lib.types.int;
       default = 5432;
     };
-    urlGrafana = lib.mkOption {
-      type = lib.types.str;
-      default = "${service}_grafana.${homelab.baseDomain}";
-    };
     listenPortGrafana = lib.mkOption {
       type = lib.types.int;
       default = 3000;
@@ -58,6 +56,37 @@ in
     listenPortMqtt = lib.mkOption {
       type = lib.types.int;
       default = 1883;
+    };
+  };
+
+  options.homelab.services.${serviceSubService} = {
+    # used for automatic generation of the service entry in the homepage
+    enable = lib.mkEnableOption {
+      description = "Enable ${serviceSubService}";
+    };
+    url = lib.mkOption {
+      type = lib.types.str;
+      default = "${serviceSubService}.${homelab.baseDomain}";
+    };
+    listenPort = lib.mkOption {
+      type = lib.types.int;
+      default = cfg.listenPortGrafana;
+    };
+    homepage.name = lib.mkOption {
+      type = lib.types.str;
+      default = "${serviceSubService}";
+    };
+    homepage.description = lib.mkOption {
+      type = lib.types.str;
+      default = "Visualization of TeslaMate data.";
+    };
+    homepage.icon = lib.mkOption {
+      type = lib.types.str;
+      default = "grafana";
+    };
+    homepage.category = lib.mkOption {
+      type = lib.types.str;
+      default = "Tesla";
     };
   };
 
@@ -96,6 +125,11 @@ in
       };
     };
 
+    homelab.services.teslamate_grafana = {
+      enable = true;
+      listenPort = homelab.services.teslamate.listenPortGrafana;
+    };
+
     # Mosquitto MQTT broker
     services.mosquitto = {
       enable = true;
@@ -111,6 +145,7 @@ in
 
     networking.firewall.allowedTCPPorts = [ cfg.listenPortMqtt ];
 
+    # TeslaMate
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
@@ -118,10 +153,11 @@ in
       '';
     };
 
-    services.caddy.virtualHosts."${cfg.urlGrafana}" = {
+    # Grafana
+    services.caddy.virtualHosts."${cfgSubService.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
-        reverse_proxy http://127.0.0.1:${toString cfg.listenPortGrafana}
+        reverse_proxy http://127.0.0.1:${toString cfgSubService.listenPort}
       '';
     };
   };
