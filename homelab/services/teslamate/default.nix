@@ -3,6 +3,7 @@
   lib,
   vars,
   inputs,
+  pkgs,
   ...
 }:
 let
@@ -93,6 +94,11 @@ in
   imports = [ inputs.teslamate.nixosModules.default ];
 
   config = lib.mkIf cfg.enable {
+
+    # idiomatic backup and restore scripts
+    environment.systemPackages = with pkgs; [
+      (callPackage ./backup_and_restore.nix { })
+    ];
 
     services.teslamate = {
       enable = true;
