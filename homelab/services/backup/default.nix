@@ -91,7 +91,7 @@ in
         enable = config.services.postgresql.enable;
         databases = config.services.postgresql.ensureDatabases;
         startAt = "*-*-* 03:00:00";
-        location = "var/backup/postgresql";
+        location = "/var/backup/postgresql";
         compression = "zstd";
         compressionLevel = 12;
       };
