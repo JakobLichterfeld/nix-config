@@ -10,6 +10,16 @@
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e hashedUserPassword.age
   };
 
+  age.secrets.resticPassword = {
+    file = ./resticPassword.age; # content is the restic password
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e resticPassword.age
+  };
+
+  age.secrets.s3StorageEnv = {
+    file = ./s3StorageEnv.age; # content is the s3 storage env file, so AWS_DEFAULT_REGION=, AWS_ACCESS_KEY_ID= and AWS_SECRET_ACCESS_KEY=
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e s3StorageEnv.age
+  };
+
   age.secrets.sambaPassword = {
     file = ./sambaPassword.age; # content is the samba password
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e sambaPassword.age

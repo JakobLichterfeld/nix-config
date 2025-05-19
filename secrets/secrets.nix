@@ -9,6 +9,8 @@ in
 {
   "dnsApiCredentials.age".publicKeys = allKeys;
   "hashedUserPassword.age".publicKeys = allKeys;
+  "resticPassword.age".publicKeys = allKeys;
+  "s3StorageEnv.age".publicKeys = allKeys;
   "sambaPassword.age".publicKeys = allKeys;
   "tailscaleAuthKey.age".publicKeys = allKeys;
   "teslamateEnv.age".publicKeys = allKeys;

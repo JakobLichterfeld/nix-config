@@ -49,6 +49,15 @@ in
     services = {
       enable = true;
 
+      backup = {
+        enable = true;
+        passwordFile = config.age.secrets.resticPassword.path;
+        s3.enable = true;
+        s3.url = machinesSensitiveVars.S3.url;
+        s3.environmentFile = config.age.secrets.s3StorageEnv.path;
+        local.enable = true;
+      };
+
       blocky.enable = true;
 
       homepage = {

@@ -98,6 +98,7 @@
   };
 
   imports = [
+    ./backup
     ./blocky
     ./homepage
     ./syncthing
