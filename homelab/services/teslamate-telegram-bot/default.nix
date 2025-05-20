@@ -44,13 +44,19 @@ in
               # MQTT_NAMESPACE=namespace; # optional, only needed when you specified MQTT_NAMESPACE on your TeslaMate installation
             };
             log-driver = "journald";
-            dependsOn = [
-              "mosquitto.service"
-              "teslamate.service"
-            ];
           };
         };
       };
+    };
+    systemd.services."podman-${service}" = {
+      after = [
+        "mosquitto.service"
+        "teslamate.service"
+      ];
+      requires = [
+        "mosquitto.service"
+        "teslamate.service"
+      ];
     };
   };
 }
