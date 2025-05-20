@@ -40,14 +40,19 @@ in
             environment = {
               MQTT_SERVER = "127.0.0.1:${toString config.homelab.services.teslamate.listenPortMqtt}";
             };
-            log-driver = "journald";
-            dependsOn = [
-              "mosquitto.service"
-              "teslamate.service"
-            ];
           };
         };
       };
+    };
+    systemd.services."podman-${service}" = {
+      after = [
+        "mosquitto.service"
+        "teslamate.service"
+      ];
+      requires = [
+        "mosquitto.service"
+        "teslamate.service"
+      ];
     };
   };
 }
