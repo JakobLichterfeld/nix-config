@@ -33,9 +33,10 @@ with pkgs;
   git-filter-repo
   android-tools
 
-  # File management
+  # File management and backup
   rclone
   unison # Bidirectional file synchronizer
+  backrest # Web UI and orchestrator for restic backup
 
   # Writing
   pstoedit # Translates PostScript and PDF graphics into other vector formats
