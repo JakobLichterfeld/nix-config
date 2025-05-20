@@ -34,14 +34,23 @@
     ];
     kernelModules = [
       "kvm-intel"
-      "coretemp"
+      "coretemp" # for CPU temperature sensors
       "jc42"
       "lm78"
       "xhci_pci"
-      "ahci"
-      "nvme"
-      "usb_storage"
+      "ahci" # for SATA drives
+      "nvme" # for NVMe drives
+      "usb_storage" # for USB drives
+      "r8169" # for the Realtek network card
       "sd_mod"
+      "i2c_i801" # for i2c sensors
+    ];
+    blacklistedKernelModules = [
+      "i915" # disable the graphics driver, as it is a headless server
+      "snd_hda_intel" # disable the onboard audio driver, as it is a headless server
+      "snd_sof_pci_intel_tgl" # disable the onboard audio driver, as it is a headless server
+      "mei_me" # disable the Intel Management Engine driver, as it is not needed
+      "mei" # disable the Intel Management Engine driver, as it is not needed
     ];
   };
   networking = {
