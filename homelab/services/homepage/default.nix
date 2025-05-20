@@ -222,6 +222,7 @@ in
               header = true;
               icon = "mdi-open-in-new";
               style = "column";
+              initiallyCollapsed = true;
             };
           }
         ];
