@@ -102,6 +102,7 @@
     ./blocky
     ./homepage
     ./ntfy-sh
+    ./stirling-pdf
     ./syncthing
     ./teslamate
     ./teslamate-abrp

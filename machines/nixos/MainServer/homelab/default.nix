@@ -156,6 +156,8 @@ in
 
       ntfy-sh.enable = true;
 
+      stirling-pdf.enable = true;
+
       syncthing.enable = true;
 
       teslamate.enable = true;
