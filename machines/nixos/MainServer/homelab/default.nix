@@ -154,6 +154,8 @@ in
         ];
       };
 
+      ntfy-sh.enable = true;
+
       syncthing.enable = true;
 
       teslamate.enable = true;

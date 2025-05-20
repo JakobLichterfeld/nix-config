@@ -101,6 +101,7 @@
     ./backup
     ./blocky
     ./homepage
+    ./ntfy-sh
     ./syncthing
     ./teslamate
     ./teslamate-abrp
