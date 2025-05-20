@@ -134,7 +134,11 @@
     ];
   };
 
-  powerManagement.powertop.enable = false;
+  powerManagement = {
+    enable = true;
+    cpuFreqGovernor = "powersave";
+    powertop.enable = false;
+  };
 
   environment.systemPackages = with pkgs; [
     pciutils # A collection of programs for inspecting and manipulating configuration of PCI devices
