@@ -105,5 +105,6 @@
     ./teslamate
     ./teslamate-abrp
     ./teslamate-telegram-bot
+    ./uptime-kuma
   ];
 }
