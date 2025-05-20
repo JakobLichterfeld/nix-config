@@ -210,6 +210,7 @@
             ./modules/zfs-root
             ./modules/tailscale
             ./modules/zerotier
+            ./modules/deadman-ping
             ./modules/tg-notify
             ./modules/mover
 

@@ -141,6 +141,11 @@
     powertop # Analyze power consumption on Intel-based laptops
   ];
 
+  services.deadman-ping = {
+    enable = true;
+    credentialsFile = config.age.secrets.deadmanPingEnvMainServer.path;
+  };
+
   tg-notify = {
     enable = true;
     credentialsFile = config.age.secrets.tgNotifyCredentials.path;

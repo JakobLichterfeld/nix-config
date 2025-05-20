@@ -1,5 +1,10 @@
 { ... }:
 {
+  age.secrets.deadmanPingEnvMainServer = {
+    file = ./deadmanPingEnvMainServer.age; # content is the deadman ping env file, with PING_URL= according to modules/deadman-ping
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e deadmanPingUrl.age
+  };
+
   age.secrets.dnsApiCredentials = {
     file = ./dnsApiCredentials.age; # content is according to the provider, see https://go-acme.github.io/lego/dns/
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e dnsApiCredentials.age

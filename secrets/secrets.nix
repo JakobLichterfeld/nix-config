@@ -7,6 +7,7 @@ let
   ];
 in
 {
+  "deadmanPingEnvMainServer.age".publicKeys = allKeys;
   "dnsApiCredentials.age".publicKeys = allKeys;
   "hashedUserPassword.age".publicKeys = allKeys;
   "resticPassword.age".publicKeys = allKeys;
