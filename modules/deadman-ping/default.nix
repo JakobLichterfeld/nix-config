@@ -38,7 +38,7 @@ in
     };
     interval = lib.mkOption {
       type = lib.types.str;
-      default = "*/10 * * * *";
+      default = "*:0/10";
       description = "systemd OnCalendar expression for the timer";
     };
   };
