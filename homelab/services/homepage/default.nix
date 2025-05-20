@@ -21,13 +21,13 @@ in
         # "Arr"
         # "Media"
         # "Downloads"
-        "Network"
+        # "Network"
         "Tesla"
         "Other Devices"
         "Mobile"
         "Services"
-        "System"
-        "Health Checks"
+        # "System"
+        # "Health Checks"
         "External Services"
         # "Smart Home"
       ];
@@ -166,14 +166,14 @@ in
           #     style = "column";
           #   };
           # }
-          {
-            Network = {
-              header = true;
-              icon = "mdi-lan";
-              style = "column";
-              showStats = true;
-            };
-          }
+          # {
+          #   Network = {
+          #     header = true;
+          #     icon = "mdi-lan";
+          #     style = "column";
+          #     showStats = true;
+          #   };
+          # }
           {
             Tesla = {
               header = true;
@@ -202,21 +202,21 @@ in
               style = "column";
             };
           }
-          {
-            System = {
-              header = true;
-              icon = "mdi-desktop-classic";
-              style = "column";
-              showStats = true;
-            };
-          }
-          {
-            "Health Checks" = {
-              header = true;
-              icon = "mdi-check-network-outline";
-              style = "column";
-            };
-          }
+          # {
+          #   System = {
+          #     header = true;
+          #     icon = "mdi-desktop-classic";
+          #     style = "column";
+          #     showStats = true;
+          #   };
+          # }
+          # {
+          #   "Health Checks" = {
+          #     header = true;
+          #     icon = "mdi-check-network-outline";
+          #     style = "column";
+          #   };
+          # }
           {
             "External Services" = {
               header = true;
