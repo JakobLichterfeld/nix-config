@@ -260,7 +260,7 @@ in
               })
             ++ extraServicesByCategory cat;
         })
-        ++ [ { Misc = cfg.misc; } ]
+        ++ lib.optional (cfg.misc != [ ]) { Misc = cfg.misc; }
         ++ [
           {
             Glances =
