@@ -44,15 +44,11 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    users.groups = lib.mkIf cfg.createUser {
-      "${cfg.group}" = { };
-    };
-    users.users = lib.mkIf cfg.createUser {
-      "${cfg.user}" = {
-        isSystemUser = true;
-        description = "Runs the deadman ping";
-        group = cfg.group;
-      };
+    users.groups.${cfg.group} = lib.mkIf cfg.createUser { };
+    users.users.${cfg.user} = lib.mkIf cfg.createUser {
+      isSystemUser = true;
+      description = "Runs the deadman ping";
+      group = cfg.group;
     };
 
     environment.systemPackages = with pkgs; [
