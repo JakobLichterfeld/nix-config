@@ -17,7 +17,7 @@ in
     };
     configDir = lib.mkOption {
       type = lib.types.str;
-      default = "${vars.serviceConfigRoot}/${service}";
+      default = "/var/lib/${service}";
     };
     dataDir = lib.mkOption {
       type = lib.types.str;
