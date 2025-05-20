@@ -27,6 +27,10 @@ in
       type = lib.types.str;
       default = "${service}.${homelab.baseDomain}";
     };
+    listenPort = lib.mkOption {
+      type = lib.types.int;
+      default = 8384;
+    };
     homepage.name = lib.mkOption {
       type = lib.types.str;
       default = "${service}";
@@ -54,7 +58,7 @@ in
     # 21027/UDP for discovery
     # source: https://docs.syncthing.net/users/firewall.html
     networking.firewall.allowedTCPPorts = [
-      8384
+      cfg.listenPort
       22000
     ];
     networking.firewall.allowedUDPPorts = [
@@ -68,7 +72,7 @@ in
       user = homelab.user; # User to run Syncthing as
       dataDir = cfg.dataDir; # Default folder for new synced folders
       configDir = cfg.configDir; # Folder for Syncthing's settings and keys
-      guiAddress = "0.0.0.0:8384"; # Listen on all interfaces
+      guiAddress = "0.0.0.0:${toString cfg.listenPort}"; # Listen on all interfaces
       overrideFolders = false;
       overrideDevices = false;
     };
@@ -78,7 +82,7 @@ in
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
-        reverse_proxy http://127.0.0.1:8384
+        reverse_proxy http://127.0.0.1:${toString cfg.listenPort}
       '';
     };
   };
