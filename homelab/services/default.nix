@@ -85,14 +85,14 @@
       autoPrune.enable = true;
       extraPackages = [ pkgs.zfs ];
       defaultNetwork.settings = {
-        dns_enabled = true;
+        dns_enabled = !config.homelab.services.blocky.enable; # only enable podman's internal DNS if blocky is not enabled
       };
     };
     virtualisation.oci-containers = {
       backend = "podman";
     };
 
-    networking.firewall.interfaces.podman0.allowedUDPPorts =
+    networking.firewall.interfaces."podman+".allowedUDPPorts =
       lib.lists.optionals config.virtualisation.podman.enable
         [ 53 ];
   };
