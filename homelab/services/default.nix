@@ -108,5 +108,6 @@
     ./teslamate-abrp
     ./teslamate-telegram-bot
     ./uptime-kuma
+    ./vaultwarden
   ];
 }

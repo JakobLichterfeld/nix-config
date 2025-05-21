@@ -165,6 +165,8 @@ in
       teslamate-telegram-bot.enable = true;
 
       uptime-kuma.enable = true;
+
+      vaultwarden.enable = true;
     };
   };
 }
