@@ -39,11 +39,14 @@ in
             environmentFiles = [ config.age.secrets.teslamateEnvTelegramBot.path ];
             environment = {
               # CAR_ID=1; # optional, defaults to 1
-              # MQTT_BROKER_HOST=127.0.0.1; # defaults to 127.0.0.1
+              MQTT_BROKER_HOST = "host.containers.internal";
               MQTT_BROKER_PORT = toString config.homelab.services.teslamate.listenPortMqtt;
               # MQTT_NAMESPACE=namespace; # optional, only needed when you specified MQTT_NAMESPACE on your TeslaMate installation
             };
             log-driver = "journald";
+            extraOptions = lib.optional (
+              !config.virtualisation.podman.defaultNetwork.settings.dns_enabled
+            ) "--add-host=host.containers.internal:10.88.0.1";
           };
         };
       };
