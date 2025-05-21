@@ -34,7 +34,7 @@ in
       oci-containers = {
         containers = {
           "${service}" = {
-            image = "jakoblichterfeld/teslamate-telegram-bot:${teslamate-telegram-bot-version}";
+            image = "teslamatetelegrambot/teslamatetelegrambot:${teslamate-telegram-bot-version}";
             autoStart = true;
             environmentFiles = [ config.age.secrets.teslamateEnvTelegramBot.path ];
             environment = {
