@@ -77,6 +77,14 @@ in
           ] false enabledServices
         )
       );
+      additionalStateDirs = [
+        "/etc/group"
+        "/etc/machine-id"
+        "/etc/passwd"
+        "/etc/subgid"
+        "/var/backup"
+      ];
+      allStateDirs = stateDirs + (lib.concatStringsSep " " additionalStateDirs);
     in
     lib.mkIf (cfg.enable && enabledServices != { }) {
       systemd.tmpfiles.rules = lib.lists.optionals cfg.local.enable [
@@ -133,7 +141,7 @@ in
                 ''
                   ${restic} stats || ${restic} init
                   ${pkgs.restic}/bin/restic forget --prune --no-cache --keep-last 5
-                  ${pkgs.gnutar}/bin/tar -cf /tmp/appdata-local-${config.networking.hostName}.tar ${stateDirs}
+                  ${pkgs.gnutar}/bin/tar -cf /tmp/appdata-local-${config.networking.hostName}.tar ${allStateDirs}
                   ${restic} unlock
                 '';
             };
@@ -168,7 +176,7 @@ in
                   ''
                     ${restic} stats || ${restic} init
                     ${pkgs.restic}/bin/restic forget --prune --no-cache --keep-last 3
-                    ${pkgs.gnutar}/bin/tar -cf /tmp/appdata-s3-${config.networking.hostName}.tar ${stateDirs}
+                    ${pkgs.gnutar}/bin/tar -cf /tmp/appdata-s3-${config.networking.hostName}.tar ${allStateDirs}
                     ${restic} unlock
                   '';
               };
