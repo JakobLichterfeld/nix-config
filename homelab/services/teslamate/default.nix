@@ -122,7 +122,7 @@ in
 
       mqtt = {
         enable = true;
-        host = "${config.homelab.baseDomain}";
+        host = "127.0.0.1";
         port = cfg.listenPortMqtt;
       };
     };
