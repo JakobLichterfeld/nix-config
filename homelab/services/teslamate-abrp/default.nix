@@ -38,8 +38,12 @@ in
             autoStart = true;
             environmentFiles = [ config.age.secrets.teslamateEnvABRP.path ];
             environment = {
-              MQTT_SERVER = "127.0.0.1:${toString config.homelab.services.teslamate.listenPortMqtt}";
+              MQTT_SERVER = "host.containers.internal";
+              MQTT_PORT = "${toString config.homelab.services.teslamate.listenPortMqtt}";
             };
+            extraOptions = lib.optional (
+              !config.virtualisation.podman.defaultNetwork.settings.dns_enabled
+            ) "--add-host=host.containers.internal:10.88.0.1";
           };
         };
       };
