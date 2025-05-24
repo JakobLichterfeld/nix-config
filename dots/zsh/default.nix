@@ -30,7 +30,7 @@
       ls = "ls --color=auto";
     };
 
-    initExtraFirst = ''
+    initContent = lib.mkBefore ''
       # nix shortcuts
       shell() {
           nix-shell '<nixpkgs>' -A "$1"
