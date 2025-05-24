@@ -152,6 +152,7 @@
     gcc
     intel-gpu-tools # Tools for debugging the Intel graphics driver
     powertop # Analyze power consumption on Intel-based laptops
+    nvme-cli # Command line interface for NVMe devices
   ];
 
   services.deadman-ping = {
