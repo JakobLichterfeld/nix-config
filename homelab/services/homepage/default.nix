@@ -107,6 +107,8 @@ in
     services.glances.enable = true;
     services.${service} = {
       enable = true;
+      allowedHosts = "127.0.0.1,::1,localhost,${homelab.baseDomain}";
+
       customCSS = ''
         body, html {
           font-family: SF Pro Display, Helvetica, Arial, sans-serif !important;
