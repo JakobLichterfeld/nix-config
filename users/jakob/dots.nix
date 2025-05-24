@@ -9,7 +9,7 @@ let
   home = {
     username = "jakob";
     homeDirectory = "/home/jakob";
-    stateVersion = "24.11";
+    stateVersion = "25.05";
   };
 in
 {

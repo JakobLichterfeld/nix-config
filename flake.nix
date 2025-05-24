@@ -2,12 +2,12 @@
   description = "Configuration for MacOS and NixOS";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-24.11-darwin";
+    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
     nixpkgs-darwin-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     nix-darwin = {
-      url = "github:LnL7/nix-darwin/nix-darwin-24.11";
+      url = "github:LnL7/nix-darwin/nix-darwin-25.05";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     nix-darwin-unstable = {
@@ -42,13 +42,13 @@
     };
 
     home-manager = {
-      # url = "github:nix-community/home-manager/release-24.11"; # gets timeouts
-      url = "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz";
+      # url = "github:nix-community/home-manager/release-25.05"; # gets timeouts
+      url = "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager-darwin = {
-      # url = "github:nix-community/home-manager/release-24.11"; # gets timeouts
-      url = "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz";
+      # url = "github:nix-community/home-manager/release-25.05"; # gets timeouts
+      url = "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     home-manager-darwin-unstable = {
@@ -166,7 +166,7 @@
           inputs.home-manager-darwin.darwinModules.home-manager
           (inputs.nixpkgs-darwin.lib.attrsets.recursiveUpdate (homeManagerCfg true [ ]) {
             home-manager.users.jakob.home.homeDirectory = inputs.nixpkgs-darwin.lib.mkForce "/Users/jakob";
-            home-manager.users.jakob.home.stateVersion = "24.11";
+            home-manager.users.jakob.home.stateVersion = "25.05";
             home-manager.users.jakob.imports = [
               agenix.homeManagerModules.default
               nix-index-database.hmModules.nix-index
