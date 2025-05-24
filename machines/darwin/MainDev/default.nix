@@ -9,7 +9,6 @@ let
   masApps = import ./masApps.nix;
   brews = import ./brews.nix;
   casks = import ./casks.nix;
-  manualSensitive = import ./manualSensitive.nix { };
 
   mkGreedy = cask: cask // { greedy = true; }; # add greedy = true to all casks to enable greedy updates
 in
@@ -32,8 +31,4 @@ in
   environment.systemPackages =
     with inputs.nixpkgs-unstable.legacyPackages."${pkgs.system}";
     pkgs.callPackage ./packages.nix { };
-
-  system.activationScripts.postUserActivation =
-    manualSensitive.system.activationScripts.postUserActivation;
-
 }

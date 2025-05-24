@@ -11,7 +11,6 @@ let
   masApps = import ./masApps.nix;
   brews = import ./brews.nix;
   casks = import ./casks.nix;
-  manualSensitive = import ./manualSensitive.nix { };
 
   mkGreedy = cask: cask // { greedy = true; }; # add greedy = true to all casks to enable greedy updates
 in
@@ -157,7 +156,4 @@ in
     dejavu_fonts
     fira-code-nerdfont # nerd-fonts.fira-code
   ];
-
-  system.activationScripts.postUserActivation =
-    manualSensitive.system.activationScripts.postUserActivation;
 }

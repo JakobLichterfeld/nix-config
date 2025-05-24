@@ -100,6 +100,9 @@
     let
       machinesSensitiveVars = builtins.fromJSON (builtins.readFile "${self}/machinesSensitiveVars.json");
 
+      manualSensitiveDarwin = import ./machines/darwin/manualSensitive.nix;
+      manualSensitiveDarwinMainDev = import ./machines/darwin/MainDev/manualSensitive.nix;
+
       # overlay to use nodejs 22 as fallback to mitigate build issue with nodejs20, see bug report https://github.com/NixOS/nixpkgs/issues/402079
       nodeOverlay = final: prev: {
         nodejs = prev.nodejs_22;
@@ -128,6 +131,7 @@
                 inputs.agenix.homeManagerModules.default
                 inputs.nixpkgs-darwin
                 ./users/jakob/dots.nix
+                manualSensitiveDarwin
               ];
             };
 
@@ -172,6 +176,7 @@
               agenix.homeManagerModules.default
               nix-index-database.hmModules.nix-index
               ./users/jakob/dots.nix
+              manualSensitiveDarwinMainDev
             ];
           })
         ];
