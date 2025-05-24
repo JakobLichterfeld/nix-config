@@ -163,6 +163,7 @@
           # ./modules/zerotier
 
           # Users
+          { system.primaryUser = "jakob"; }
           inputs.home-manager-darwin.darwinModules.home-manager
           (inputs.nixpkgs-darwin.lib.attrsets.recursiveUpdate (homeManagerCfg true [ ]) {
             home-manager.users.jakob.home.homeDirectory = inputs.nixpkgs-darwin.lib.mkForce "/Users/jakob";
