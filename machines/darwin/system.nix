@@ -30,6 +30,8 @@
       </plist>
     '';
   };
+  ids.gids.nixbld = 30000; # TODO: remove this once the issue is resolved
+
   system = {
     configurationRevision = self.rev or self.dirtyRev or null; # set git commit hash for darwin-version
 

@@ -265,7 +265,7 @@
 
                 if [[ "$(uname)" == "Darwin" ]]; then
                   echo "[4/4] Switching to new config with nix-darwin..."
-                  darwin-rebuild switch --flake .#
+                  sudo darwin-rebuild switch --flake .#
                 else
                   echo "[4/4] Not running nix-darwin switch on non-macOS system."
                 fi

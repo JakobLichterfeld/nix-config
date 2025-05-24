@@ -151,7 +151,7 @@ build: `nix --experimental-features 'nix-command flakes' build .#darwinConfigura
 
 install: `nix run nix-darwin -- switch --flake .#MainDev`
 
-apply changes: `./result/sw/bin/darwin-rebuild switch --flake .#MainDev`
+apply changes: `sudo darwin-rebuild switch --flake .#MainDev`
 
 </p></details>
 
