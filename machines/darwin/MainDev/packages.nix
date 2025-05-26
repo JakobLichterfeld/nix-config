@@ -22,6 +22,7 @@ with pkgs;
   openssl_3
   ruby
   bundler # Ruby dependency manager
+  bundix # Creates Nix packages from Gemfiles
   rubocop # Ruby static code analyzer and formatter
   devenv # Fast, Declarative, Reproducible, and Composable Developer Environments
   nil # Nix Language server: An incremental analysis assistant for writing in Nix
