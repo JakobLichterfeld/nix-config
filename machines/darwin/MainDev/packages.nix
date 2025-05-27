@@ -26,6 +26,7 @@ with pkgs;
   rubocop # Ruby static code analyzer and formatter
   devenv # Fast, Declarative, Reproducible, and Composable Developer Environments
   nil # Nix Language server: An incremental analysis assistant for writing in Nix
+  bundletool # Tool for creating and managing Android App Bundles
 
   # Python packages
   python313
