@@ -103,15 +103,6 @@
       manualSensitiveDarwin = import ./machines/darwin/manualSensitive.nix;
       manualSensitiveDarwinMainDev = import ./machines/darwin/MainDev/manualSensitive.nix;
 
-      # overlay to use nodejs 22 as fallback to mitigate build issue with nodejs20, see bug report https://github.com/NixOS/nixpkgs/issues/402079
-      nodeOverlay = final: prev: {
-        nodejs = prev.nodejs_22;
-        nodejs-slim = prev.nodejs-slim_22;
-
-        nodejs_20 = prev.nodejs_22;
-        nodejs-slim_20 = prev.nodejs-slim_22;
-      };
-
       homeManagerCfg = userPackages: extraImports: {
         home-manager = {
           useGlobalPkgs = false; # makes hm use nixos's pkgs value
@@ -120,9 +111,9 @@
           users.jakob =
             { config, pkgs, ... }:
             {
-              nixpkgs.overlays = [
-                nodeOverlay
-              ];
+              nixpkgs.overlays =
+                [
+                ];
               #home.homeDirectory = nixpkgs-darwin.lib.mkForce "/Users/jakob";
               shell = pkgs.zsh;
 
@@ -149,9 +140,9 @@
         };
         modules = [
           {
-            nixpkgs.overlays = [
-              nodeOverlay
-            ];
+            nixpkgs.overlays =
+              [
+              ];
           }
 
           # Base
