@@ -141,7 +141,7 @@ in
                 ''
                   ${restic} stats || ${restic} init
                   ${pkgs.restic}/bin/restic forget --prune --no-cache --keep-last 5
-                  ${pkgs.gnutar}/bin/tar -cf /tmp/appdata-local-${config.networking.hostName}.tar ${allStateDirs}
+                  ${pkgs.gnutar}/bin/tar -cf /tmp/appdata-local-${config.networking.hostName}.tar --ignore-failed-read ${allStateDirs}
                   ${restic} unlock
                 '';
             };
