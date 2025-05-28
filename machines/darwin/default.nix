@@ -8,6 +8,7 @@
   ...
 }:
 let
+  user = "jakob";
   masApps = import ./masApps.nix;
   brews = import ./brews.nix;
   casks = import ./casks.nix;
@@ -31,7 +32,7 @@ in
     autoMigrate = true;
 
     # User owning the Homebrew prefix
-    user = "jakob";
+    user = "${user}";
 
     # Declarative tap management
     taps = {
@@ -102,54 +103,57 @@ in
   );
 
   # Fully declarative dock using the latest from Nix Store
-  local.dock.enable = true;
-  local.dock.entries = [
-    # Finder
-    # { path = "/System/Applications/Finder.app/"; }
-    # Launchpad
-    { path = "/System/Applications/Launchpad.app/"; }
-    # Google Chrome
-    { path = "/Applications/Google Chrome.app/"; }
-    # Warp
-    { path = "/Applications/Warp.app/"; }
-    # VS Code
-    { path = "/Applications/Visual Studio Code.app/"; }
-    # Discord
-    { path = "/Applications/Discord.app/"; }
-    # Mail
-    { path = "/System/Applications/Mail.app/"; }
-    # Figma
-    { path = "/Applications/Figma.app/"; }
-    # App Store
-    { path = "/System/Applications/App Store.app/"; }
-    # Applite
-    # { path = "/Applications/Applite.app/"; }
-    # System Settings
-    { path = "/System/Applications/System Settings.app/"; }
-    # Calculator
-    { path = "/System/Applications/Calculator.app/"; }
-    # Obsidian
-    { path = "/Applications/Obsidian.app/"; }
-    # KeepassXC
-    { path = "/Applications/KeePassXC.app/"; }
-    # Join
-    { path = "/Users/jakob/Applications/Chrome Apps.localized/Join by Joaoapps.app/"; }
-    # Windows App (formerly Microsoft Remote Desktop)
-    { path = "/Applications/Windows App.app/"; }
-    # DeepL
-    { path = "/Applications/DeepL.app/"; }
-    # ChatGPT
-    { path = "/Applications/ChatGPT.app/"; }
-    # Telegram
-    { path = "/Applications/Telegram.app/"; }
-    # Downloads
-    {
-      path = "/Users/jakob/Downloads/";
-      section = "others";
-      options = "--sort dateadded --view grid --display stack";
-    }
+  local = {
+    dock.enable = true;
+    dock.entries = [
+      # Finder
+      # { path = "/System/Applications/Finder.app/"; }
+      # Launchpad
+      { path = "/System/Applications/Launchpad.app/"; }
+      # Google Chrome
+      { path = "/Applications/Google Chrome.app/"; }
+      # Warp
+      { path = "/Applications/Warp.app/"; }
+      # VS Code
+      { path = "/Applications/Visual Studio Code.app/"; }
+      # Discord
+      { path = "/Applications/Discord.app/"; }
+      # Mail
+      { path = "/System/Applications/Mail.app/"; }
+      # Figma
+      { path = "/Applications/Figma.app/"; }
+      # App Store
+      { path = "/System/Applications/App Store.app/"; }
+      # Applite
+      # { path = "/Applications/Applite.app/"; }
+      # System Settings
+      { path = "/System/Applications/System Settings.app/"; }
+      # Calculator
+      { path = "/System/Applications/Calculator.app/"; }
+      # Obsidian
+      { path = "/Applications/Obsidian.app/"; }
+      # KeepassXC
+      { path = "/Applications/KeePassXC.app/"; }
+      # Join
+      { path = "/Users/${user}/Applications/Chrome Apps.localized/Join by Joaoapps.app/"; }
+      # Windows App (formerly Microsoft Remote Desktop)
+      { path = "/Applications/Windows App.app/"; }
+      # DeepL
+      { path = "/Applications/DeepL.app/"; }
+      # ChatGPT
+      { path = "/Applications/ChatGPT.app/"; }
+      # Telegram
+      { path = "/Applications/Telegram.app/"; }
+      # Downloads
+      {
+        path = "/Users/${user}/Downloads/";
+        section = "others";
+        options = "--sort dateadded --view grid --display stack";
+      }
 
-  ];
+    ];
+    dock.username = "${user}";
+  };
 
   # Fonts
   fonts.packages = with pkgs; [
