@@ -14,10 +14,10 @@ in
   "s3StorageEnv.age".publicKeys = allKeys;
   "sambaPassword.age".publicKeys = allKeys;
   "tailscaleAuthKey.age".publicKeys = allKeys;
+  "telegramCredentials.age".publicKeys = allKeys;
   "teslamateEnv.age".publicKeys = allKeys;
   "teslamateEnvABRP.age".publicKeys = allKeys;
   "teslamateEnvTelegramBot.age".publicKeys = allKeys;
-  "tgNotifyCredentials.age".publicKeys = allKeys;
 }
 
 # to add a secret run `EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e hashedUserPassword.age`

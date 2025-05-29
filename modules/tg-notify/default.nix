@@ -64,10 +64,10 @@ let
 
     <code>$final_message</code>
     "
-    /run/current-system/sw/bin/curl --data "chat_id=$CHANNEL_ID" \
+    /run/current-system/sw/bin/curl --data "chat_id=$CHAT_ID" \
             --data-urlencode "text=$text" \
             --data-urlencode "parse_mode=HTML" \
-            https://api.telegram.org/$API_KEY/sendMessage
+            https://api.telegram.org/$BOT_TOKEN/sendMessage
 
   '';
 in
@@ -78,11 +78,11 @@ in
     };
     credentialsFile = lib.mkOption {
       type = lib.types.path;
-      description = "Path to a file with the Telegram API key and channel ID";
+      description = "Path to a file with the Telegram Bot token and chat ID";
       example = lib.literalExpression ''
         pkgs.writeText "telegram-credentials" '''
-          API_KEY=secret
-          CHANNEL_ID=secret
+          BOT_TOKEN=secret
+          CHAT_ID=secret
         '''
       '';
     };

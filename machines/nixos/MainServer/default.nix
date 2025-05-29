@@ -162,7 +162,7 @@
 
   tg-notify = {
     enable = true;
-    credentialsFile = config.age.secrets.tgNotifyCredentials.path;
+    credentialsFile = config.age.secrets.telegramCredentials.path;
   };
 
 }
