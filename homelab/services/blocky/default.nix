@@ -16,13 +16,28 @@ in
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
     };
+    prometheus.scrapeConfig = lib.mkOption {
+      type = lib.types.attrs;
+      default = {
+        job_name = "${service}";
+        metrics_path = "/metrics";
+        static_configs = [
+          {
+            targets = [ "localhost:4443" ];
+          }
+        ];
+      };
+    };
   };
   config = lib.mkIf cfg.enable {
     services.${service} = {
       enable = true;
 
       settings = {
-        ports.dns = 53; # Port for incoming DNS Queries.
+        ports = {
+          dns = 53; # Port for incoming DNS Queries.
+          https = "localhost:4443,127.0.0.1:4443,[::1]:4443"; # Port(s) and optional bind ip address(es) to serve HTTPS used for prometheus metrics, pprof, REST API, DoH...
+        };
         upstreams.groups.default = [
           "https://one.one.one.one/dns-query" # Using Cloudflare's DNS over HTTPS server for resolving queries.
         ];
@@ -87,6 +102,13 @@ in
           minTime = "5m";
           maxTime = "30m";
           prefetching = true;
+        };
+
+        prometheus = {
+          # Enable Prometheus metrics endpoint
+          enable = config.services.prometheus.enable;
+          # Path for the metrics endpoint, default is /metrics
+          path = "/metrics";
         };
 
         clientLookup.upstream = machinesSensitiveVars.MainServer.defaultGateway;

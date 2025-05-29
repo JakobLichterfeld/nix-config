@@ -156,6 +156,12 @@ in
 
       ntfy-sh.enable = true;
 
+      prometheus = {
+        enable = true;
+        telegramCredentialsFile = config.age.secrets.telegramCredentials.path;
+        telegramChatId = machinesSensitiveVars.MainServer.telegramChatId;
+      };
+
       stirling-pdf.enable = true;
 
       syncthing.enable = true;

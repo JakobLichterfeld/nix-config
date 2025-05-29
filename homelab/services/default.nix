@@ -102,6 +102,7 @@
     ./blocky
     ./homepage
     ./ntfy-sh
+    ./prometheus
     ./stirling-pdf
     ./syncthing
     ./teslamate

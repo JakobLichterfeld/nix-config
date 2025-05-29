@@ -47,6 +47,18 @@ in
       type = lib.types.str;
       default = "Services";
     };
+    prometheus.scrapeConfig = lib.mkOption {
+      type = lib.types.attrs;
+      default = {
+        job_name = "${service}";
+        metrics_path = "/metrics";
+        static_configs = [
+          {
+            targets = [ "localhost:${toString cfg.listenPort}" ];
+          }
+        ];
+      };
+    };
   };
   config = lib.mkIf cfg.enable {
 
