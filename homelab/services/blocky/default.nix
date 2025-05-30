@@ -51,7 +51,7 @@ in
         };
         #Enable Blocking of certain domains.
         blocking = {
-          blackLists = {
+          denylists = {
             ads = [
               "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
               "https://adaway.org/hosts.txt"
@@ -69,8 +69,8 @@ in
               "https://v.firebog.net/hosts/Easyprivacy.txt"
               "https://v.firebog.net/hosts/Prigent-Ads.txt"
               (pkgs.writeTextFile {
-                name = "blacklist.txt";
-                text = builtins.readFile ./blacklist.txt;
+                name = "denylists.txt";
+                text = builtins.readFile ./denylists.txt;
               }).outPath
             ];
             adult = [
@@ -78,11 +78,11 @@ in
               "https://blocklistproject.github.io/Lists/porn.txt"
             ];
           };
-          whiteLists = {
+          allowlists = {
             ads = [
               (pkgs.writeTextFile {
-                name = "whitelist.txt";
-                text = builtins.readFile ./whitelist.txt;
+                name = "allowlists.txt";
+                text = builtins.readFile ./allowlists.txt;
               }).outPath
             ];
           };
