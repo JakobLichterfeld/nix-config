@@ -10,8 +10,12 @@ services/blocky/blacklist.txt filter=git-crypt diff=git-crypt
 services/blocky/whitelist.txt filter=git-crypt diff=git-crypt
 homelab/services/blocky/blacklist.txt filter=git-crypt diff=git-crypt
 homelab/services/blocky/whitelist.txt filter=git-crypt diff=git-crypt
+homelab/services/blocky/denylists.txt filter=git-crypt diff=git-crypt
+homelab/services/blocky/allowlists.txt filter=git-crypt diff=git-crypt
 **/blacklist.txt filter=git-crypt diff=git-crypt
 **/whitelist.txt filter=git-crypt diff=git-crypt
+**/denylists.txt filter=git-crypt diff=git-crypt
+**/allowlists.txt filter=git-crypt diff=git-crypt
 
 users/jakob/git.nix filter=git-crypt diff=git-crypt
 
