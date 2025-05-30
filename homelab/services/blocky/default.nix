@@ -16,6 +16,11 @@ in
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
     };
+    listenPort = lib.mkOption {
+      type = lib.types.int;
+      default = 4001;
+      description = "HTTP Port on which Blocky will provide Prometheus metrics, pprof, REST API, DoH...";
+    };
     prometheus.scrapeConfig = lib.mkOption {
       type = lib.types.attrs;
       default = {
@@ -23,7 +28,7 @@ in
         metrics_path = "/metrics";
         static_configs = [
           {
-            targets = [ "localhost:4001" ];
+            targets = [ "localhost:${toString cfg.listenPort}" ];
           }
         ];
       };
@@ -36,7 +41,7 @@ in
       settings = {
         ports = {
           dns = 53; # Port for incoming DNS Queries.
-          http = "localhost:4001"; # Port(s) and optional bind ip address(es) to serve HTTP used for prometheus metrics, pprof, REST API, DoH...
+          http = "localhost:${toString cfg.listenPort}"; # Port(s) and optional bind ip address(es) to serve HTTP used for prometheus metrics, pprof, REST API, DoH...
         };
         upstreams.groups.default = [
           "https://one.one.one.one/dns-query" # Using Cloudflare's DNS over HTTPS server for resolving queries.
