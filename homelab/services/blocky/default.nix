@@ -36,7 +36,7 @@ in
       settings = {
         ports = {
           dns = 53; # Port for incoming DNS Queries.
-          https = "localhost:4443,127.0.0.1:4443,[::1]:4443"; # Port(s) and optional bind ip address(es) to serve HTTPS used for prometheus metrics, pprof, REST API, DoH...
+          https = 4443; # Port(s) and optional bind ip address(es) to serve HTTPS used for prometheus metrics, pprof, REST API, DoH...
         };
         upstreams.groups.default = [
           "https://one.one.one.one/dns-query" # Using Cloudflare's DNS over HTTPS server for resolving queries.
