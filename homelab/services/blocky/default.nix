@@ -23,7 +23,7 @@ in
         metrics_path = "/metrics";
         static_configs = [
           {
-            targets = [ "localhost:4443" ];
+            targets = [ "localhost:4001" ];
           }
         ];
       };
@@ -36,7 +36,7 @@ in
       settings = {
         ports = {
           dns = 53; # Port for incoming DNS Queries.
-          https = 4443; # Port(s) and optional bind ip address(es) to serve HTTPS used for prometheus metrics, pprof, REST API, DoH...
+          http = "localhost:4001"; # Port(s) and optional bind ip address(es) to serve HTTP used for prometheus metrics, pprof, REST API, DoH...
         };
         upstreams.groups.default = [
           "https://one.one.one.one/dns-query" # Using Cloudflare's DNS over HTTPS server for resolving queries.
