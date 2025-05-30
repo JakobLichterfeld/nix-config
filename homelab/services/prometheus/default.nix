@@ -7,6 +7,8 @@ let
   service = "prometheus";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
+  serviceSubService = "alertmanager";
+  cfgSubService = config.homelab.services.${serviceSubService};
 in
 {
   options.homelab.services.${service} = {
@@ -67,6 +69,37 @@ in
     };
   };
 
+  options.homelab.services.${serviceSubService} = {
+    # used for automatic generation of the service entry in the homepage
+    enable = lib.mkEnableOption {
+      description = "Enable ${serviceSubService}";
+    };
+    url = lib.mkOption {
+      type = lib.types.str;
+      default = "${serviceSubService}.${homelab.baseDomain}";
+    };
+    listenPort = lib.mkOption {
+      type = lib.types.int;
+      default = cfg.listenPortAlertmanager;
+    };
+    homepage.name = lib.mkOption {
+      type = lib.types.str;
+      default = "${serviceSubService}";
+    };
+    homepage.description = lib.mkOption {
+      type = lib.types.str;
+      default = "Managing alerts sent by Prometheus server.";
+    };
+    homepage.icon = lib.mkOption {
+      type = lib.types.str;
+      default = "alertmanager.svg";
+    };
+    homepage.category = lib.mkOption {
+      type = lib.types.str;
+      default = "Services";
+    };
+  };
+
   config = lib.mkIf cfg.enable {
     services.${service} = {
       enable = true;
@@ -111,6 +144,7 @@ in
       # Alertmanager
       alertmanager = {
         enable = true;
+        webExternalUrl = "https://${cfgSubService.url}";
         port = cfg.listenPortAlertmanager;
         environmentFile = cfg.telegramCredentialsFile; # includes bot_token and chat_id
         configuration = {
@@ -124,7 +158,7 @@ in
                 {
                   # see https://prometheus.io/docs/alerting/latest/configuration/#telegram_config
                   bot_token = "\${BOT_TOKEN}"; # set in the environment file
-                  chat_id = cfg.telegramChatId; # setting in evironment file is not supported as it must be a int64 and env is a string
+                  chat_id = cfg.telegramChatId; # setting in environment file is not supported as it must be a int64 and env is a string
                   send_resolved = true; # whether to send resolved alerts
                   parse_mode = "HTML"; # Parse mode for telegram message, supported values are MarkdownV2, Markdown, HTML and empty string for plain text
                   #   message = ''
@@ -140,6 +174,14 @@ in
           ];
         };
       };
+
+      alertmanagers = [
+        {
+          static_configs = [
+            { targets = [ "${cfgSubService.url}" ]; }
+          ];
+        }
+      ];
 
       exporters = {
         #Node Exporter
@@ -172,10 +214,19 @@ in
       };
     };
 
+    # Prometheus
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
         reverse_proxy http://127.0.0.1:${toString cfg.listenPort}
+      '';
+    };
+
+    # Alertmanager
+    services.caddy.virtualHosts."${cfgSubService.url}" = {
+      useACMEHost = homelab.baseDomain;
+      extraConfig = ''
+        reverse_proxy http://127.0.0.1:${toString cfgSubService.listenPort}
       '';
     };
   };
