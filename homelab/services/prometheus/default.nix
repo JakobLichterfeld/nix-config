@@ -231,12 +231,10 @@ in
         # smartmontools
         smartctl = {
           enable = true;
+          # devices = []; # Paths to the disks that will be monitored. Will autodiscover all disks if none given
+          maxInterval = "30m"; # Interval that limits how often a disk can be queried.
           listenAddress = "0.0.0.0";
           port = cfg.listenPortSmartctlExporter;
-          extraFlags = [
-            "--smartctl.path=/run/current-system/sw/bin/smartctl"
-            "--smartctl.interval=30m"
-          ];
         };
       };
 
