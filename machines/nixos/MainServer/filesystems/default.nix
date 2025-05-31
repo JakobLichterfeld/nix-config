@@ -82,7 +82,7 @@
   };
 
   services.smartd = {
-    enable = !lib.hasAttr "smartctl" config.services.prometheus.exporters;
+    enable = !config.services.prometheus.exporters.smartctl.enable;
     defaults.autodetected = "-a -o on -S on -s (S/../.././02|L/../../6/03) -n standby,q";
     notifications = {
       wall = {
