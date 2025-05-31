@@ -700,7 +700,7 @@ in
                   rules = [
                     {
                       alert = "ManualTestAlert";
-                      expr = "vector(1)";
+                      expr = ''vector(1)'';
                       for = "0m";
                       labels = {
                         severity = "critical";
