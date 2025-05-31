@@ -56,6 +56,11 @@ in
         "-123456789"
       '';
     };
+    enableTestAlert = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable test alert for Prometheus";
+    };
     homepage.name = lib.mkOption {
       type = lib.types.str;
       default = "Prometheus";
@@ -680,6 +685,31 @@ in
                       annotations = {
                         summary = "Postgresql invalid index (instance {{ $labels.instance }})";
                         description = "Postgresql invalid index (instance {{ $labels.instance }})";
+                      };
+                    }
+                  ];
+                }
+              ];
+            }
+          )
+        )
+        ++ lib.optional cfg.enableTestAlert (
+          pkgs.writeText "test.rules.yml" (
+            builtins.toJSON {
+              groups = [
+                {
+                  name = "test";
+                  rules = [
+                    {
+                      alert = "ManualTestAlert";
+                      expr = "vector(1)";
+                      for = "0m";
+                      labels = {
+                        severity = "critical";
+                      };
+                      annotations = {
+                        summary = "Test alert";
+                        description = "Triggered manually for testing (instance {{ $labels.instance }})";
                       };
                     }
                   ];
