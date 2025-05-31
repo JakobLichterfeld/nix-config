@@ -214,148 +214,137 @@ in
         zfs.enable = true;
       };
 
-      ruleFiles =
-        let
-          customRulesInGroups = [
-            {
-              groupName = "system";
-              rules = [
-                {
-                  alert = "SystemdUnitFailed";
-                  expr = ''systemd_unit_state{state="failed"} > 0'';
-                  for = "1m";
-                  labels = {
-                    severity = "warning";
-                  };
-                  annotations = {
-                    summary = "Systemd unit failed";
-                    description = "Unit {{ $labels.name }} is in failed state on {{ $labels.instance }}.";
-                  };
-                }
-                {
-                  alert = "NodeCPUUsageHigh";
-                  expr = ''100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[1m])) * 100) > 90'';
-                  for = "2m";
-                  labels = {
-                    severity = "warning";
-                  };
-                  annotations = {
-                    summary = "High CPU usage";
-                    description = "Instance {{ $labels.instance }} CPU usage is over 90% for more than 2 minutes.";
-                  };
-                }
-                {
-                  alert = "NodeMemoryUsageHigh";
-                  expr = ''(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes > 0.9'';
-                  for = "2m";
-                  labels = {
-                    severity = "warning";
-                  };
-                  annotations = {
-                    summary = "High memory usage";
-                    description = "Instance {{ $labels.instance }} is using more than 90% of memory.";
-                  };
-                }
-                {
-                  alert = "ClockNotSynchronizing";
-                  expr = ''min_over_time(node_timex_sync_status[1m]) == 0 and node_timex_maxerror_seconds >= 16'';
-                  for = "5m";
-                  labels = {
-                    severity = "critical";
-                  };
-                  annotations = {
-                    summary = "Clock not synchronizing";
-                    description = "Instance {{ $labels.instance }} clock is not synchronizing.";
-                  };
-                }
-              ];
-            }
-            {
-              groupName = "filesystem";
-              rules = [
-                {
-                  alert = "NodeFilesystemAlmostFull";
-                  expr = ''(node_filesystem_avail_bytes{fstype=~"ext4|xfs|zfs"} / node_filesystem_size_bytes{fstype=~"ext4|xfs|zfs"}) < 0.10'';
-                  for = "5m";
-                  labels = {
-                    severity = "warning";
-                  };
-                  annotations = {
-                    summary = "Filesystem almost full";
-                    description = "Filesystem on {{ $labels.instance }} at {{ $labels.mountpoint }} is almost full.";
-                  };
-                }
-                {
-                  alert = "NodeDiskIOWaitHigh";
-                  expr = ''rate(node_disk_io_time_seconds_total[5m]) > 0.1'';
-                  for = "2m";
-                  labels = {
-                    severity = "warning";
-                  };
-                  annotations = {
-                    summary = "High disk I/O wait time";
-                    description = "Instance {{ $labels.instance }} has high disk I/O wait time.";
-                  };
-                }
-
-              ];
-            }
-
-            {
-              groupName = "network";
-              rules = [
-                {
-                  alert = "NodeNetworkReceiveErrors";
-                  expr = ''rate(node_network_receive_errors_total[5m]) > 0'';
-                  for = "2m";
-                  labels = {
-                    severity = "warning";
-                  };
-                  annotations = {
-                    summary = "Network receive errors";
-                    description = "Instance {{ $labels.instance }} has network receive errors.";
-                  };
-                }
-                {
-                  alert = "NodeNetworkTransmitErrors";
-                  expr = ''rate(node_network_transmit_errors_total[5m]) > 0'';
-                  for = "2m";
-                  labels = {
-                    severity = "warning";
-                  };
-                  annotations = {
-                    summary = "Network transmit errors";
-                    description = "Instance {{ $labels.instance }} has network transmit errors.";
-                  };
-                }
-              ];
-            }
-          ];
-        in
-        builtins.attrValues (
-          lib.listToAttrs (
-            lib.map (group: {
-              name = "${group.groupName}.rules.yml";
-              value = pkgs.writeText "${group.groupName}.rules.yml" (
-                builtins.toJSON {
-                  groups = [
-                    {
-                      name = group.groupName;
-                      rules = lib.map (rule: {
-                        alert = rule.alert;
-                        expr = rule.expr;
-                        for = rule.for;
-                        labels = rule.labels;
-                        annotations = rule.annotations;
-                      }) group.rules;
-                    }
-                  ];
-                }
-              );
-            }) customRulesInGroups
-          )
-        );
-
+      ruleFiles = [
+        (pkgs.writeText "system.rules.yml" (
+          builtins.toJSON {
+            groups = [
+              {
+                name = "system";
+                rules = [
+                  {
+                    alert = "SystemdUnitFailed";
+                    expr = ''systemd_unit_state{state="failed"} > 0'';
+                    for = "1m";
+                    labels = {
+                      severity = "warning";
+                    };
+                    annotations = {
+                      summary = "Systemd unit failed";
+                      description = "Unit {{ $labels.name }} is in failed state on {{ $labels.instance }}.";
+                    };
+                  }
+                  {
+                    alert = "NodeCPUUsageHigh";
+                    expr = ''100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[1m])) * 100) > 90'';
+                    for = "2m";
+                    labels = {
+                      severity = "warning";
+                    };
+                    annotations = {
+                      summary = "High CPU usage";
+                      description = "Instance {{ $labels.instance }} CPU usage is over 90% for more than 2 minutes.";
+                    };
+                  }
+                  {
+                    alert = "NodeMemoryUsageHigh";
+                    expr = ''(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes > 0.9'';
+                    for = "2m";
+                    labels = {
+                      severity = "warning";
+                    };
+                    annotations = {
+                      summary = "High memory usage";
+                      description = "Instance {{ $labels.instance }} is using more than 90% of memory.";
+                    };
+                  }
+                  {
+                    alert = "ClockNotSynchronizing";
+                    expr = ''min_over_time(node_timex_sync_status[1m]) == 0 and node_timex_maxerror_seconds >= 16'';
+                    for = "5m";
+                    labels = {
+                      severity = "critical";
+                    };
+                    annotations = {
+                      summary = "Clock not synchronizing";
+                      description = "Instance {{ $labels.instance }} clock is not synchronizing.";
+                    };
+                  }
+                ];
+              }
+            ];
+          }
+        ))
+        (pkgs.writeText "filesystem.rules.yml" (
+          builtins.toJSON {
+            groups = [
+              {
+                name = "filesystem";
+                rules = [
+                  {
+                    alert = "NodeFilesystemAlmostFull";
+                    expr = ''(node_filesystem_avail_bytes{fstype=~"ext4|xfs|zfs"} / node_filesystem_size_bytes{fstype=~"ext4|xfs|zfs"}) < 0.10'';
+                    for = "5m";
+                    labels = {
+                      severity = "warning";
+                    };
+                    annotations = {
+                      summary = "Filesystem almost full";
+                      description = "Filesystem on {{ $labels.instance }} at {{ $labels.mountpoint }} is almost full.";
+                    };
+                  }
+                  {
+                    alert = "NodeDiskIOWaitHigh";
+                    expr = ''rate(node_disk_io_time_seconds_total[5m]) > 0.1'';
+                    for = "2m";
+                    labels = {
+                      severity = "warning";
+                    };
+                    annotations = {
+                      summary = "High disk I/O wait time";
+                      description = "Instance {{ $labels.instance }} has high disk I/O wait time.";
+                    };
+                  }
+                ];
+              }
+            ];
+          }
+        ))
+        (pkgs.writeText "network.rules.yml" (
+          builtins.toJSON {
+            groups = [
+              {
+                name = "network";
+                rules = [
+                  {
+                    alert = "NodeNetworkReceiveErrors";
+                    expr = ''rate(node_network_receive_errors_total[5m]) > 0'';
+                    for = "2m";
+                    labels = {
+                      severity = "warning";
+                    };
+                    annotations = {
+                      summary = "Network receive errors";
+                      description = "Instance {{ $labels.instance }} has network receive errors.";
+                    };
+                  }
+                  {
+                    alert = "NodeNetworkTransmitErrors";
+                    expr = ''rate(node_network_transmit_errors_total[5m]) > 0'';
+                    for = "2m";
+                    labels = {
+                      severity = "warning";
+                    };
+                    annotations = {
+                      summary = "Network transmit errors";
+                      description = "Instance {{ $labels.instance }} has network transmit errors.";
+                    };
+                  }
+                ];
+              }
+            ];
+          }
+        ))
+      ];
     };
 
     # Prometheus
