@@ -114,7 +114,7 @@ in
     services.${service} = {
       enable = true;
       port = cfg.listenPort;
-      webExternalUrl = "https://${cfg.url}:${toString cfg.listenPort}";
+      webExternalUrl = "https://${cfg.url}";
       scrapeConfigs =
         # each homelab service that has `scrapeConfig` defined will be added to the Prometheus scrape configuration
         # in the homelab.services it should look like this for example:
