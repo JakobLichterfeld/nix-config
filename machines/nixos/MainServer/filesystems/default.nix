@@ -28,7 +28,10 @@
   fileSystems.${vars.cacheArray} = {
     device = "cachepool/cache";
     fsType = "zfs";
-    options = [ "zfsutil" ];
+    options = [
+      "zfsutil"
+      "x-mount.mkdir"
+    ];
   };
 
   fileSystems."/mnt/data1" = {
