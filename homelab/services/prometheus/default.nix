@@ -194,7 +194,7 @@ in
       alertmanagers = [
         {
           static_configs = [
-            { targets = [ "${cfgSubService.url}" ]; }
+            { targets = [ "localhost:${toString cfgSubService.listenPort}" ]; }
           ];
         }
       ];
