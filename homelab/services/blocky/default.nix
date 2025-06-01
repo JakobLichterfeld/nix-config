@@ -16,6 +16,10 @@ in
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
     };
+    url = lib.mkOption {
+      type = lib.types.str;
+      default = "${service}.${homelab.baseDomain}";
+    };
     listenPort = lib.mkOption {
       type = lib.types.int;
       default = 4001;
@@ -119,6 +123,14 @@ in
         clientLookup.upstream = machinesSensitiveVars.MainServer.defaultGateway;
       };
 
+    };
+
+    # Enable reverse proxy for Prometheus metrics scraping
+    services.caddy.virtualHosts."${cfg.url}" = lib.mkIf config.services.prometheus.enable {
+      useACMEHost = homelab.baseDomain;
+      extraConfig = ''
+        reverse_proxy /metrics http://127.0.0.1:${toString cfg.listenPort}
+      '';
     };
   };
 }
