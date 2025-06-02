@@ -250,7 +250,7 @@ in
                       # systemd service crashed
                       # from https://samber.github.io/awesome-prometheus-alerts/rules
                       alert = "SystemdUnitFailed";
-                      expr = ''systemd_unit_state{state="failed"} > 0''; # or via node_exporter: (node_systemd_unit_state{state="failed"} == 1)
+                      expr = ''(node_systemd_unit_state{state="failed"} == 1)'';
                       for = "0m";
                       labels = {
                         severity = "warning";
