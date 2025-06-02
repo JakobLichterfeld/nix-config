@@ -182,7 +182,6 @@ in
         datasets = {
           cache = {
             type = "zfs_fs";
-            options.mountpoint = "legacy";
             mountpoint = "/mnt/cache";
           };
         };
