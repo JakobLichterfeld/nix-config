@@ -54,7 +54,7 @@
     ];
   };
   networking = {
-    useDHCP = true;
+    useDHCP = false; # we use static IPs
     networkmanager.enable = false;
     hostName = machinesSensitiveVars.MainServer.hostName;
     interfaces = {
