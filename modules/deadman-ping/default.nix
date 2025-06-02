@@ -61,13 +61,7 @@ in
       wants = [ "network-online.target" ];
       serviceConfig = {
         Type = "oneshot";
-
-        ExecStart = ''
-          for i in $(seq 1 5); do
-            ${pkgs.curl}/bin/curl -fsS --max-time 10 --connect-timeout 5 -o /dev/null "$PING_URL" && break
-            sleep 2
-          done
-        '';
+        ExecStart = "${pkgs.runtimeShell} -c 'for i in $(seq 1 5); do ${pkgs.curl}/bin/curl -fsS --max-time 10 --connect-timeout 5 -o /dev/null \"$PING_URL\" && exit 0; sleep 2; done; exit 1'";
         TimeoutStartSec = "20s"; # do not block the systemd boot process if the ping fails
         User = cfg.user;
         EnvironmentFile = cfg.credentialsFile;
