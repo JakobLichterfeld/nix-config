@@ -36,6 +36,10 @@ in
       type = lib.types.int;
       default = 9100;
     };
+    listenPortZfsExporter = lib.mkOption {
+      type = lib.types.int;
+      default = 9134;
+    };
     listenPortSmartctlExporter = lib.mkOption {
       type = lib.types.int;
       default = 9633;
@@ -150,6 +154,14 @@ in
             ];
           }
           {
+            job_name = "zfs";
+            static_configs = [
+              {
+                targets = [ "localhost:${toString cfg.listenPortZfsExporter}" ];
+              }
+            ];
+          }
+          {
             job_name = "smartctl";
             static_configs = [
               { targets = [ "localhost:${toString cfg.listenPortSmartctlExporter}" ]; }
@@ -226,7 +238,11 @@ in
 
         postgres.enable = config.services.postgresql.enable;
 
-        zfs.enable = true;
+        zfs = {
+          enable = true;
+          listenAddress = "0.0.0.0";
+          port = cfg.listenPortZfsExporter;
+        };
 
         # smartmontools
         smartctl = {
