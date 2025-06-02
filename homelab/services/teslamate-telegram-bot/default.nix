@@ -53,6 +53,7 @@ in
     };
     systemd.services."podman-${service}" = {
       after = [
+        "network-online.target"
         "mosquitto.service"
         "teslamate.service"
       ];
@@ -60,6 +61,7 @@ in
         "mosquitto.service"
         "teslamate.service"
       ];
+      wants = [ "network-online.target" ];
     };
   };
 }
