@@ -40,6 +40,10 @@ in
       type = lib.types.int;
       default = 9000;
     };
+    listenPortPostgreSQLExporter = lib.mkOption {
+      type = lib.types.int;
+      default = 9187;
+    };
     listenPortZfsExporter = lib.mkOption {
       type = lib.types.int;
       default = 9134;
@@ -164,6 +168,12 @@ in
             ];
           }
           {
+            job_name = "postgresql";
+            static_configs = [
+              { targets = [ "localhost:${toString cfg.listenPortPostgreSQLExporter}" ]; }
+            ];
+          }
+          {
             job_name = "zfs";
             static_configs = [
               {
@@ -252,7 +262,12 @@ in
 
         };
 
-        postgres.enable = config.services.postgresql.enable;
+        postgres = {
+          enable = config.services.postgresql.enable;
+          listenAddress = "0.0.0.0";
+          port = cfg.listenPortPostgreSQLExporter;
+          telemetryPath = "/metrics";
+        };
 
         zfs = {
           enable = true;
