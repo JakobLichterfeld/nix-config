@@ -36,6 +36,10 @@ in
       type = lib.types.int;
       default = 9100;
     };
+    listenPortMQTTExporter = lib.mkOption {
+      type = lib.types.int;
+      default = 9000;
+    };
     listenPortZfsExporter = lib.mkOption {
       type = lib.types.int;
       default = 9134;
@@ -154,6 +158,12 @@ in
             ];
           }
           {
+            job_name = "mqtt";
+            static_configs = [
+              { targets = [ "localhost:${toString cfg.listenPortMQTTExporter}" ]; }
+            ];
+          }
+          {
             job_name = "zfs";
             static_configs = [
               {
@@ -234,7 +244,13 @@ in
           ];
         };
 
-        mqtt.enable = config.services.mosquitto.enable;
+        mqtt = {
+          enable = config.services.mosquitto.enable;
+          listenAddress = "0.0.0.0";
+          port = cfg.listenPortMQTTExporter;
+          mqttPort = config.services.mosquitto.port;
+
+        };
 
         postgres.enable = config.services.postgresql.enable;
 
