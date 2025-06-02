@@ -57,11 +57,18 @@ in
 
     systemd.services.deadman-ping = {
       description = "Send heartbeat ping to external monitoring service";
+      after = [ "network-online.target" ] ++ lib.optional config.services.blocky.enable "blocky.service";
+      wants = [ "network-online.target" ];
       serviceConfig = {
         Type = "oneshot";
+
         ExecStart = ''
-          ${pkgs.curl}/bin/curl -fsS --max-time 10 --retry 5 -o /dev/null "$PING_URL" # timeout 10s, retry 5 times
+          for i in $(seq 1 5); do
+            ${pkgs.curl}/bin/curl -fsS --max-time 10 --connect-timeout 5 -o /dev/null "$PING_URL" && break
+            sleep 2
+          done
         '';
+        TimeoutStartSec = "20s"; # do not block the systemd boot process if the ping fails
         User = cfg.user;
         EnvironmentFile = cfg.credentialsFile;
       };
