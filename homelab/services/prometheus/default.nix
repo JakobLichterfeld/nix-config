@@ -258,8 +258,6 @@ in
           enable = config.services.mosquitto.enable;
           listenAddress = "0.0.0.0";
           port = cfg.listenPortMQTTExporter;
-          mqttPort = config.services.mosquitto.port;
-
         };
 
         postgres = {
