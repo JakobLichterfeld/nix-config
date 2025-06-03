@@ -51,6 +51,8 @@
       "snd_sof_pci_intel_tgl" # disable the onboard audio driver, as it is a headless server
       "mei_me" # disable the Intel Management Engine driver, as it is not needed
       "mei" # disable the Intel Management Engine driver, as it is not needed
+      "8250" # disable the serial port driver, as it is not needed
+      "8250_serial" # disable the serial port driver, as it is not needed
     ];
   };
   networking = {
