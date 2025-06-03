@@ -42,6 +42,18 @@ in
       type = lib.types.str;
       default = "Tesla";
     };
+    postgres.host = lib.mkOption {
+      type = lib.types.str;
+      default = "127.0.0.1";
+    };
+    postgres.user = lib.mkOption {
+      type = lib.types.str;
+      default = "teslamate";
+    };
+    postgres.database = lib.mkOption {
+      type = lib.types.str;
+      default = "teslamate";
+    };
     listenPortPostgres = lib.mkOption {
       type = lib.types.int;
       default = 5432;
@@ -107,8 +119,8 @@ in
 
       postgres = {
         enable_server = true;
-        user = "teslamate";
-        database = "teslamate";
+        user = cfg.postgres.user;
+        database = cfg.postgres.database;
         host = "127.0.0.1";
         port = cfg.listenPortPostgres;
       };
@@ -126,6 +138,12 @@ in
         port = cfg.listenPortMqtt;
       };
     };
+
+    # Prometheus exporter for PostgreSQL
+    services.prometheus.exporters.postgres.environmentFile = config.age.secrets.teslamateEnv.path;
+    # the Environment file must contain the following with real values:
+    # DATA_SOURCE_NAME=postgres://${cfg.postgres.user}:${DATABASE_PASS}@${cfg.postgres.host}:${cfg.listenPortPostgres}/${cfg.postgres.database}?sslmode=disable
+    services.prometheus.exporters.postgres.dataSourceName = "$DATA_SOURCE_NAME"; # as the eventsub is not implemented for this exporter, we must use the complete data source name
 
     homelab.services.teslamate_grafana = {
       enable = true;
