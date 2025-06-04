@@ -52,6 +52,10 @@ in
       type = lib.types.int;
       default = 9633;
     };
+    listenPortBlackboxExporter = lib.mkOption {
+      type = lib.types.int;
+      default = 9115;
+    };
     telegramCredentialsFile = lib.mkOption {
       type = lib.types.path;
       description = "Path to a file with the Telegram Bot token";
@@ -88,6 +92,103 @@ in
     homepage.category = lib.mkOption {
       type = lib.types.str;
       default = "Services";
+    };
+    blackboxTargets = lib.mkOption {
+      type = lib.types.listOf (
+        lib.types.submodule {
+          options = {
+            target = lib.mkOption {
+              type = lib.types.str;
+              description = "Target hostname or IP with optional port.";
+            };
+            module = lib.mkOption {
+              type = lib.types.str;
+              description = "Blackbox exporter module (e.g., http_2xx, icmp_probe, tcp_connect_probe, etc.).";
+            };
+            labels = lib.mkOption {
+              type = lib.types.attrsOf lib.types.str;
+              default = { };
+              description = "Optional labels to attach to the probe result.";
+            };
+          };
+        }
+      );
+      description = "List of targets to monitor with the Blackbox Exporter. Each target should be an attribute set with 'target' and 'module' keys.";
+      default =
+        [
+          {
+            # prometheus
+            target = "localhost:${toString cfg.listenPort}";
+            module = "http_2xx"; # Use the HTTP 2xx module for HTTP targets, can be any module defined in the Blackbox Exporter config
+            labels = {
+              probe = "http"; # Prober type, can be http, icmp, tcp, etc.
+              environment = "prod";
+            };
+          }
+          {
+            # Alertmanager
+            target = "localhost:${toString cfg.listenPortAlertmanager}";
+            module = "http_2xx";
+            labels = {
+              probe = "http";
+              environment = "prod";
+            };
+          }
+          {
+            # Node Exporter
+            target = "localhost:${toString cfg.listenPortNodeExporter}";
+            module = "http_2xx";
+            labels = {
+              probe = "http";
+              environment = "prod";
+            };
+          }
+          {
+            # ZFS Exporter
+            target = "localhost:${toString cfg.listenPortZfsExporter}";
+            module = "http_2xx";
+            labels = {
+              probe = "http";
+              environment = "prod";
+            };
+          }
+          {
+            # Smartctl Exporter
+            target = "localhost:${toString cfg.listenPortSmartctlExporter}";
+            module = "http_2xx";
+            labels = {
+              probe = "http";
+              environment = "prod";
+            };
+          }
+          {
+            # Blackbox Exporter itself
+            target = "localhost:${toString cfg.listenPortBlackboxExporter}";
+            module = "http_2xx";
+            labels = {
+              probe = "http";
+              environment = "prod";
+            };
+          }
+        ]
+        ++ lib.optional config.services.mosquitto.enable ({
+          # MQTT Exporter
+          target = "localhost:${toString cfg.listenPortMQTTExporter}";
+          module = "http_2xx";
+          labels = {
+            probe = "http";
+            environment = "prod";
+          };
+        })
+        ++ lib.optional config.services.postgresql.enable ({
+          # PostgreSQL Exporter
+          target = "localhost:${toString cfg.listenPortPostgreSQLExporter}";
+          module = "http_2xx";
+          labels = {
+            probe = "http";
+            environment = "prod";
+          };
+        });
     };
   };
 
@@ -187,6 +288,43 @@ in
               { targets = [ "localhost:${toString cfg.listenPortSmartctlExporter}" ]; }
             ];
           }
+          {
+            job_name = "blackbox";
+            metrics_path = "/probe";
+
+            static_configs =
+              # Collect targets from all enabled homelab.services that have `blackboxTargets` defined
+              let
+                activeServices = lib.filterAttrs (_: s: s.enable or false) config.homelab.services;
+
+                blackboxTargets = lib.flatten (
+                  lib.mapAttrsToList (_: s: if s ? blackboxTargets then s.blackboxTargets else [ ]) activeServices
+                );
+              in
+              map (entry: {
+                targets = [ entry.target ];
+                labels.module = entry.module;
+              }) blackboxTargets;
+
+            relabel_configs = [
+              {
+                source_labels = [ "__address__" ];
+                target_label = "__param_target";
+              }
+              {
+                source_labels = [ "__param_target" ];
+                target_label = "instance";
+              }
+              {
+                source_labels = [ "module" ];
+                target_label = "__param_module";
+              }
+              {
+                target_label = "__address__";
+                replacement = "localhost:${toString cfg.listenPortBlackboxExporter}"; # Address of the Blackbox Exporter
+              }
+            ];
+          }
         ];
 
       # Alertmanager
@@ -280,6 +418,24 @@ in
           maxInterval = "30m"; # Interval that limits how often a disk can be queried.
           listenAddress = "0.0.0.0";
           port = cfg.listenPortSmartctlExporter;
+        };
+
+        # Blackbox
+        blackbox = {
+          enable = true;
+          listenAddress = "0.0.0.0";
+          port = cfg.listenPortBlackboxExporter;
+          configFile = pkgs.writeText "blackbox.yml" ''
+            modules:
+              http_2xx:
+                prober: http
+                timeout: 5s
+              icmp_probe:
+                prober: icmp
+              tcp_connect_probe:
+                prober: tcp
+                timeout: 5s
+          '';
         };
       };
 
@@ -587,6 +743,41 @@ in
                       annotations = {
                         summary = "Network transmit errors";
                         description = "Instance {{ $labels.instance }} has network transmit errors.";
+                      };
+                    }
+                  ];
+                }
+              ];
+            }
+          ))
+          (pkgs.writeText "blackbox.rules.yml" (
+            builtins.toJSON {
+              groups = [
+                {
+                  name = "blackbox";
+                  rules = [
+                    {
+                      alert = "BlackboxTargetDown";
+                      expr = ''probe_success == 0'';
+                      for = "2m";
+                      labels = {
+                        severity = "warning";
+                      };
+                      annotations = {
+                        summary = "Target down: {{ $labels.instance }}";
+                        description = "Blackbox probe failed for {{ $labels.instance }}";
+                      };
+                    }
+                    {
+                      alert = "BlackboxHttpSlow";
+                      expr = ''probe_http_duration_seconds > 1.5'';
+                      for = "1m";
+                      labels = {
+                        severity = "warning";
+                      };
+                      annotations = {
+                        summary = "Slow HTTP response from {{ $labels.instance }}";
+                        description = "HTTP response time from {{ $labels.instance }} is > 1.5s.";
                       };
                     }
                   ];
