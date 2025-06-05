@@ -160,6 +160,13 @@ in
         enable = true;
         telegramCredentialsFile = config.age.secrets.telegramCredentials.path;
         telegramChatId = machinesSensitiveVars.MainServer.telegramChatId;
+        hostSpecificBlackboxTargets =
+          let
+            blackbox = import ../../../../lib/blackbox.nix { inherit lib; };
+          in
+          [
+            (blackbox.mkHttpTarget "networking-router" "http://${machinesSensitiveVars.MainServer.defaultGateway}")
+          ];
       };
 
       stirling-pdf.enable = true;

@@ -133,6 +133,29 @@ in
           blackbox.mkHttpTarget "postgresql_exporter" "localhost:${toString cfg.listenPortPostgreSQLExporter}"
         );
     };
+    hostSpecificBlackboxTargets = lib.mkOption {
+      type = lib.types.listOf (
+        lib.types.submodule {
+          options = {
+            target = lib.mkOption {
+              type = lib.types.str;
+              description = "Target hostname or IP with optional port.";
+            };
+            module = lib.mkOption {
+              type = lib.types.str;
+              description = "Blackbox exporter module (e.g., http_2xx, icmp_probe, tcp_connect_probe, etc.).";
+            };
+            labels = lib.mkOption {
+              type = lib.types.attrsOf lib.types.str;
+              default = { };
+              description = "Optional labels to attach to the probe result.";
+            };
+          };
+        }
+      );
+      description = "List of host specific targets to monitor with the Blackbox Exporter. Each target should be an attribute set with 'target' and 'module' keys.";
+      default = [ ];
+    };
   };
 
   options.homelab.services.${serviceSubService} = {
@@ -172,9 +195,13 @@ in
         # Collect targets from all enabled homelab.services that have `blackboxTargets` defined
         activeServices = lib.filterAttrs (_: s: s.enable or false) config.homelab.services;
 
-        blackboxTargets = lib.flatten (
-          lib.mapAttrsToList (_: s: if s ? blackboxTargets then s.blackboxTargets else [ ]) activeServices
-        );
+        # Flatten the list of blackboxTargets from all active services
+        blackboxTargets =
+          lib.flatten (
+            lib.mapAttrsToList (_: s: if s ? blackboxTargets then s.blackboxTargets else [ ]) activeServices
+          )
+          # add the host specific blackbox targets if any
+          ++ (if cfg.hostSpecificBlackboxTargets != [ ] then cfg.hostSpecificBlackboxTargets else [ ]);
       in
       {
         enable = true;
