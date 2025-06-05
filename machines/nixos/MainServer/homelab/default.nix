@@ -166,7 +166,13 @@ in
           in
           [
             (blackbox.mkHttpTarget "networking-router" "http://${machinesSensitiveVars.MainServer.defaultGateway}")
-          ];
+          ]
+          ++ lib.optional config.services.tailscale.enable (
+            blackbox.mkIcmpTarget "tailscale_self" machinesSensitiveVars.MainServer.ipAddressTailscale
+          )
+          ++ lib.optional config.services.zerotierone.enable (
+            blackbox.mkIcmpTarget "zerotier_self" machinesSensitiveVars.MainServer.ipAddressZerotier
+          );
       };
 
       stirling-pdf.enable = true;
