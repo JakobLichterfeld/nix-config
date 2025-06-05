@@ -167,757 +167,750 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services.${service} = {
-      enable = true;
-      port = cfg.listenPort;
-      webExternalUrl = "https://${cfg.url}";
-      scrapeConfigs =
-        # each homelab service that has `scrapeConfig` defined will be added to the Prometheus scrape configuration
-        # in the homelab.services it should look like this for example:
-        #     prometheus.scrapeConfig = lib.mkOption {
-        #   type = lib.types.attrs;
-        #   default = {
-        #     job_name = "${service}";
-        #     static_configs = [
-        #       {
-        #         targets = [ "localhost:${toString listenPort}" ];
-        #       }
-        #     ];
-        #   };
-        # };
-        (lib.pipe config.homelab.services [
-          (lib.filterAttrs (_: s: s.enable or false))
-          (lib.mapAttrsToList (
-            _: s: if s ? prometheus && s.prometheus ? scrapeConfig then s.prometheus.scrapeConfig else null
-          ))
-          (lib.filter (cfg: cfg != null))
-        ])
-        ++ [
-          {
-            job_name = "prometheus";
-            static_configs = [
-              { targets = [ "localhost:${toString cfg.listenPort}" ]; }
-            ];
-          }
-          {
-            job_name = "node";
-            static_configs = [
-              { targets = [ "localhost:${toString cfg.listenPortNodeExporter}" ]; }
-            ];
-          }
-          {
-            job_name = "mqtt";
-            static_configs = [
-              { targets = [ "localhost:${toString cfg.listenPortMQTTExporter}" ]; }
-            ];
-          }
-          {
-            job_name = "postgresql";
-            static_configs = [
-              { targets = [ "localhost:${toString cfg.listenPortPostgreSQLExporter}" ]; }
-            ];
-          }
-          {
-            job_name = "zfs";
-            static_configs = [
-              {
-                targets = [ "localhost:${toString cfg.listenPortZfsExporter}" ];
-              }
-            ];
-          }
-          {
-            job_name = "smartctl";
-            static_configs = [
-              { targets = [ "localhost:${toString cfg.listenPortSmartctlExporter}" ]; }
-            ];
-          }
-          {
-            job_name = "blackbox";
-            metrics_path = "/probe";
+    services.${service} =
+      let
+        # Collect targets from all enabled homelab.services that have `blackboxTargets` defined
+        activeServices = lib.filterAttrs (_: s: s.enable or false) config.homelab.services;
 
-            static_configs =
-              # Collect targets from all enabled homelab.services that have `blackboxTargets` defined
-              let
-                activeServices = lib.filterAttrs (_: s: s.enable or false) config.homelab.services;
+        blackboxTargets = lib.flatten (
+          lib.mapAttrsToList (_: s: if s ? blackboxTargets then s.blackboxTargets else [ ]) activeServices
+        );
+      in
+      {
+        enable = true;
+        port = cfg.listenPort;
+        webExternalUrl = "https://${cfg.url}";
+        scrapeConfigs =
+          # each homelab service that has `scrapeConfig` defined will be added to the Prometheus scrape configuration
+          # in the homelab.services it should look like this for example:
+          #     prometheus.scrapeConfig = lib.mkOption {
+          #   type = lib.types.attrs;
+          #   default = {
+          #     job_name = "${service}";
+          #     static_configs = [
+          #       {
+          #         targets = [ "localhost:${toString listenPort}" ];
+          #       }
+          #     ];
+          #   };
+          # };
+          (lib.pipe config.homelab.services [
+            (lib.filterAttrs (_: s: s.enable or false))
+            (lib.mapAttrsToList (
+              _: s: if s ? prometheus && s.prometheus ? scrapeConfig then s.prometheus.scrapeConfig else null
+            ))
+            (lib.filter (cfg: cfg != null))
+          ])
+          ++ [
+            {
+              job_name = "prometheus";
+              static_configs = [
+                { targets = [ "localhost:${toString cfg.listenPort}" ]; }
+              ];
+            }
+            {
+              job_name = "node";
+              static_configs = [
+                { targets = [ "localhost:${toString cfg.listenPortNodeExporter}" ]; }
+              ];
+            }
+            {
+              job_name = "mqtt";
+              static_configs = [
+                { targets = [ "localhost:${toString cfg.listenPortMQTTExporter}" ]; }
+              ];
+            }
+            {
+              job_name = "postgresql";
+              static_configs = [
+                { targets = [ "localhost:${toString cfg.listenPortPostgreSQLExporter}" ]; }
+              ];
+            }
+            {
+              job_name = "zfs";
+              static_configs = [
+                {
+                  targets = [ "localhost:${toString cfg.listenPortZfsExporter}" ];
+                }
+              ];
+            }
+            {
+              job_name = "smartctl";
+              static_configs = [
+                { targets = [ "localhost:${toString cfg.listenPortSmartctlExporter}" ]; }
+              ];
+            }
+            {
+              job_name = "blackbox";
+              metrics_path = "/probe";
 
-                blackboxTargets = lib.flatten (
-                  lib.mapAttrsToList (_: s: if s ? blackboxTargets then s.blackboxTargets else [ ]) activeServices
-                );
-              in
-              map (entry: {
+              static_configs = map (entry: {
                 targets = [ entry.target ];
                 labels.module = entry.module;
               }) blackboxTargets;
 
-            relabel_configs = [
+              relabel_configs = [
+                {
+                  source_labels = [ "__address__" ];
+                  target_label = "__param_target";
+                }
+                {
+                  source_labels = [ "__param_target" ];
+                  target_label = "instance";
+                }
+                {
+                  source_labels = [ "module" ];
+                  target_label = "__param_module";
+                }
+                {
+                  target_label = "__address__";
+                  replacement = "localhost:${toString cfg.listenPortBlackboxExporter}"; # Address of the Blackbox Exporter
+                }
+              ];
+            }
+          ];
+
+        # Alertmanager
+        alertmanager = {
+          enable = true;
+          webExternalUrl = "https://${cfgSubService.url}";
+          port = cfg.listenPortAlertmanager;
+          environmentFile = cfg.telegramCredentialsFile; # includes bot_token and chat_id
+          configuration = {
+            route = {
+              receiver = "telegram";
+            };
+            receivers = [
               {
-                source_labels = [ "__address__" ];
-                target_label = "__param_target";
+                name = "telegram";
+                telegram_configs = [
+                  {
+                    # see https://prometheus.io/docs/alerting/latest/configuration/#telegram_config
+                    bot_token = "\${BOT_TOKEN}"; # set in the environment file
+                    chat_id = cfg.telegramChatId; # setting in environment file is not supported as it must be a int64 and env is a string
+                    send_resolved = true; # whether to send resolved alerts
+                    parse_mode = "HTML"; # Parse mode for telegram message, supported values are MarkdownV2, Markdown, HTML and empty string for plain text
+                    #   message = ''
+                    #     <b>{{ .Status | toUpper }}</b> 🔔
+                    #     {{ range .Alerts }}
+                    #     <b>{{ .Labels.alertname }}</b>: {{ .Annotations.summary }}
+                    #     <i>{{ .Annotations.description }}</i>
+                    #     {{ end }}
+                    #   '';
+                  }
+                ];
               }
-              {
-                source_labels = [ "__param_target" ];
-                target_label = "instance";
-              }
-              {
-                source_labels = [ "module" ];
-                target_label = "__param_module";
-              }
-              {
-                target_label = "__address__";
-                replacement = "localhost:${toString cfg.listenPortBlackboxExporter}"; # Address of the Blackbox Exporter
-              }
+            ];
+          };
+        };
+
+        alertmanagers = [
+          {
+            static_configs = [
+              { targets = [ "localhost:${toString cfgSubService.listenPort}" ]; }
             ];
           }
         ];
 
-      # Alertmanager
-      alertmanager = {
-        enable = true;
-        webExternalUrl = "https://${cfgSubService.url}";
-        port = cfg.listenPortAlertmanager;
-        environmentFile = cfg.telegramCredentialsFile; # includes bot_token and chat_id
-        configuration = {
-          route = {
-            receiver = "telegram";
+        exporters = {
+          #Node Exporter
+          node = {
+            enable = true;
+            openFirewall = true;
+            port = cfg.listenPortNodeExporter;
+            enabledCollectors = [
+              "cpu" # Collect CPU statistics
+              "diskstats" # Collect disk statistics
+              "filesystem" # Collect filesystem statistics
+              "loadavg" # Collect load average statistics
+              "meminfo" # Collect memory statistics
+              "netdev" # Collect network device statistics
+              "time" # Collect system time statistics
+              "systemd" # Collect systemd statistics
+            ];
+            extraFlags = [
+              "--collector.ethtool" # Collect ethtool statistics
+              "--collector.softirqs" # Collect softirq statistics
+              "--collector.tcpstat" # Collect TCP statistics
+            ];
           };
-          receivers = [
-            {
-              name = "telegram";
-              telegram_configs = [
-                {
-                  # see https://prometheus.io/docs/alerting/latest/configuration/#telegram_config
-                  bot_token = "\${BOT_TOKEN}"; # set in the environment file
-                  chat_id = cfg.telegramChatId; # setting in environment file is not supported as it must be a int64 and env is a string
-                  send_resolved = true; # whether to send resolved alerts
-                  parse_mode = "HTML"; # Parse mode for telegram message, supported values are MarkdownV2, Markdown, HTML and empty string for plain text
-                  #   message = ''
-                  #     <b>{{ .Status | toUpper }}</b> 🔔
-                  #     {{ range .Alerts }}
-                  #     <b>{{ .Labels.alertname }}</b>: {{ .Annotations.summary }}
-                  #     <i>{{ .Annotations.description }}</i>
-                  #     {{ end }}
-                  #   '';
-                }
-              ];
-            }
-          ];
-        };
-      };
 
-      alertmanagers = [
-        {
-          static_configs = [
-            { targets = [ "localhost:${toString cfgSubService.listenPort}" ]; }
-          ];
-        }
-      ];
+          mqtt = {
+            enable = config.services.mosquitto.enable;
+            listenAddress = "0.0.0.0";
+            port = cfg.listenPortMQTTExporter;
+          };
 
-      exporters = {
-        #Node Exporter
-        node = {
-          enable = true;
-          openFirewall = true;
-          port = cfg.listenPortNodeExporter;
-          enabledCollectors = [
-            "cpu" # Collect CPU statistics
-            "diskstats" # Collect disk statistics
-            "filesystem" # Collect filesystem statistics
-            "loadavg" # Collect load average statistics
-            "meminfo" # Collect memory statistics
-            "netdev" # Collect network device statistics
-            "time" # Collect system time statistics
-            "systemd" # Collect systemd statistics
-          ];
-          extraFlags = [
-            "--collector.ethtool" # Collect ethtool statistics
-            "--collector.softirqs" # Collect softirq statistics
-            "--collector.tcpstat" # Collect TCP statistics
-          ];
+          postgres = {
+            enable = config.services.postgresql.enable;
+            listenAddress = "0.0.0.0";
+            port = cfg.listenPortPostgreSQLExporter;
+            telemetryPath = "/metrics";
+          };
+
+          zfs = {
+            enable = true;
+            listenAddress = "0.0.0.0";
+            port = cfg.listenPortZfsExporter;
+          };
+
+          # smartmontools
+          smartctl = {
+            enable = true;
+            # devices = []; # Paths to the disks that will be monitored. Will autodiscover all disks if none given
+            maxInterval = "30m"; # Interval that limits how often a disk can be queried.
+            listenAddress = "0.0.0.0";
+            port = cfg.listenPortSmartctlExporter;
+          };
+
+          # Blackbox
+          blackbox = {
+            enable = true;
+            listenAddress = "0.0.0.0";
+            port = cfg.listenPortBlackboxExporter;
+            configFile = pkgs.writeText "blackbox.yml" ''
+              modules:
+                http_2xx:
+                  prober: http
+                  timeout: 5s
+                icmp:
+                  prober: icmp
+                tcp_connect:
+                  prober: tcp
+                  timeout: 5s
+            '';
+          };
         };
 
-        mqtt = {
-          enable = config.services.mosquitto.enable;
-          listenAddress = "0.0.0.0";
-          port = cfg.listenPortMQTTExporter;
-        };
-
-        postgres = {
-          enable = config.services.postgresql.enable;
-          listenAddress = "0.0.0.0";
-          port = cfg.listenPortPostgreSQLExporter;
-          telemetryPath = "/metrics";
-        };
-
-        zfs = {
-          enable = true;
-          listenAddress = "0.0.0.0";
-          port = cfg.listenPortZfsExporter;
-        };
-
-        # smartmontools
-        smartctl = {
-          enable = true;
-          # devices = []; # Paths to the disks that will be monitored. Will autodiscover all disks if none given
-          maxInterval = "30m"; # Interval that limits how often a disk can be queried.
-          listenAddress = "0.0.0.0";
-          port = cfg.listenPortSmartctlExporter;
-        };
-
-        # Blackbox
-        blackbox = {
-          enable = true;
-          listenAddress = "0.0.0.0";
-          port = cfg.listenPortBlackboxExporter;
-          configFile = pkgs.writeText "blackbox.yml" ''
-            modules:
-              http_2xx:
-                prober: http
-                timeout: 5s
-              icmp:
-                prober: icmp
-              tcp_connect:
-                prober: tcp
-                timeout: 5s
-          '';
-        };
-      };
-
-      ruleFiles =
-        [
-          (pkgs.writeText "system.rules.yml" (
-            builtins.toJSON {
-              groups = [
-                {
-                  name = "system";
-                  rules = [
-                    {
-                      # systemd service crashed
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "SystemdUnitFailed";
-                      expr = ''(node_systemd_unit_state{state="failed"} == 1)'';
-                      for = "0m";
-                      labels = {
-                        severity = "warning";
-                      };
-                      annotations = {
-                        summary = "Host systemd service crashed (instance {{ $labels.instance }})";
-                        description = "systemd service crashed\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                    {
-                      # CPU load is > 80%
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "HostHighCpuLoad";
-                      expr = ''(avg by (instance) (rate(node_cpu_seconds_total{mode!="idle"}[2m]))) > .80'';
-                      for = "10m";
-                      labels = {
-                        severity = "warning";
-                      };
-                      annotations = {
-                        summary = "Host high CPU load (instance {{ $labels.instance }})";
-                        description = "CPU load is > 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-
-                    }
-                    {
-                      alert = "NodeMemoryUsageHigh";
-                      expr = ''(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes > 0.9'';
-                      for = "2m";
-                      labels = {
-                        severity = "warning";
-                      };
-                      annotations = {
-                        summary = "High memory usage";
-                        description = "Instance {{ $labels.instance }} is using more than 90% of memory.";
-                      };
-                    }
-                    {
-                      # Node memory is filling up (< 10% left)
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "HostOutOfMemory";
-                      expr = ''(node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes < .10)'';
-                      for = "2m";
-                      labels = {
-                        severity = "warning";
-                      };
-                      annotations = {
-                        summary = "Host out of memory (instance {{ $labels.instance }})";
-                        description = "Node memory is filling up (< 10% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-
-                    }
-                    {
-                      # The node is under heavy memory pressure. High rate of loading memory pages from disk.
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "HostMemoryUnderMemoryPressure";
-                      expr = ''(rate(node_vmstat_pgmajfault[5m]) > 1000)'';
-                      for = "0m";
-                      labels = {
-                        severity = "warning";
-                      };
-                      annotations = {
-                        summary = "Host memory under memory pressure (instance {{ $labels.instance }})";
-                        description = "The node is under heavy memory pressure. High rate of loading memory pages from disk.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                    {
-                      # Clock skew detected. Clock is out of sync. Ensure NTP is configured correctly on this host.
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "HostClockSkew";
-                      expr = ''((node_timex_offset_seconds > 0.05 and deriv(node_timex_offset_seconds[5m]) >= 0) or (node_timex_offset_seconds < -0.05 and deriv(node_timex_offset_seconds[5m]) <= 0))'';
-                      for = "10m";
-                      labels = {
-                        severity = "warning";
-                      };
-                      annotations = {
-                        summary = "Host clock skew (instance {{ $labels.instance }})";
-                        description = "Clock skew detected. Clock is out of sync. Ensure NTP is configured correctly on this host.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                    {
-                      # Clock not synchronising. Ensure NTP is configured on this host.
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "HostClockNotSynchronising";
-                      expr = ''min_over_time(node_timex_sync_status[1m]) == 0 and node_timex_maxerror_seconds >= 16'';
-                      for = "2m";
-                      labels = {
-                        severity = "warning";
-                      };
-                      annotations = {
-                        summary = "Host clock not synchronising (instance {{ $labels.instance }})";
-                        description = "Clock not synchronising. Ensure NTP is configured on this host.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                    {
-                      # Physical hardware component too hot
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "HostPhysicalComponentTooHot";
-                      expr = ''node_hwmon_temp_celsius > node_hwmon_temp_max_celsius'';
-                      for = "5m";
-                      labels = {
-                        severity = "warning";
-                      };
-                      annotations = {
-                        summary = "Host physical component too hot (instance {{ $labels.instance }})";
-                        description = "Physical hardware component too hot\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                    {
-                      # Physical node temperature alarm triggered
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "HostNodeOvertemperatureAlarm";
-                      expr = ''((node_hwmon_temp_crit_alarm_celsius == 1) or (node_hwmon_temp_alarm == 1))'';
-                      for = "0m";
-                      labels = {
-                        severity = "critical";
-                      };
-                      annotations = {
-                        summary = "Host node overtemperature alarm (instance {{ $labels.instance }})";
-                        description = "Physical node temperature alarm triggered\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                  ];
-                }
-              ];
-            }
-          ))
-          (pkgs.writeText "filesystem.rules.yml" (
-            builtins.toJSON {
-              groups = [
-                {
-                  name = "filesystem";
-                  rules = [
-                    {
-                      # Disk is too busy (IO wait > 80%)
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "HostUnusualDiskReadRate";
-                      expr = ''rate(node_disk_io_time_seconds_total[5m]) > .80'';
-                      for = "0m";
-                      labels = {
-                        severity = "warning";
-                      };
-                      annotations = {
-                        summary = "Host unusual disk read rate (instance {{ $labels.instance }})";
-                        description = "Disk is too busy (IO wait > 80%)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                    {
-                      # Disk is almost full (< 10% left)
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      # # Please add ignored mountpoints in node_exporter parameters like
-                      # "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)".
-                      alert = "HostOutOfDiskSpace";
-                      expr = ''(node_filesystem_avail_bytes{fstype!~"^(fuse.*|tmpfs|cifs|nfs|ext4|xfs|zfs)"} / node_filesystem_size_bytes < .10 and on (instance, device, mountpoint) node_filesystem_readonly == 0)'';
-                      for = "2m";
-                      labels = {
-                        severity = "critical";
-                      };
-                      annotations = {
-                        summary = "Host out of disk space (instance {{ $labels.instance }})";
-                        description = "Disk is almost full (< 10% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                    {
-                      # Swap is filling up (>80%)
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "HostSwapIsFillingUp";
-                      expr = ''((1 - (node_memory_SwapFree_bytes / node_memory_SwapTotal_bytes)) * 100 > 80)'';
-                      for = "2m";
-                      labels = {
-                        severity = "warning";
-                      };
-                      annotations = {
-                        summary = "Host swap is filling up (instance {{ $labels.instance }})";
-                        description = "Swap is filling up (>80%)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-
-                    }
-                    {
-                      alert = "ZfsPoolStatusDegraded";
-                      expr = ''zfs_pool_status != 0'';
-                      for = "1m";
-                      labels = {
-                        severity = "warning";
-                      };
-                      annotations = {
-                        summary = "ZFS pool status degraded (instance {{ $labels.instance }})";
-                        description = "ZFS pool status is degraded. Check the ZFS pool status on the host.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                  ];
-                }
-              ];
-            }
-          ))
-          (pkgs.writeText "smart.rules.yml" (
-            builtins.toJSON {
-              groups = [
-                {
-                  name = "smart";
-                  rules = [
-                    {
-                      # Device temperature warning on {{ $labels.instance }} drive {{ $labels.device }} over 60°C
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "SmartDeviceTemperatureWarning";
-                      expr = ''(avg_over_time(smartctl_device_temperature{temperature_type="current"} [5m]) unless on (instance, device) smartctl_device_temperature{temperature_type="drive_trip"}) > 60'';
-                      for = "0m";
-                      labels = {
-                        severity = "warning";
-                      };
-                      annotations = {
-                        summary = "SMART device temperature warning (instance {{ $labels.instance }})";
-                        description = "Device temperature warning on {{ $labels.instance }} drive {{ $labels.device }} over 60°C\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                    {
-                      # Device temperature critical on {{ $labels.instance }} drive {{ $labels.device }} over 70°C
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "SmartDeviceTempSmartDeviceTemperatureCriticaleratureCritical";
-                      expr = ''(max_over_time(smartctl_device_temperature{temperature_type="current"} [5m]) unless on (instance, device) smartctl_device_temperature{temperature_type="drive_trip"}) > 70'';
-                      for = "0m";
-                      labels = {
-                        severity = "critical";
-                      };
-                      annotations = {
-                        summary = "SMART device temperature critical (instance {{ $labels.instance }})";
-                        description = "Device temperature critical on {{ $labels.instance }} drive {{ $labels.device }} over 70°C\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                    {
-                      # Device has a SMART status failure on {{ $labels.instance }} drive {{ $labels.device }})
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "SmartStatus";
-                      expr = ''smartctl_device_smart_status != 1'';
-                      for = "0m";
-                      labels = {
-                        severity = "critical";
-                      };
-                      annotations = {
-                        summary = "SMART status (instance {{ $labels.instance }})";
-                        description = "Device has a SMART status failure on {{ $labels.instance }} drive {{ $labels.device }})\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                    {
-                      # Disk controller has critical warning on {{ $labels.instance }} drive {{ $labels.device }})
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "SmartCriticalWarning";
-                      expr = ''smartctl_device_critical_warning > 0'';
-                      for = "0m";
-                      labels = {
-                        severity = "critical";
-                      };
-                      annotations = {
-                        summary = "SMART critical warning (instance {{ $labels.instance }})";
-                        description = "Disk controller has critical warning on {{ $labels.instance }} drive {{ $labels.device }})\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                    {
-                      # Device is wearing out on {{ $labels.instance }} drive {{ $labels.device }})
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "SmartWearoutIndicator";
-                      expr = ''smartctl_device_available_spare < smartctl_device_available_spare_threshold'';
-                      for = "0m";
-                      labels = {
-                        severity = "critical";
-                      };
-                      annotations = {
-                        summary = "SMART Wearout Indicator (instance {{ $labels.instance }})";
-                        description = "Device is wearing out on {{ $labels.instance }} drive {{ $labels.device }})\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                    {
-                      alert = "SMARTFailing";
-                      expr = ''smartctl_device_smart_healthy == 0'';
-                      for = "5m";
-                      labels = {
-                        severity = "critical";
-                      };
-                      annotations = {
-                        summary = "SMART failing (instance {{ $labels.instance }})";
-                        description = "SMART failure on disk {{ $labels.device }} ({{ $labels.instance }})";
-                      };
-                    }
-                  ];
-                }
-              ];
-            }
-          ))
-          (pkgs.writeText "network.rules.yml" (
-            builtins.toJSON {
-              groups = [
-                {
-                  name = "network";
-                  rules = [
-                    {
-                      alert = "NodeNetworkReceiveErrors";
-                      expr = ''rate(node_network_receive_errors_total[5m]) > 0'';
-                      for = "2m";
-                      labels = {
-                        severity = "warning";
-                      };
-                      annotations = {
-                        summary = "Network receive errors";
-                        description = "Instance {{ $labels.instance }} has network receive errors.";
-                      };
-                    }
-                    {
-                      alert = "NodeNetworkTransmitErrors";
-                      expr = ''rate(node_network_transmit_errors_total[5m]) > 0'';
-                      for = "2m";
-                      labels = {
-                        severity = "warning";
-                      };
-                      annotations = {
-                        summary = "Network transmit errors";
-                        description = "Instance {{ $labels.instance }} has network transmit errors.";
-                      };
-                    }
-                  ];
-                }
-              ];
-            }
-          ))
-          (
-            # Blackbox Exporter rules generated from the targets defined in `blackboxTargets`
-            let
-              activeServices = lib.filterAttrs (_: s: s.enable or false) config.homelab.services;
-
-              blackboxTargets = lib.flatten (
-                lib.mapAttrsToList (_: s: if s ? blackboxTargets then s.blackboxTargets else [ ]) activeServices
-              );
-            in
-            pkgs.writeText "blackbox.rules.yml" (
+        ruleFiles =
+          [
+            (pkgs.writeText "system.rules.yml" (
               builtins.toJSON {
                 groups = [
                   {
-                    name = "blackbox";
-                    rules = lib.map (t: {
-                      alert = "BlackboxProbeFailed";
-                      expr = ''probe_success{instance="${t.target}", module="${t.module}"} == 0'';
-                      for = "2m";
-                      labels = {
-                        severity = "warning";
-                        service = t.labels.service or "unknown";
-                        probe = t.module;
-                      };
-                      annotations = {
-                        summary = "Blackbox probe failed for ${t.target}";
-                        description = "Blackbox module `${t.module}` reported failure on `${t.target}`.";
-                      };
-                    }) blackboxTargets;
+                    name = "system";
+                    rules = [
+                      {
+                        # systemd service crashed
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "SystemdUnitFailed";
+                        expr = ''(node_systemd_unit_state{state="failed"} == 1)'';
+                        for = "0m";
+                        labels = {
+                          severity = "warning";
+                        };
+                        annotations = {
+                          summary = "Host systemd service crashed (instance {{ $labels.instance }})";
+                          description = "systemd service crashed\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                      {
+                        # CPU load is > 80%
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "HostHighCpuLoad";
+                        expr = ''(avg by (instance) (rate(node_cpu_seconds_total{mode!="idle"}[2m]))) > .80'';
+                        for = "10m";
+                        labels = {
+                          severity = "warning";
+                        };
+                        annotations = {
+                          summary = "Host high CPU load (instance {{ $labels.instance }})";
+                          description = "CPU load is > 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+
+                      }
+                      {
+                        alert = "NodeMemoryUsageHigh";
+                        expr = ''(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes > 0.9'';
+                        for = "2m";
+                        labels = {
+                          severity = "warning";
+                        };
+                        annotations = {
+                          summary = "High memory usage";
+                          description = "Instance {{ $labels.instance }} is using more than 90% of memory.";
+                        };
+                      }
+                      {
+                        # Node memory is filling up (< 10% left)
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "HostOutOfMemory";
+                        expr = ''(node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes < .10)'';
+                        for = "2m";
+                        labels = {
+                          severity = "warning";
+                        };
+                        annotations = {
+                          summary = "Host out of memory (instance {{ $labels.instance }})";
+                          description = "Node memory is filling up (< 10% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+
+                      }
+                      {
+                        # The node is under heavy memory pressure. High rate of loading memory pages from disk.
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "HostMemoryUnderMemoryPressure";
+                        expr = ''(rate(node_vmstat_pgmajfault[5m]) > 1000)'';
+                        for = "0m";
+                        labels = {
+                          severity = "warning";
+                        };
+                        annotations = {
+                          summary = "Host memory under memory pressure (instance {{ $labels.instance }})";
+                          description = "The node is under heavy memory pressure. High rate of loading memory pages from disk.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                      {
+                        # Clock skew detected. Clock is out of sync. Ensure NTP is configured correctly on this host.
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "HostClockSkew";
+                        expr = ''((node_timex_offset_seconds > 0.05 and deriv(node_timex_offset_seconds[5m]) >= 0) or (node_timex_offset_seconds < -0.05 and deriv(node_timex_offset_seconds[5m]) <= 0))'';
+                        for = "10m";
+                        labels = {
+                          severity = "warning";
+                        };
+                        annotations = {
+                          summary = "Host clock skew (instance {{ $labels.instance }})";
+                          description = "Clock skew detected. Clock is out of sync. Ensure NTP is configured correctly on this host.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                      {
+                        # Clock not synchronising. Ensure NTP is configured on this host.
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "HostClockNotSynchronising";
+                        expr = ''min_over_time(node_timex_sync_status[1m]) == 0 and node_timex_maxerror_seconds >= 16'';
+                        for = "2m";
+                        labels = {
+                          severity = "warning";
+                        };
+                        annotations = {
+                          summary = "Host clock not synchronising (instance {{ $labels.instance }})";
+                          description = "Clock not synchronising. Ensure NTP is configured on this host.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                      {
+                        # Physical hardware component too hot
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "HostPhysicalComponentTooHot";
+                        expr = ''node_hwmon_temp_celsius > node_hwmon_temp_max_celsius'';
+                        for = "5m";
+                        labels = {
+                          severity = "warning";
+                        };
+                        annotations = {
+                          summary = "Host physical component too hot (instance {{ $labels.instance }})";
+                          description = "Physical hardware component too hot\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                      {
+                        # Physical node temperature alarm triggered
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "HostNodeOvertemperatureAlarm";
+                        expr = ''((node_hwmon_temp_crit_alarm_celsius == 1) or (node_hwmon_temp_alarm == 1))'';
+                        for = "0m";
+                        labels = {
+                          severity = "critical";
+                        };
+                        annotations = {
+                          summary = "Host node overtemperature alarm (instance {{ $labels.instance }})";
+                          description = "Physical node temperature alarm triggered\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                    ];
+                  }
+                ];
+              }
+            ))
+            (pkgs.writeText "filesystem.rules.yml" (
+              builtins.toJSON {
+                groups = [
+                  {
+                    name = "filesystem";
+                    rules = [
+                      {
+                        # Disk is too busy (IO wait > 80%)
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "HostUnusualDiskReadRate";
+                        expr = ''rate(node_disk_io_time_seconds_total[5m]) > .80'';
+                        for = "0m";
+                        labels = {
+                          severity = "warning";
+                        };
+                        annotations = {
+                          summary = "Host unusual disk read rate (instance {{ $labels.instance }})";
+                          description = "Disk is too busy (IO wait > 80%)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                      {
+                        # Disk is almost full (< 10% left)
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        # # Please add ignored mountpoints in node_exporter parameters like
+                        # "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)".
+                        alert = "HostOutOfDiskSpace";
+                        expr = ''(node_filesystem_avail_bytes{fstype!~"^(fuse.*|tmpfs|cifs|nfs|ext4|xfs|zfs)"} / node_filesystem_size_bytes < .10 and on (instance, device, mountpoint) node_filesystem_readonly == 0)'';
+                        for = "2m";
+                        labels = {
+                          severity = "critical";
+                        };
+                        annotations = {
+                          summary = "Host out of disk space (instance {{ $labels.instance }})";
+                          description = "Disk is almost full (< 10% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                      {
+                        # Swap is filling up (>80%)
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "HostSwapIsFillingUp";
+                        expr = ''((1 - (node_memory_SwapFree_bytes / node_memory_SwapTotal_bytes)) * 100 > 80)'';
+                        for = "2m";
+                        labels = {
+                          severity = "warning";
+                        };
+                        annotations = {
+                          summary = "Host swap is filling up (instance {{ $labels.instance }})";
+                          description = "Swap is filling up (>80%)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+
+                      }
+                      {
+                        alert = "ZfsPoolStatusDegraded";
+                        expr = ''zfs_pool_status != 0'';
+                        for = "1m";
+                        labels = {
+                          severity = "warning";
+                        };
+                        annotations = {
+                          summary = "ZFS pool status degraded (instance {{ $labels.instance }})";
+                          description = "ZFS pool status is degraded. Check the ZFS pool status on the host.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                    ];
+                  }
+                ];
+              }
+            ))
+            (pkgs.writeText "smart.rules.yml" (
+              builtins.toJSON {
+                groups = [
+                  {
+                    name = "smart";
+                    rules = [
+                      {
+                        # Device temperature warning on {{ $labels.instance }} drive {{ $labels.device }} over 60°C
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "SmartDeviceTemperatureWarning";
+                        expr = ''(avg_over_time(smartctl_device_temperature{temperature_type="current"} [5m]) unless on (instance, device) smartctl_device_temperature{temperature_type="drive_trip"}) > 60'';
+                        for = "0m";
+                        labels = {
+                          severity = "warning";
+                        };
+                        annotations = {
+                          summary = "SMART device temperature warning (instance {{ $labels.instance }})";
+                          description = "Device temperature warning on {{ $labels.instance }} drive {{ $labels.device }} over 60°C\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                      {
+                        # Device temperature critical on {{ $labels.instance }} drive {{ $labels.device }} over 70°C
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "SmartDeviceTempSmartDeviceTemperatureCriticaleratureCritical";
+                        expr = ''(max_over_time(smartctl_device_temperature{temperature_type="current"} [5m]) unless on (instance, device) smartctl_device_temperature{temperature_type="drive_trip"}) > 70'';
+                        for = "0m";
+                        labels = {
+                          severity = "critical";
+                        };
+                        annotations = {
+                          summary = "SMART device temperature critical (instance {{ $labels.instance }})";
+                          description = "Device temperature critical on {{ $labels.instance }} drive {{ $labels.device }} over 70°C\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                      {
+                        # Device has a SMART status failure on {{ $labels.instance }} drive {{ $labels.device }})
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "SmartStatus";
+                        expr = ''smartctl_device_smart_status != 1'';
+                        for = "0m";
+                        labels = {
+                          severity = "critical";
+                        };
+                        annotations = {
+                          summary = "SMART status (instance {{ $labels.instance }})";
+                          description = "Device has a SMART status failure on {{ $labels.instance }} drive {{ $labels.device }})\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                      {
+                        # Disk controller has critical warning on {{ $labels.instance }} drive {{ $labels.device }})
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "SmartCriticalWarning";
+                        expr = ''smartctl_device_critical_warning > 0'';
+                        for = "0m";
+                        labels = {
+                          severity = "critical";
+                        };
+                        annotations = {
+                          summary = "SMART critical warning (instance {{ $labels.instance }})";
+                          description = "Disk controller has critical warning on {{ $labels.instance }} drive {{ $labels.device }})\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                      {
+                        # Device is wearing out on {{ $labels.instance }} drive {{ $labels.device }})
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "SmartWearoutIndicator";
+                        expr = ''smartctl_device_available_spare < smartctl_device_available_spare_threshold'';
+                        for = "0m";
+                        labels = {
+                          severity = "critical";
+                        };
+                        annotations = {
+                          summary = "SMART Wearout Indicator (instance {{ $labels.instance }})";
+                          description = "Device is wearing out on {{ $labels.instance }} drive {{ $labels.device }})\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                      {
+                        alert = "SMARTFailing";
+                        expr = ''smartctl_device_smart_healthy == 0'';
+                        for = "5m";
+                        labels = {
+                          severity = "critical";
+                        };
+                        annotations = {
+                          summary = "SMART failing (instance {{ $labels.instance }})";
+                          description = "SMART failure on disk {{ $labels.device }} ({{ $labels.instance }})";
+                        };
+                      }
+                    ];
+                  }
+                ];
+              }
+            ))
+            (pkgs.writeText "network.rules.yml" (
+              builtins.toJSON {
+                groups = [
+                  {
+                    name = "network";
+                    rules = [
+                      {
+                        alert = "NodeNetworkReceiveErrors";
+                        expr = ''rate(node_network_receive_errors_total[5m]) > 0'';
+                        for = "2m";
+                        labels = {
+                          severity = "warning";
+                        };
+                        annotations = {
+                          summary = "Network receive errors";
+                          description = "Instance {{ $labels.instance }} has network receive errors.";
+                        };
+                      }
+                      {
+                        alert = "NodeNetworkTransmitErrors";
+                        expr = ''rate(node_network_transmit_errors_total[5m]) > 0'';
+                        for = "2m";
+                        labels = {
+                          severity = "warning";
+                        };
+                        annotations = {
+                          summary = "Network transmit errors";
+                          description = "Instance {{ $labels.instance }} has network transmit errors.";
+                        };
+                      }
+                    ];
+                  }
+                ];
+              }
+            ))
+            (
+              # Blackbox Exporter rules generated from the targets defined in `blackboxTargets`
+              pkgs.writeText "blackbox.rules.yml" (
+                builtins.toJSON {
+                  groups = [
+                    {
+                      name = "blackbox";
+                      rules = lib.map (t: {
+                        alert = "BlackboxProbeFailed";
+                        expr = ''probe_success{instance="${t.target}", module="${t.module}"} == 0'';
+                        for = "2m";
+                        labels = {
+                          severity = "warning";
+                          service = t.labels.service or "unknown";
+                          probe = t.module;
+                        };
+                        annotations = {
+                          summary = "Blackbox probe failed for ${t.target}";
+                          description = "Blackbox module `${t.module}` reported failure on `${t.target}`.";
+                        };
+                      }) blackboxTargets;
+                    }
+                  ];
+                }
+              )
+            )
+          ]
+          ++ lib.optional config.services.caddy.enable (
+            pkgs.writeText "caddy.rules.yml" (
+              builtins.toJSON {
+                groups = [
+                  {
+                    name = "caddy";
+                    rules = [
+                      {
+                        # All Caddy reverse proxies are down
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "CaddyReverseProxyDown";
+                        expr = ''count(caddy_reverse_proxy_upstreams_healthy) by (upstream) == 0'';
+                        for = "0m";
+                        labels = {
+                          severity = "critical";
+                        };
+                        annotations = {
+                          summary = "Caddy Reverse Proxy Down (instance {{ $labels.instance }})";
+                          description = "All Caddy reverse proxies are down\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                      {
+                        # Caddy service 4xx error rate is above 5%
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "CaddyHighHttp4xxErrorRateService";
+                        expr = ''sum(rate(caddy_http_request_duration_seconds_count{code=~"4.."}[3m])) by (instance) / sum(rate(caddy_http_request_duration_seconds_count[3m])) by (instance) * 100 > 5'';
+                        for = "1m";
+                        labels = {
+                          severity = "critical";
+                        };
+                        annotations = {
+                          summary = "Caddy high HTTP 4xx error rate service (instance {{ $labels.instance }})";
+                          description = "Caddy service 4xx error rate is above 5%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                      {
+                        # Caddy service 5xx error rate is above 5%
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "CaddyHighHttp5xxErrorRateService";
+                        expr = ''sum(rate(caddy_http_request_duration_seconds_count{code=~"5.."}[3m])) by (instance) / sum(rate(caddy_http_request_duration_seconds_count[3m])) by (instance) * 100 > 5'';
+                        for = "1m";
+                        labels = {
+                          severity = "critical";
+                        };
+                        annotations = {
+                          summary = "Caddy high HTTP 5xx error rate service (instance {{ $labels.instance }})";
+                          description = "Caddy service 5xx error rate is above 5%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                    ];
                   }
                 ];
               }
             )
           )
-        ]
-        ++ lib.optional config.services.caddy.enable (
-          pkgs.writeText "caddy.rules.yml" (
-            builtins.toJSON {
-              groups = [
-                {
-                  name = "caddy";
-                  rules = [
-                    {
-                      # All Caddy reverse proxies are down
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "CaddyReverseProxyDown";
-                      expr = ''count(caddy_reverse_proxy_upstreams_healthy) by (upstream) == 0'';
-                      for = "0m";
-                      labels = {
-                        severity = "critical";
-                      };
-                      annotations = {
-                        summary = "Caddy Reverse Proxy Down (instance {{ $labels.instance }})";
-                        description = "All Caddy reverse proxies are down\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                    {
-                      # Caddy service 4xx error rate is above 5%
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "CaddyHighHttp4xxErrorRateService";
-                      expr = ''sum(rate(caddy_http_request_duration_seconds_count{code=~"4.."}[3m])) by (instance) / sum(rate(caddy_http_request_duration_seconds_count[3m])) by (instance) * 100 > 5'';
-                      for = "1m";
-                      labels = {
-                        severity = "critical";
-                      };
-                      annotations = {
-                        summary = "Caddy high HTTP 4xx error rate service (instance {{ $labels.instance }})";
-                        description = "Caddy service 4xx error rate is above 5%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                    {
-                      # Caddy service 5xx error rate is above 5%
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "CaddyHighHttp5xxErrorRateService";
-                      expr = ''sum(rate(caddy_http_request_duration_seconds_count{code=~"5.."}[3m])) by (instance) / sum(rate(caddy_http_request_duration_seconds_count[3m])) by (instance) * 100 > 5'';
-                      for = "1m";
-                      labels = {
-                        severity = "critical";
-                      };
-                      annotations = {
-                        summary = "Caddy high HTTP 5xx error rate service (instance {{ $labels.instance }})";
-                        description = "Caddy service 5xx error rate is above 5%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                  ];
-                }
-              ];
-            }
+          ++ lib.optional config.services.postgresql.enable (
+            pkgs.writeText "postgresql.rules.yml" (
+              builtins.toJSON {
+                groups = [
+                  {
+                    name = "postgresql";
+                    rules = [
+                      {
+                        # Postgresql instance is down
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "PostgresqlDown";
+                        expr = ''pg_up == 0'';
+                        for = "0m";
+                        labels = {
+                          severity = "critical";
+                        };
+                        annotations = {
+                          summary = "Postgresql down (instance {{ $labels.instance }})";
+                          description = "Postgresql instance is down\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                      {
+                        # Postgresql exporter is showing errors. A query may be buggy in query.yaml
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        alert = "PostgresqlExporterError";
+                        expr = ''pg_exporter_last_scrape_error > 0'';
+                        for = "0m";
+                        labels = {
+                          severity = "critical";
+                        };
+                        annotations = {
+                          summary = "Postgresql exporter error (instance {{ $labels.instance }})";
+                          description = "Postgresql exporter is showing errors. A query may be buggy in query.yaml\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                      {
+                        # Postgresql bloat index high (> 80%)
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        # See https://github.com/samber/awesome-prometheus-alerts/issues/289#issuecomment-1164842737
+                        alert = "PostgresqlBloatIndexHigh(>80%)";
+                        expr = ''pg_bloat_btree_bloat_pct > 80 and on (idxname) (pg_bloat_btree_real_size > 100000000)'';
+                        for = "1h";
+                        labels = {
+                          severity = "warning";
+                        };
+                        annotations = {
+                          summary = "Postgresql bloat index high (> 80%) (instance {{ $labels.instance }})";
+                          description = "The index {{ $labels.idxname }} is bloated. You should execute `REINDEX INDEX CONCURRENTLY {{ $labels.idxname }};`\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                      {
+                        # Postgresql bloat table high (> 80%)
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        # See https://github.com/samber/awesome-prometheus-alerts/issues/289#issuecomment-1164842737
+                        alert = "PostgresqlBloatTableHigh(>80%)";
+                        expr = ''pg_bloat_table_bloat_pct > 80 and on (relname) (pg_bloat_table_real_size > 200000000)'';
+                        for = "1h";
+                        labels = {
+                          severity = "warning";
+                        };
+                        annotations = {
+                          summary = "Postgresql bloat table high (> 80%) (instance {{ $labels.instance }})";
+                          description = "The table {{ $labels.relname }} is bloated. You should execute `VACUUM {{ $labels.relname }};`\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        };
+                      }
+                      {
+                        # Postgresql invalid index
+                        # from https://samber.github.io/awesome-prometheus-alerts/rules
+                        # See https://github.com/samber/awesome-prometheus-alerts/issues/289#issuecomment-1164842737
+                        alert = "PostgresqlInvalidIndex";
+                        expr = ''pg_general_index_info_pg_relation_size{indexrelname=~".*ccnew.*"}'';
+                        for = "6h";
+                        labels = {
+                          severity = "warning";
+                        };
+                        annotations = {
+                          summary = "Postgresql invalid index (instance {{ $labels.instance }})";
+                          description = "Postgresql invalid index (instance {{ $labels.instance }})";
+                        };
+                      }
+                    ];
+                  }
+                ];
+              }
+            )
           )
-        )
-        ++ lib.optional config.services.postgresql.enable (
-          pkgs.writeText "postgresql.rules.yml" (
-            builtins.toJSON {
-              groups = [
-                {
-                  name = "postgresql";
-                  rules = [
-                    {
-                      # Postgresql instance is down
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "PostgresqlDown";
-                      expr = ''pg_up == 0'';
-                      for = "0m";
-                      labels = {
-                        severity = "critical";
-                      };
-                      annotations = {
-                        summary = "Postgresql down (instance {{ $labels.instance }})";
-                        description = "Postgresql instance is down\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                    {
-                      # Postgresql exporter is showing errors. A query may be buggy in query.yaml
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      alert = "PostgresqlExporterError";
-                      expr = ''pg_exporter_last_scrape_error > 0'';
-                      for = "0m";
-                      labels = {
-                        severity = "critical";
-                      };
-                      annotations = {
-                        summary = "Postgresql exporter error (instance {{ $labels.instance }})";
-                        description = "Postgresql exporter is showing errors. A query may be buggy in query.yaml\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                    {
-                      # Postgresql bloat index high (> 80%)
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      # See https://github.com/samber/awesome-prometheus-alerts/issues/289#issuecomment-1164842737
-                      alert = "PostgresqlBloatIndexHigh(>80%)";
-                      expr = ''pg_bloat_btree_bloat_pct > 80 and on (idxname) (pg_bloat_btree_real_size > 100000000)'';
-                      for = "1h";
-                      labels = {
-                        severity = "warning";
-                      };
-                      annotations = {
-                        summary = "Postgresql bloat index high (> 80%) (instance {{ $labels.instance }})";
-                        description = "The index {{ $labels.idxname }} is bloated. You should execute `REINDEX INDEX CONCURRENTLY {{ $labels.idxname }};`\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                    {
-                      # Postgresql bloat table high (> 80%)
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      # See https://github.com/samber/awesome-prometheus-alerts/issues/289#issuecomment-1164842737
-                      alert = "PostgresqlBloatTableHigh(>80%)";
-                      expr = ''pg_bloat_table_bloat_pct > 80 and on (relname) (pg_bloat_table_real_size > 200000000)'';
-                      for = "1h";
-                      labels = {
-                        severity = "warning";
-                      };
-                      annotations = {
-                        summary = "Postgresql bloat table high (> 80%) (instance {{ $labels.instance }})";
-                        description = "The table {{ $labels.relname }} is bloated. You should execute `VACUUM {{ $labels.relname }};`\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
-                      };
-                    }
-                    {
-                      # Postgresql invalid index
-                      # from https://samber.github.io/awesome-prometheus-alerts/rules
-                      # See https://github.com/samber/awesome-prometheus-alerts/issues/289#issuecomment-1164842737
-                      alert = "PostgresqlInvalidIndex";
-                      expr = ''pg_general_index_info_pg_relation_size{indexrelname=~".*ccnew.*"}'';
-                      for = "6h";
-                      labels = {
-                        severity = "warning";
-                      };
-                      annotations = {
-                        summary = "Postgresql invalid index (instance {{ $labels.instance }})";
-                        description = "Postgresql invalid index (instance {{ $labels.instance }})";
-                      };
-                    }
-                  ];
-                }
-              ];
-            }
-          )
-        )
-        ++ lib.optional cfg.enableTestAlert (
-          pkgs.writeText "test.rules.yml" (
-            builtins.toJSON {
-              groups = [
-                {
-                  name = "test";
-                  rules = [
-                    {
-                      alert = "ManualTestAlert";
-                      expr = ''vector(1)'';
-                      for = "0m";
-                      labels = {
-                        severity = "critical";
-                      };
-                      annotations = {
-                        summary = "Test alert";
-                        description = "Triggered manually for testing (instance {{ $labels.instance }})";
-                      };
-                    }
-                  ];
-                }
-              ];
-            }
-          )
-        );
-    };
+          ++ lib.optional cfg.enableTestAlert (
+            pkgs.writeText "test.rules.yml" (
+              builtins.toJSON {
+                groups = [
+                  {
+                    name = "test";
+                    rules = [
+                      {
+                        alert = "ManualTestAlert";
+                        expr = ''vector(1)'';
+                        for = "0m";
+                        labels = {
+                          severity = "critical";
+                        };
+                        annotations = {
+                          summary = "Test alert";
+                          description = "Triggered manually for testing (instance {{ $labels.instance }})";
+                        };
+                      }
+                    ];
+                  }
+                ];
+              }
+            )
+          );
+      };
 
     # Prometheus
     services.caddy.virtualHosts."${cfg.url}" = {
