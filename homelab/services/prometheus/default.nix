@@ -115,80 +115,23 @@ in
       );
       description = "List of targets to monitor with the Blackbox Exporter. Each target should be an attribute set with 'target' and 'module' keys.";
       default =
+        let
+          blackbox = import ../../../lib/blackbox.nix { inherit lib; };
+        in
         [
-          {
-            # prometheus
-            target = "localhost:${toString cfg.listenPort}";
-            module = "http_2xx"; # Use the HTTP 2xx module for HTTP targets, can be any module defined in the Blackbox Exporter config
-            labels = {
-              probe = "http"; # Prober type, can be http, icmp, tcp, etc.
-              environment = "prod";
-            };
-          }
-          {
-            # Alertmanager
-            target = "localhost:${toString cfg.listenPortAlertmanager}";
-            module = "http_2xx";
-            labels = {
-              probe = "http";
-              environment = "prod";
-            };
-          }
-          {
-            # Node Exporter
-            target = "localhost:${toString cfg.listenPortNodeExporter}";
-            module = "http_2xx";
-            labels = {
-              probe = "http";
-              environment = "prod";
-            };
-          }
-          {
-            # ZFS Exporter
-            target = "localhost:${toString cfg.listenPortZfsExporter}";
-            module = "http_2xx";
-            labels = {
-              probe = "http";
-              environment = "prod";
-            };
-          }
-          {
-            # Smartctl Exporter
-            target = "localhost:${toString cfg.listenPortSmartctlExporter}";
-            module = "http_2xx";
-            labels = {
-              probe = "http";
-              environment = "prod";
-            };
-          }
-          {
-            # Blackbox Exporter itself
-            target = "localhost:${toString cfg.listenPortBlackboxExporter}";
-            module = "http_2xx";
-            labels = {
-              probe = "http";
-              environment = "prod";
-            };
-          }
+          (blackbox.mkHttpTarget "prometheus" "localhost:${toString cfg.listenPort}")
+          (blackbox.mkHttpTarget "alertmanager" "localhost:${toString cfg.listenPort}")
+          (blackbox.mkHttpTarget "node_exporter" "localhost:${toString cfg.listenPortNodeExporter}")
+          (blackbox.mkHttpTarget "zfs_exporter" "localhost:${toString cfg.listenPortZfsExporter}")
+          (blackbox.mkHttpTarget "smartctl_exporter" "localhost:${toString cfg.listenPortSmartctlExporter}")
+          (blackbox.mkHttpTarget "blackbox_exporter" "localhost:${toString cfg.listenPortBlackboxExporter}")
         ]
-        ++ lib.optional config.services.mosquitto.enable ({
-          # MQTT Exporter
-          target = "localhost:${toString cfg.listenPortMQTTExporter}";
-          module = "http_2xx";
-          labels = {
-            probe = "http";
-            environment = "prod";
-          };
-        })
-        ++ lib.optional config.services.postgresql.enable ({
-          # PostgreSQL Exporter
-          target = "localhost:${toString cfg.listenPortPostgreSQLExporter}";
-          module = "http_2xx";
-          labels = {
-            probe = "http";
-            environment = "prod";
-          };
-        });
+        ++ lib.optional config.services.mosquitto.enable (
+          blackbox.mkHttpTarget "mqtt_exporter" "localhost:${toString cfg.listenPortMQTTExporter}"
+        )
+        ++ lib.optional config.services.postgresql.enable (
+          blackbox.mkHttpTarget "postgresql_exporter" "localhost:${toString cfg.listenPortPostgreSQLExporter}"
+        );
     };
   };
 
@@ -430,9 +373,9 @@ in
               http_2xx:
                 prober: http
                 timeout: 5s
-              icmp_probe:
+              icmp:
                 prober: icmp
-              tcp_connect_probe:
+              tcp_connect:
                 prober: tcp
                 timeout: 5s
           '';
