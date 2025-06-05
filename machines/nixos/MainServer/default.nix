@@ -57,6 +57,7 @@
   };
   networking = {
     useDHCP = false; # we use static IPs
+    enableIPv6 = false; # we do not use IPv6 on this server
     networkmanager.enable = false;
     hostName = machinesSensitiveVars.MainServer.hostName;
     interfaces = {
