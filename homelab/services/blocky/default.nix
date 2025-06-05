@@ -37,6 +37,19 @@ in
         ];
       };
     };
+    blackbox.targets = import ../../../lib/options/blackboxTargets.nix {
+      inherit lib;
+      defaultTargets =
+        let
+          blackbox = import ../../../lib/blackbox.nix { inherit lib; };
+        in
+        [
+          (blackbox.mkHttpTarget "${
+            service
+          }" "http://127.0.0.1:${toString cfg.listenPort}/metrics" "internal")
+          (blackbox.mkHttpTarget "${service}" "${cfg.url}/metrics" "external")
+        ];
+    };
   };
   config = lib.mkIf cfg.enable {
     services.${service} = {
