@@ -160,7 +160,7 @@ in
         enable = true;
         telegramCredentialsFile = config.age.secrets.telegramCredentials.path;
         telegramChatId = machinesSensitiveVars.MainServer.telegramChatId;
-        hostSpecificBlackboxTargets =
+        blackbox.hostSpecificTargets =
           let
             blackbox = import ../../../../lib/blackbox.nix { inherit lib; };
           in

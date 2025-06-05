@@ -93,28 +93,9 @@ in
       type = lib.types.str;
       default = "Services";
     };
-    blackboxTargets = lib.mkOption {
-      type = lib.types.listOf (
-        lib.types.submodule {
-          options = {
-            target = lib.mkOption {
-              type = lib.types.str;
-              description = "Target hostname or IP with optional port.";
-            };
-            module = lib.mkOption {
-              type = lib.types.str;
-              description = "Blackbox exporter module (e.g., http_2xx, icmp_probe, tcp_connect_probe, etc.).";
-            };
-            labels = lib.mkOption {
-              type = lib.types.attrsOf lib.types.str;
-              default = { };
-              description = "Optional labels to attach to the probe result.";
-            };
-          };
-        }
-      );
-      description = "List of targets to monitor with the Blackbox Exporter. Each target should be an attribute set with 'target' and 'module' keys.";
-      default =
+    blackbox.targets = import ../../../lib/options/blackboxTargets.nix {
+      inherit lib;
+      defaultTargets =
         let
           blackbox = import ../../../lib/blackbox.nix { inherit lib; };
         in
@@ -133,28 +114,10 @@ in
           blackbox.mkHttpTarget "postgresql_exporter" "localhost:${toString cfg.listenPortPostgreSQLExporter}"
         );
     };
-    hostSpecificBlackboxTargets = lib.mkOption {
-      type = lib.types.listOf (
-        lib.types.submodule {
-          options = {
-            target = lib.mkOption {
-              type = lib.types.str;
-              description = "Target hostname or IP with optional port.";
-            };
-            module = lib.mkOption {
-              type = lib.types.str;
-              description = "Blackbox exporter module (e.g., http_2xx, icmp_probe, tcp_connect_probe, etc.).";
-            };
-            labels = lib.mkOption {
-              type = lib.types.attrsOf lib.types.str;
-              default = { };
-              description = "Optional labels to attach to the probe result.";
-            };
-          };
-        }
-      );
-      description = "List of host specific targets to monitor with the Blackbox Exporter. Each target should be an attribute set with 'target' and 'module' keys.";
-      default = [ ];
+    blackbox.hostSpecificTargets = import ../../../lib/options/blackboxTargets.nix {
+      inherit lib;
+      description = "List of host specific blackbox probe targets";
+      defaultTargets = [ ];
     };
   };
 
@@ -198,10 +161,10 @@ in
         # Flatten the list of blackboxTargets from all active services
         blackboxTargets =
           lib.flatten (
-            lib.mapAttrsToList (_: s: if s ? blackboxTargets then s.blackboxTargets else [ ]) activeServices
+            lib.mapAttrsToList (_: s: if s ? blackbox.targets then s.blackbox.targets else [ ]) activeServices
           )
           # add the host specific blackbox targets if any
-          ++ (if cfg.hostSpecificBlackboxTargets != [ ] then cfg.hostSpecificBlackboxTargets else [ ]);
+          ++ (if cfg.blackbox.hostSpecificTargets != [ ] then cfg.blackbox.hostSpecificTargets else [ ]);
       in
       {
         enable = true;
