@@ -717,41 +717,39 @@ in
               ];
             }
           ))
-          (pkgs.writeText "blackbox.rules.yml" (
-            builtins.toJSON {
-              groups = [
-                {
-                  name = "blackbox";
-                  rules = [
-                    {
-                      alert = "BlackboxTargetDown";
-                      expr = ''probe_success == 0'';
+          (
+            # Blackbox Exporter rules generated from the targets defined in `blackboxTargets`
+            let
+              activeServices = lib.filterAttrs (_: s: s.enable or false) config.homelab.services;
+
+              blackboxTargets = lib.flatten (
+                lib.mapAttrsToList (_: s: if s ? blackboxTargets then s.blackboxTargets else [ ]) activeServices
+              );
+            in
+            pkgs.writeText "blackbox.rules.yml" (
+              builtins.toJSON {
+                groups = [
+                  {
+                    name = "blackbox";
+                    rules = lib.map (t: {
+                      alert = "BlackboxProbeFailed";
+                      expr = ''probe_success{instance="${t.target}", module="${t.module}"} == 0'';
                       for = "2m";
                       labels = {
                         severity = "warning";
+                        service = t.labels.service or "unknown";
+                        probe = t.module;
                       };
                       annotations = {
-                        summary = "Target down: {{ $labels.instance }}";
-                        description = "Blackbox probe failed for {{ $labels.instance }}";
+                        summary = "Blackbox probe failed for ${t.target}";
+                        description = "Blackbox module `${t.module}` reported failure on `${t.target}`.";
                       };
-                    }
-                    {
-                      alert = "BlackboxHttpSlow";
-                      expr = ''probe_http_duration_seconds > 1.5'';
-                      for = "1m";
-                      labels = {
-                        severity = "warning";
-                      };
-                      annotations = {
-                        summary = "Slow HTTP response from {{ $labels.instance }}";
-                        description = "HTTP response time from {{ $labels.instance }} is > 1.5s.";
-                      };
-                    }
-                  ];
-                }
-              ];
-            }
-          ))
+                    }) blackboxTargets;
+                  }
+                ];
+              }
+            )
+          )
         ]
         ++ lib.optional config.services.caddy.enable (
           pkgs.writeText "caddy.rules.yml" (
