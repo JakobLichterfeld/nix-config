@@ -572,6 +572,18 @@ in
                       };
 
                     }
+                    {
+                      alert = "ZfsPoolStatusDegraded";
+                      expr = ''zfs_pool_status != 0'';
+                      for = "1m";
+                      labels = {
+                        severity = "warning";
+                      };
+                      annotations = {
+                        summary = "ZFS pool status degraded (instance {{ $labels.instance }})";
+                        description = "ZFS pool status is degraded. Check the ZFS pool status on the host.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                      };
+                    }
                   ];
                 }
               ];
@@ -651,6 +663,18 @@ in
                       annotations = {
                         summary = "SMART Wearout Indicator (instance {{ $labels.instance }})";
                         description = "Device is wearing out on {{ $labels.instance }} drive {{ $labels.device }})\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                      };
+                    }
+                    {
+                      alert = "SMARTFailing";
+                      expr = ''smartctl_device_smart_healthy == 0'';
+                      for = "5m";
+                      labels = {
+                        severity = "critical";
+                      };
+                      annotations = {
+                        summary = "SMART failing (instance {{ $labels.instance }})";
+                        description = "SMART failure on disk {{ $labels.device }} ({{ $labels.instance }})";
                       };
                     }
                   ];
