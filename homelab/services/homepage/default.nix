@@ -15,6 +15,11 @@ in
       description = "Enable ${service}";
     };
 
+    url = lib.mkOption {
+      type = lib.types.str;
+      default = "${homelab.baseDomain}";
+    };
+
     homepageCategories = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [
@@ -101,6 +106,20 @@ in
           ];
         }
       ];
+    };
+
+    blackbox.targets = import ../../../lib/options/blackboxTargets.nix {
+      inherit lib;
+      defaultTargets =
+        let
+          blackbox = import ../../../lib/blackbox.nix { inherit lib; };
+        in
+        [
+          (blackbox.mkHttpTarget "${service}" "http://127.0.0.1:${
+            toString config.services.${service}.listenPort
+          }" "internal")
+          (blackbox.mkHttpTarget "${service}" "${cfg.url}" "external")
+        ];
     };
   };
   config = lib.mkIf cfg.enable {
@@ -332,7 +351,7 @@ in
 
       bookmarks = cfg.bookmarks;
     };
-    services.caddy.virtualHosts."${homelab.baseDomain}" = {
+    services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
         reverse_proxy http://127.0.0.1:${toString config.services.${service}.listenPort}
