@@ -127,7 +127,7 @@ in
           (blackbox.mkHttpTarget "blackbox_exporter" "localhost:${toString cfg.listenPortBlackboxExporter}")
         ]
         ++ lib.optional config.services.mosquitto.enable (
-          blackbox.mkHttpTarget "mqtt_exporter" "localhost:${toString cfg.listenPortMQTTExporter}"
+          blackbox.mkHttpTarget "mqtt_exporter" "127.0.0.1:${toString cfg.listenPortMQTTExporter}" # as the MQTT exporter does only resolve localhost on ipv6 we enforce ipv4 here
         )
         ++ lib.optional config.services.postgresql.enable (
           blackbox.mkHttpTarget "postgresql_exporter" "localhost:${toString cfg.listenPortPostgreSQLExporter}"
