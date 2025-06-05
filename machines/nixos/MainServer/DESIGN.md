@@ -65,3 +65,24 @@ Even though the NVMe offers 2 TB capacity, it is excluded from the SnapRAID pool
 - Better to isolate it as high-performance cache and rely on backups for system recovery
 
 ---
+
+## Monitoring Overview
+
+The following diagram summarizes the Prometheus-based monitoring setup, including exporters and alerting flow:
+
+```txt
++----------------+     scrapes     +----------------------------------------------------+
+| Prometheus     | <-------------  | Exporter (node, mqtt, postgres, zfs, smartctl,...) |
+|                |                 +----------------------------------------------------+
+|                |                 +----------------------------------------------------+
+|                | <-------------  | Blackbox Exporter                                  |
+|                |                 +----------------------------------------------------+
+|                |
+|                | -- alerts -->   +----------------------------------------------------+
+|                |                 | Alertmanager                                       |
++----------------+                 +--------+-------------------------------------------+
+                                            |
+                                            | Telegram
+                                            ▼
+                                   📱 Push notification on Mobile
+```
