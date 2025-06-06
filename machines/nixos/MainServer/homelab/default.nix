@@ -165,16 +165,19 @@ in
             blackbox = import ../../../../lib/blackbox.nix { inherit lib; };
           in
           [
-            (blackbox.mkHttpTarget "networking-router"
+            (blackbox.mkHttpTargetCritical "networking-router"
               "http://${machinesSensitiveVars.MainServer.defaultGateway}"
               "network"
             )
           ]
           ++ lib.optional config.services.tailscale.enable (
-            blackbox.mkIcmpTarget "tailscale_self" machinesSensitiveVars.MainServer.ipAddressTailscale "self"
+            blackbox.mkIcmpTargetCritical "tailscale_self" machinesSensitiveVars.MainServer.ipAddressTailscale
+              "self"
           )
+
           ++ lib.optional config.services.zerotierone.enable (
-            blackbox.mkIcmpTarget "zerotier_self" machinesSensitiveVars.MainServer.ipAddressZerotier "self"
+            blackbox.mkIcmpTargetCritical "zerotier_self" machinesSensitiveVars.MainServer.ipAddressZerotier
+              "self"
           );
       };
 

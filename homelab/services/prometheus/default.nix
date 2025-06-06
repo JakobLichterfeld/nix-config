@@ -100,18 +100,26 @@ in
           blackbox = import ../../../lib/blackbox.nix { inherit lib; };
         in
         [
-          (blackbox.mkHttpTarget "prometheus" "localhost:${toString cfg.listenPort}")
-          (blackbox.mkHttpTarget "alertmanager" "localhost:${toString cfg.listenPort}")
-          (blackbox.mkHttpTarget "node_exporter" "localhost:${toString cfg.listenPortNodeExporter}")
-          (blackbox.mkHttpTarget "zfs_exporter" "localhost:${toString cfg.listenPortZfsExporter}")
-          (blackbox.mkHttpTarget "smartctl_exporter" "localhost:${toString cfg.listenPortSmartctlExporter}")
-          (blackbox.mkHttpTarget "blackbox_exporter" "localhost:${toString cfg.listenPortBlackboxExporter}")
+          (blackbox.mkHttpTarget "prometheus" "localhost:${toString cfg.listenPort}" "internal")
+          (blackbox.mkHttpTargetCritical "alertmanager" "localhost:${toString cfg.listenPort}" "internal")
+          (blackbox.mkHttpTarget "node_exporter" "localhost:${toString cfg.listenPortNodeExporter}"
+            "internal"
+          )
+          (blackbox.mkHttpTarget "zfs_exporter" "localhost:${toString cfg.listenPortZfsExporter}" "internal")
+          (blackbox.mkHttpTarget "smartctl_exporter" "localhost:${toString cfg.listenPortSmartctlExporter}"
+            "internal"
+          )
+          (blackbox.mkHttpTargetCritical "blackbox_exporter"
+            "localhost:${toString cfg.listenPortBlackboxExporter}"
+            "internal"
+          )
         ]
         ++ lib.optional config.services.mosquitto.enable (
-          blackbox.mkHttpTarget "mqtt_exporter" "127.0.0.1:${toString cfg.listenPortMQTTExporter}" # as the MQTT exporter does only resolve localhost on ipv6 we enforce ipv4 here
+          blackbox.mkHttpTarget "mqtt_exporter" "127.0.0.1:${toString cfg.listenPortMQTTExporter}" "internal" # as the MQTT exporter does only resolve localhost on ipv6 we enforce ipv4 here
         )
         ++ lib.optional config.services.postgresql.enable (
           blackbox.mkHttpTarget "postgresql_exporter" "localhost:${toString cfg.listenPortPostgreSQLExporter}"
+            "internal"
         );
     };
     blackbox.hostSpecificTargets = import ../../../lib/options/blackboxTargets.nix {
@@ -719,12 +727,14 @@ in
                         expr = ''probe_success{instance="${t.target}", module="${t.module}"} == 0'';
                         for = "2m";
                         labels = {
-                          severity = "warning";
+                          severity = t.labels.severityLevel or "warning";
                           service = t.labels.service or "unknown";
                           probe = t.module;
+                          environment = t.labels.environment or "prod";
+                          scope = t.labels.scope or "unspecified";
                         };
                         annotations = {
-                          summary = "Blackbox probe failed for ${t.target}";
+                          summary = "${t.labels.service}: ${t.labels.scope} Blackbox probe failed for ${t.target}";
                           description = "Blackbox module `${t.module}` reported failure on `${t.target}`.";
                         };
                       }) blackboxTargets;
