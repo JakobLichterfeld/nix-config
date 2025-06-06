@@ -288,13 +288,28 @@ in
                     chat_id = cfg.telegramChatId; # setting in environment file is not supported as it must be a int64 and env is a string
                     send_resolved = true; # whether to send resolved alerts
                     parse_mode = "HTML"; # Parse mode for telegram message, supported values are MarkdownV2, Markdown, HTML and empty string for plain text
-                    #   message = ''
-                    #     <b>{{ .Status | toUpper }}</b> 🔔
-                    #     {{ range .Alerts }}
-                    #     <b>{{ .Labels.alertname }}</b>: {{ .Annotations.summary }}
-                    #     <i>{{ .Annotations.description }}</i>
-                    #     {{ end }}
-                    #   '';
+                    message = ''
+                      {{- $status := .Status | toUpper -}}
+                      {{- $emoji := dict "FIRING" "🔴" "RESOLVED" "🟢" -}}
+                      {{- $severityMap := dict "critical" "🔴" "warning" "🟠" "info" "⚪️" -}}
+
+                      <b>{{ index $emoji $status }} {{ .Status | toUpper }}</b>
+
+                      {{- range .Alerts }}
+                      <b>{{ .Labels.alertname }}</b> {{ index $severityMap (default "info" .Labels.severity) }}
+
+                      🧩 <b>Service:</b> {{ .Labels.service | default "unknown" }}
+                      🏷️ <b>Scope:</b> {{ .Labels.scope | default "unspecified" }}
+                      🌍 <b>Environment:</b> {{ .Labels.environment | default "prod" }}
+                      📍 <b>Instance:</b> {{ .Labels.instance }}
+                      🧪 <b>Probe:</b> {{ .Labels.probe | default "n/a" }}
+
+                      📝 <b>Summary:</b> {{ .Annotations.summary | default "n/a" }}
+                      📖 <b>Description:</b> {{ .Annotations.description | default "n/a" }}
+
+                      🔗 <a href="{{ .GeneratorURL }}">Prometheus Source</a>
+                      {{- end }}
+                    '';
                   }
                 ];
               }
