@@ -66,6 +66,17 @@ in
       type = lib.types.int;
       default = 1883;
     };
+    blackbox.targets = import ../../../lib/options/blackboxTargets.nix {
+      inherit lib;
+      defaultTargets =
+        let
+          blackbox = import ../../../lib/blackbox.nix { inherit lib; };
+        in
+        [
+          (blackbox.mkHttpTarget "${service}" "http://127.0.0.1:${toString cfg.listenPort}" "internal")
+          (blackbox.mkHttpTarget "${service}" "${cfg.url}" "external")
+        ];
+    };
   };
 
   options.homelab.services.${serviceSubService} = {
@@ -96,6 +107,20 @@ in
     homepage.category = lib.mkOption {
       type = lib.types.str;
       default = "Tesla";
+    };
+
+    blackbox.targets = import ../../../lib/options/blackboxTargets.nix {
+      inherit lib;
+      defaultTargets =
+        let
+          blackbox = import ../../../lib/blackbox.nix { inherit lib; };
+        in
+        [
+          (blackbox.mkHttpTarget "${
+            serviceSubService
+          }" "http://127.0.0.1:${toString cfgSubService.listenPort}" "internal")
+          (blackbox.mkHttpTarget "${serviceSubService}" "${cfgSubService.url}" "external")
+        ];
     };
   };
 
