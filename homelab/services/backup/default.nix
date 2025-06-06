@@ -20,9 +20,9 @@ in
       type = lib.types.bool;
       default = false;
     };
-    configDir = lib.mkOption {
-      description = "Folder with database dump backups (called configDir for compatibility reasons)";
-      type = lib.types.str;
+    stateDir = lib.mkOption {
+      type = lib.types.path;
+      description = "Directory containing the persistent state data to back up, in this case the database dumps";
       default = "/var/backup";
     };
     passwordFile = lib.mkOption {
@@ -63,30 +63,26 @@ in
   };
   config =
     let
-      enabledServices = (
-        lib.attrsets.filterAttrs (
-          name: value: value ? configDir && value ? enable && value.enable
-        ) hl.services
-      );
-      stateDirs = lib.strings.concatMapStrings (x: x + " ") (
-        lib.lists.forEach (lib.attrsets.mapAttrsToList (name: value: name) enabledServices) (
-          x:
-          lib.attrsets.attrByPath [
-            x
-            "configDir"
-          ] false enabledServices
-        )
-      );
+      enabledServicesWithStateDir = lib.attrsets.filterAttrs (
+        name: value: value ? stateDir && value ? enable && value.enable
+      ) hl.services;
+
+      stateDirsList = lib.attrsets.mapAttrsToList (
+        name: value: lib.attrsets.attrByPath [ name "stateDir" ] false enabledServicesWithStateDir
+      ) enabledServicesWithStateDir;
+
       additionalStateDirs = [
         "/etc/group"
         "/etc/machine-id"
         "/etc/passwd"
         "/etc/subgid"
-        "/var/backup"
+        #"/var/backup" # already included in stateDirs as homelab.services.backup.stateDir is set to /var/backup and is included in enabledServicesWithStateDir
       ];
-      allStateDirs = stateDirs + (lib.concatStringsSep " " additionalStateDirs);
+
+      allStateDirsList = stateDirsList ++ additionalStateDirs;
+      allStateDirs = lib.concatStringsSep " " allStateDirsList;
     in
-    lib.mkIf (cfg.enable && enabledServices != { }) {
+    lib.mkIf (cfg.enable && enabledServicesWithStateDir != { }) {
       systemd.tmpfiles.rules = lib.lists.optionals cfg.local.enable [
         "d ${cfg.local.targetDir} 0770 ${hl.user} ${hl.group} - -"
         "d ${cfg.local.targetDir}/appdata-local-${config.networking.hostName} 0770 ${hl.user} ${hl.group} - -"

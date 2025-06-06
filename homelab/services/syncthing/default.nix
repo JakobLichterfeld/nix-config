@@ -15,9 +15,10 @@ in
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
     };
-    configDir = lib.mkOption {
-      type = lib.types.str;
-      default = "/var/lib/${service}";
+    stateDir = lib.mkOption {
+      type = lib.types.path;
+      description = "Directory containing the persistent state data to back up";
+      default = "/var/lib/syncthing";
     };
     dataDir = lib.mkOption {
       type = lib.types.str;
@@ -74,7 +75,7 @@ in
   config = lib.mkIf cfg.enable {
 
     # Create directories for Syncthing with the correct permissions and ownership.
-    systemd.tmpfiles.rules = [ "d ${cfg.configDir} 0775 ${homelab.user} ${homelab.group} - -" ];
+    systemd.tmpfiles.rules = [ "d ${cfg.stateDir} 0775 ${homelab.user} ${homelab.group} - -" ];
 
     # Syncthing ports: 8384 for remote access to GUI
     # 22000 TCP and/or UDP for sync traffic
@@ -94,7 +95,7 @@ in
       group = homelab.group; # Group to run Syncthing as
       user = homelab.user; # User to run Syncthing as
       dataDir = cfg.dataDir; # Default folder for new synced folders
-      configDir = cfg.configDir; # Folder for Syncthing's settings and keys
+      configDir = cfg.stateDir; # Folder for Syncthing's settings and keys
       guiAddress = "0.0.0.0:${toString cfg.listenPort}"; # Listen on all interfaces
       overrideFolders = false;
       overrideDevices = false;

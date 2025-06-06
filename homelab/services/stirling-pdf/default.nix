@@ -9,6 +9,11 @@ in
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
     };
+    stateDir = lib.mkOption {
+      type = lib.types.path;
+      description = "Directory containing the persistent state data to back up";
+      default = "/var/lib/stirling-pdf";
+    };
     url = lib.mkOption {
       type = lib.types.str;
       default = "${service}.${homelab.baseDomain}";

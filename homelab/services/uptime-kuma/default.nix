@@ -9,8 +9,9 @@ in
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
     };
-    configDir = lib.mkOption {
-      type = lib.types.str;
+    stateDir = lib.mkOption {
+      type = lib.types.path;
+      description = "Directory containing the persistent state data to back up";
       default = "/var/lib/uptime-kuma";
     };
     url = lib.mkOption {

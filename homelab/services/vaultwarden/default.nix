@@ -9,9 +9,10 @@ in
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
     };
-    configDir = lib.mkOption {
-      type = lib.types.str;
-      default = "/var/lib/${service}";
+    stateDir = lib.mkOption {
+      type = lib.types.path;
+      description = "Directory containing the persistent state data to back up";
+      default = "/var/lib/bitwarden_rs";
     };
     url = lib.mkOption {
       type = lib.types.str;
