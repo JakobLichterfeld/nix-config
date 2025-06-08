@@ -147,6 +147,8 @@ in
                   ${restic} unlock
                 '';
             };
+            # restore via: `restic-appdata-local restore latest`
+            # to only test the S3 backup, you can run: `restic-appdata-local restore latest --target /tmp/restic-local-test`
           }
           // lib.attrsets.optionalAttrs cfg.s3.enable {
             appdata-s3 =
@@ -184,6 +186,8 @@ in
                     ${restic} unlock
                   '';
               };
+              # restore via: `restic-appdata-s3 restore latest`
+              # to only test the S3 backup, you can run: `restic-appdata-s3 restore latest --target /tmp/restic-s3-test`
           };
       };
     };
