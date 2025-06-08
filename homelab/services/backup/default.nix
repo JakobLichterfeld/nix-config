@@ -84,14 +84,17 @@ in
     in
     lib.mkIf (cfg.enable && enabledServicesWithStateDir != { }) {
       systemd.tmpfiles.rules = lib.lists.optionals cfg.local.enable [
-        "d ${cfg.local.targetDir} 0770 ${hl.user} ${hl.group} - -"
-        "d ${cfg.local.targetDir}/appdata-local-${config.networking.hostName} 0770 ${hl.user} ${hl.group} - -"
-      ];
+          "d ${cfg.local.targetDir} 0770 ${hl.user} ${hl.group} - -"
+          "d ${cfg.local.targetDir}/appdata-local-${config.networking.hostName} 0770 ${hl.user} ${hl.group} - -"
+        ];
       users.users.restic.createHome = lib.mkForce false;
+
+      # ensure the restic http server is started unprivileged
       systemd.services.restic-rest-server.serviceConfig = lib.attrsets.optionalAttrs cfg.local.enable {
         User = lib.mkForce hl.user;
         Group = lib.mkForce hl.group;
       };
+
       services.postgresqlBackup = {
         enable = config.services.postgresql.enable;
         databases = config.services.postgresql.ensureDatabases;
@@ -122,6 +125,7 @@ in
               repository = "rest:http://localhost:8000/appdata-local-${config.networking.hostName}";
               initialize = true;
               passwordFile = cfg.passwordFile;
+              inhibitsSleep = true; # Prevents the system from sleeping during backup
               pruneOpts = [
                 "--keep-last 5"
               ];
@@ -157,6 +161,7 @@ in
                 repository = "s3:${cfg.s3.url}/${backupFolder}";
                 initialize = true;
                 passwordFile = cfg.passwordFile;
+                inhibitsSleep = true; # Prevents the system from sleeping during backup
                 pruneOpts = [
                   "--keep-last 3"
                 ];
