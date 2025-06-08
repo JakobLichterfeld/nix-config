@@ -83,15 +83,10 @@ in
       allStateDirs = lib.concatStringsSep " " allStateDirsList;
     in
     lib.mkIf (cfg.enable && enabledServicesWithStateDir != { }) {
-      systemd.tmpfiles.rules =
-        lib.lists.optionals cfg.local.enable [
-          "d ${cfg.local.targetDir} 0770 ${hl.user} ${hl.group} - -"
-          "d ${cfg.local.targetDir}/appdata-local-${config.networking.hostName} 0770 ${hl.user} ${hl.group} - -"
-        ]
-        ++ lib.lists.optionals config.services.postgresqlBackup.enable [
-          "d /var/backup 0755 root root - -" # Ensure parent dir
-          "d /var/backup/postgresql 0750 postgres ${hl.group} - -" # Ensure pg backup dir is readable by backup group
-        ];
+      systemd.tmpfiles.rules = lib.lists.optionals cfg.local.enable [
+        "d ${cfg.local.targetDir} 0770 ${hl.user} ${hl.group} - -"
+        "d ${cfg.local.targetDir}/appdata-local-${config.networking.hostName} 0770 ${hl.user} ${hl.group} - -"
+      ];
       users.users.restic.createHome = lib.mkForce false;
       systemd.services.restic-rest-server.serviceConfig = lib.attrsets.optionalAttrs cfg.local.enable {
         User = lib.mkForce hl.user;
