@@ -126,6 +126,7 @@ in
               initialize = true;
               passwordFile = cfg.passwordFile;
               inhibitsSleep = true; # Prevents the system from sleeping during backup
+              user = "root"; # User to run the backup as, default is root, this ensures the backup has access to all files
               pruneOpts = [
                 "--keep-last 5"
               ];
@@ -162,6 +163,7 @@ in
                 initialize = true;
                 passwordFile = cfg.passwordFile;
                 inhibitsSleep = true; # Prevents the system from sleeping during backup
+                user = "root"; # User to run the backup as, default is root, this ensures the backup has access to all files
                 pruneOpts = [
                   "--keep-last 3"
                 ];
