@@ -78,7 +78,7 @@
         ];
       };
     };
-    nameservers = [ machinesSensitiveVars.MainServer.nameservers ];
+    nameservers = machinesSensitiveVars.MainServer.nameservers;
     defaultGateway = {
       address = machinesSensitiveVars.MainServer.defaultGateway;
       interface = "enp1s0";
