@@ -84,9 +84,9 @@ in
     in
     lib.mkIf (cfg.enable && enabledServicesWithStateDir != { }) {
       systemd.tmpfiles.rules = lib.lists.optionals cfg.local.enable [
-          "d ${cfg.local.targetDir} 0770 ${hl.user} ${hl.group} - -"
-          "d ${cfg.local.targetDir}/appdata-local-${config.networking.hostName} 0770 ${hl.user} ${hl.group} - -"
-        ];
+        "d ${cfg.local.targetDir} 0770 ${hl.user} ${hl.group} - -"
+        "d ${cfg.local.targetDir}/appdata-local-${config.networking.hostName} 0770 ${hl.user} ${hl.group} - -"
+      ];
       users.users.restic.createHome = lib.mkForce false;
 
       # ensure the restic http server is started unprivileged
@@ -186,8 +186,8 @@ in
                     ${restic} unlock
                   '';
               };
-              # restore via: `restic-appdata-s3 restore latest`
-              # to only test the S3 backup, you can run: `restic-appdata-s3 restore latest --target /tmp/restic-s3-test`
+            # restore via: `restic-appdata-s3 restore latest`
+            # to only test the S3 backup, you can run: `restic-appdata-s3 restore latest --target /tmp/restic-s3-test`
           };
       };
     };
