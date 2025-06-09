@@ -60,15 +60,20 @@ in
           dns = 53; # Port for incoming DNS Queries.
           http = "localhost:${toString cfg.listenPort}"; # Port(s) and optional bind ip address(es) to serve HTTP used for prometheus metrics, pprof, REST API, DoH...
         };
-        upstreams.groups.default = [
-          "https://one.one.one.one/dns-query" # Using Cloudflare's DNS over HTTPS server for resolving queries.
-        ];
+        upstreams = {
+          strategy = "strict"; # Use strict upstreams, meaning that all queries will be sent to the first upstream in the list.  If the first upstream does not respond, the second is asked, and so on.
+          groups.default = [
+            "https://unfiltered.joindns4.eu/dns-query" # DNS4EU DNS-over-HTTPS (DoH)
+            "https://one.one.one.one/dns-query" # Using Cloudflare's DNS over HTTPS server for resolving queries.
+          ];
+        };
         # For initially solving DoH/DoT Requests when no system Resolver is available.
         bootstrapDns = {
-          upstream = "https://one.one.one.one/dns-query";
+          upstream = "https://unfiltered.joindns4.eu/dns-query";
           ips = [
-            "1.1.1.1"
-            "1.0.0.1"
+            "86.54.11.100" # DNS4EU
+            "1.1.1.1" # Cloudflare DNS
+            "1.0.0.1" # Cloudflare DNS
           ];
         };
         #Enable Blocking of certain domains.
