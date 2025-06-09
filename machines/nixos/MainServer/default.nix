@@ -90,7 +90,6 @@
       trustedInterfaces = [
         "enp1s0"
         "enp2s0"
-        "tailscale0"
       ];
     };
   };
