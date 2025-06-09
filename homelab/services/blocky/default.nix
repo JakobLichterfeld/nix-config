@@ -52,12 +52,15 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
+    networking.firewall.allowedTCPPorts = [ 53 ];
+    networking.firewall.allowedUDPPorts = [ 53 ];
+
     services.${service} = {
       enable = true;
 
       settings = {
         ports = {
-          dns = 53; # Port for incoming DNS Queries.
+          dns = "0.0.0.0:53"; # Port for incoming DNS Queries.
           http = "localhost:${toString cfg.listenPort}"; # Port(s) and optional bind ip address(es) to serve HTTP used for prometheus metrics, pprof, REST API, DoH...
         };
         upstreams = {
