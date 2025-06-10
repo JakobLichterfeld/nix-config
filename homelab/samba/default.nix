@@ -99,7 +99,7 @@ in
       settings = {
         global = lib.mkMerge [
           {
-            workgroup = lib.mkDefault "WORKGROUP";
+            workgroup = lib.mkDefault "LAN";
             "server string" = lib.mkDefault config.networking.hostName;
             "netbios name" = lib.mkDefault config.networking.hostName;
             "security" = lib.mkDefault "user";
