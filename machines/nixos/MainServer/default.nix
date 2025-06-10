@@ -69,14 +69,16 @@
           }
         ];
       };
-      enp2s0 = {
-        ipv4.addresses = [
-          {
-            address = machinesSensitiveVars.MainServer.ipAddress2;
-            prefixLength = 24;
-          }
-        ];
-      };
+      # Uncomment the following lines if you want to enable the second network interface
+      # This is currently disabled to prevent potential routing issues.
+      # enp2s0 = {
+      #   ipv4.addresses = [
+      #     {
+      #       address = machinesSensitiveVars.MainServer.ipAddress2;
+      #       prefixLength = 24;
+      #     }
+      #   ];
+      # };
     };
     nameservers = machinesSensitiveVars.MainServer.nameservers;
     defaultGateway = {
@@ -89,7 +91,7 @@
       allowPing = true;
       trustedInterfaces = [
         "enp1s0"
-        "enp2s0"
+        # "enp2s0"
       ];
     };
   };
