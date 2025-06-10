@@ -74,7 +74,8 @@ in
         bootstrapDns = {
           upstream = "https://unfiltered.joindns4.eu/dns-query";
           ips = [
-            "86.54.11.100" # DNS4EU
+            "86.54.11.100" # DNS4EU unfiltered
+            "86.54.11.200" # DNS4EU unfiltered
             "1.1.1.1" # Cloudflare DNS
             "1.0.0.1" # Cloudflare DNS
           ];
