@@ -2,10 +2,12 @@
   config,
   lib,
   pkgs,
-  vars,
   machinesSensitiveVars,
   ...
 }:
+let
+  hl = config.homelab;
+in
 {
   age.identityPaths = [ "/persist/ssh/id_ed25519_main_server" ];
 
@@ -127,8 +129,8 @@
 
   services.mover = {
     enable = true;
-    cacheArray = vars.cacheArray;
-    backingArray = vars.slowerArray;
+    cacheArray = hl.mounts.fast;
+    backingArray = hl.mounts.slower;
     user = config.homelab.user;
     group = config.homelab.group;
     percentageFree = 60;

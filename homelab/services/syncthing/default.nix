@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  vars,
   machinesSensitiveVars,
   ...
 }:
@@ -22,7 +21,7 @@ in
     };
     dataDir = lib.mkOption {
       type = lib.types.str;
-      default = "${vars.mainArray}/sync";
+      default = "${homelab.mounts.fast}/Syncthing";
     };
     url = lib.mkOption {
       type = lib.types.str;

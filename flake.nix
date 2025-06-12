@@ -196,7 +196,6 @@
             inherit inputs;
             inherit self;
             inherit machinesSensitiveVars;
-            vars = import ./machines/nixos/MainServer/vars.nix;
           };
           modules = [
             ./homelab

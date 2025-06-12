@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  vars,
   machinesSensitiveVars,
   ...
 }:
@@ -16,10 +15,10 @@ in
 
     timeZone = "Europe/Berlin";
     mounts = {
-      config = vars.serviceConfigRoot;
-      slow = vars.slowerArray;
-      fast = vars.cacheArray;
-      merged = vars.mainArray;
+      config = "/persist/opt/services";
+      slower = "/mnt/mergerfs_slower";
+      fast = "/mnt/cache";
+      merged = "/mnt/user";
     };
     samba = {
       enable = true;

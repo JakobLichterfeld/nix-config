@@ -14,6 +14,7 @@ let
     mkOption
     ;
   mergerfs-uncache = pkgs.writeScriptBin "mergerfs-uncache" (readFile ./mergerfs-uncache.py);
+  hl = config.homelab;
 in
 {
   options.services.mover = {
@@ -21,12 +22,12 @@ in
     cacheArray = mkOption {
       description = "The drive aray to move the data from";
       type = types.str;
-      default = "/mnt/cache";
+      default = "${hl.mounts.fast}";
     };
     backingArray = mkOption {
       description = "The drive array to move the data to";
       type = types.str;
-      default = "/mnt/mergerfs_slower";
+      default = "${hl.mounts.slower}";
     };
     percentageFree = mkOption {
       description = "The target free percentage of the SSD cache array";

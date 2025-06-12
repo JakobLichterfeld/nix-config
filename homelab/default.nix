@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  vars,
   machinesSensitiveVars,
   ...
 }:
@@ -11,7 +10,7 @@ in
 {
   options.homelab = {
     enable = lib.mkEnableOption "The homelab services and configuration variables";
-    mounts.slow = lib.mkOption {
+    mounts.slower = lib.mkOption {
       default = "/mnt/mergerfs_slower";
       type = lib.types.path;
       description = ''
