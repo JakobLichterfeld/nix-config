@@ -75,6 +75,10 @@ in
         [
           (blackbox.mkHttpTarget "${service}" "http://127.0.0.1:${toString cfg.listenPort}" "internal")
           (blackbox.mkHttpTarget "${service}" "${cfg.url}" "external")
+          (blackbox.mkHttpTarget "${
+            service
+          }" "http://127.0.0.1:${toString cfg.listenPort}/health_check" "internal") # health check endpoint
+          (blackbox.mkHttpTarget "${service}" "${cfg.url}/health_check" "external") # health check endpoint
         ];
     };
   };
