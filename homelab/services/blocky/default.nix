@@ -117,7 +117,6 @@ in
             adult = [
               "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/nsfw.txt"
               "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts"
-              "https://blocklistproject.github.io/Lists/porn.txt"
             ];
           };
           allowlists = {
