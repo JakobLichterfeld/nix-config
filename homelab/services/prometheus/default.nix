@@ -289,28 +289,56 @@ in
                     chat_id = cfg.telegramChatId; # setting in environment file is not supported as it must be a int64 and env is a string
                     send_resolved = true; # whether to send resolved alerts
                     parse_mode = "HTML"; # Parse mode for telegram message, supported values are MarkdownV2, Markdown, HTML and empty string for plain text
-                    message = ''
-                      {{- $status := .Status | toUpper -}}
-                      {{- $emoji := dict "FIRING" "🔴" "RESOLVED" "🟢" -}}
-                      {{- $severityMap := dict "critical" "🔴" "warning" "🟠" "info" "⚪️" -}}
+                    # only this is working
+                    # message = ''
+                    #   {{ range .Alerts }}
+                    #   🔔 Alert: {{ .Labels.alertname }}
+                    #   {{ end }}
+                    # '';
+                    # not working
+                    # message = ''
+                    #   {{ .Status | toUpper }} {{ if eq .Status "firing" }}🔴{{ else }}🟢{{ end }}
 
-                      <b>{{ index $emoji $status }} {{ .Status | toUpper }}</b>
+                    #   {{ range .Alerts }}
+                    #   {{ .Labels.alertname | default "Unnamed Alert" }}
 
-                      {{- range .Alerts }}
-                      <b>{{ .Labels.alertname }}</b> {{ index $severityMap (default "info" .Labels.severity) }}
+                    #   🧩 Service: {{ .Labels.service | default "unknown" }}
+                    #   🏷️ Scope: {{ .Labels.scope | default "unspecified" }}
+                    #   🏷️ Severity: {{ .Labels.severity | default "warning" }}
+                    #   🌍 Environment: {{ .Labels.environment | default "prod" }}
+                    #   📍 Instance: {{ .Labels.instance | default "n/a" }}
+                    #   🧪 Probe: {{ .Labels.probe | default "n/a" }}
 
-                      🧩 <b>Service:</b> {{ .Labels.service | default "unknown" }}
-                      🏷️ <b>Scope:</b> {{ .Labels.scope | default "unspecified" }}
-                      🌍 <b>Environment:</b> {{ .Labels.environment | default "prod" }}
-                      📍 <b>Instance:</b> {{ .Labels.instance }}
-                      🧪 <b>Probe:</b> {{ .Labels.probe | default "n/a" }}
-
-                      📝 <b>Summary:</b> {{ .Annotations.summary | default "n/a" }}
-                      📖 <b>Description:</b> {{ .Annotations.description | default "n/a" }}
-
-                      🔗 <a href="{{ .GeneratorURL }}">Prometheus Source</a>
-                      {{- end }}
-                    '';
+                    #   📝 Summary: {{ .Annotations.summary | default "n/a" }}
+                    #   📖 Description: {{ .Annotations.description | default "n/a" }}
+                    #   {{ end }}
+                    # '';
+                    # not working
+                    # message = ''
+                    #   {{ define "telegram.default.message" }}
+                    #   {{ if eq .Status "firing" }}
+                    #   {{ if eq .Labels.severity "critical" }}🔴 *Alert:* {{ .Labels.alertname }}
+                    #   {{ else if eq .Labels.severity "warning" }}🟠 *Alert:* {{ .Labels.alertname }}
+                    #   {{ else }}⚪️ *Alert:* {{ .Labels.alertname }}
+                    #   {{ end }}
+                    #   *Status:* 🔥 FIRING
+                    #   *Severity:* {{ if eq .Labels.severity "critical" }}🔴 **{{ .Labels.severity | title }}**{{ else if eq .Labels.severity "warning" }}🟠 **{{ .Labels.severity | title }}**{{ else }}⚪️ **{{ .Labels.severity | title }}**{{ end }}
+                    #   {{ else if eq .Status "resolved" }}
+                    #   {{ if eq .Labels.severity "critical" }}🟢 *🚌 TRANSPORT Alert:* {{ .Labels.alertname }}
+                    #   {{ else if eq .Labels.severity "warning" }}🟢 *🚌 TRANSPORT
+                    #   Alert:* {{ .Labels.alertname }}
+                    #   {{ else }}⚪️ *Alert:* {{ .Labels.alertname }}
+                    #   {{ end }}
+                    #   *Status:* ✅ RESOLVED
+                    #   *Severity:* {{ if eq .Labels.severity "critical" }}🟢 **{{ .Labels.severity | title }}**{{ else if eq .Labels.severity "warning" }}🟢 **{{ .Labels.severity | title }}**{{ else }}⚪️ **{{ .Labels.severity | title }}**{{ end }}
+                    #   {{ end }}
+                    #   {{ range .Alerts }}
+                    #   *Instance:* {{ .Labels.instance }}
+                    #     - *Title:* {{ .Annotations.summary }}
+                    #     - *Description:* {{ .Annotations.description }}
+                    #   {{ end }}
+                    #   {{ end }}
+                    # '';
                   }
                 ];
               }
