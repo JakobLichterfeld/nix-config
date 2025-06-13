@@ -83,7 +83,10 @@ in
         blocking = {
           denylists = {
             ads = [
+              # Blocks Ads, Affiliate, Tracking, Metrics, Telemetry, Phishing, Malware, Scam, Fake, Cryptojacking and other "Crap".
+              "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/pro.txt"
               "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
+              "https://raw.githubusercontent.com/DandelionSprout/adfilt/refs/heads/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareDomains.txt"
               "https://adaway.org/hosts.txt"
               "https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt"
               "https://raw.githubusercontent.com/vincentkenny01/spotblock/master/spotify"
@@ -103,7 +106,16 @@ in
                 text = builtins.readFile ./denylists.txt;
               }).outPath
             ];
+            bypassPrevention = [
+              # Prevent methods to bypass your DNS, blocks encrypted DNS, VPN, TOR, Proxies.
+              "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/doh-vpn-proxy-bypass.txt"
+            ];
+            threatIntelligenceFeeds = [
+              # Blocks domains known to spread malware, launch phishing attacks and host command-and-control servers.
+              "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/tif.txt"
+            ];
             adult = [
+              "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/nsfw.txt"
               "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts"
               "https://blocklistproject.github.io/Lists/porn.txt"
             ];
@@ -114,6 +126,7 @@ in
                 name = "allowlists.txt";
                 text = builtins.readFile ./allowlists.txt;
               }).outPath
+              "https://github.com/hagezi/dns-blocklists/blob/main/wildcard/whitelist-referral-onlydomains.txt" # This list unblocks affiliate & tracking referral links that appear in mails, search results etc.
             ];
           };
 
@@ -123,6 +136,8 @@ in
           clientGroupsBlock = {
             default = [
               "ads"
+              "bypassPrevention"
+              "threatIntelligenceFeeds"
               "adult"
             ];
           };
