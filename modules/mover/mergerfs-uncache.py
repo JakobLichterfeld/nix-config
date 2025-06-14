@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
     ::
 
-        $ ./mergerfs-uncache.py -s /mnt/cache -d /mnt/slow -t 75
+        $ ./mergerfs-uncache.py --source /mnt/cache -destination /mnt/slow --target 75
 
     In this way least accessed files will be moved one after the other
     until the percentage of used capacity will be less than the target.
