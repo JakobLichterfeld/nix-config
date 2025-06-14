@@ -20,7 +20,7 @@ in
   options.services.mover = {
     enable = mkEnableOption "mergerfs-uncache mover script";
     cacheArray = mkOption {
-      description = "The drive aray to move the data from";
+      description = "The drive array to move the data from";
       type = types.str;
       default = "${hl.mounts.fast}";
     };
