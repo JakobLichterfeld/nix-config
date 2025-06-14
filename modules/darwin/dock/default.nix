@@ -41,6 +41,7 @@ in
     };
     local.dock.username = mkOption {
       description = "Username to apply the dock settings to";
+      default = config.system.primaryUser;
       type = types.str;
     };
   };
