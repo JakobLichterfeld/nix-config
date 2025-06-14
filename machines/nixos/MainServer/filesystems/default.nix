@@ -13,7 +13,7 @@ in
     ./snapraid.nix
   ];
 
-  programs.fuse.userAllowOther = true;
+  programs.fuse.userAllowOther = true; # Allow non-root users to specify the allow_other or allow_root mount options
 
   environment.systemPackages = with pkgs; [
     gptfdisk
@@ -55,8 +55,8 @@ in
       "minfreespace=50G"
       "func.getattr=newest"
       "fsname=mergerfs_slower"
-      "uid=994"
-      "gid=993"
+      # "uid=994" # commented out, as we want to preserve POSIX rights
+      # "gid=993" # commented out, as we want to preserve POSIX rights
       "umask=002"
       "x-mount.mkdir"
     ];
@@ -73,8 +73,8 @@ in
       "minfreespace=100G"
       "func.getattr=newest"
       "fsname=user"
-      "uid=994"
-      "gid=993"
+      # "uid=994" # commented out, as we want to preserve POSIX rights
+      # "gid=993" # commented out, as we want to preserve POSIX rights
       "umask=002"
       "x-mount.mkdir"
     ];
