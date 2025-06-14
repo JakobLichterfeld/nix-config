@@ -101,7 +101,7 @@ in
         ];
         serviceConfig = {
           Type = "oneshot";
-          ExecStart = "/run/current-system/sw/bin/mergerfs-uncache -s ${config.services.mover.cacheArray} -d ${config.services.mover.backingArray} -t ${config.services.mover.percentageFree} --exclude ${config.services.mover.excludedPaths} -u ${config.services.mover.user} -g ${config.services.mover.group}";
+          ExecStart = "/run/current-system/sw/bin/mergerfs-uncache --source ${config.services.mover.cacheArray} --destination ${config.services.mover.backingArray} --target ${config.services.mover.percentageFree} --exclude ${config.services.mover.excludedPaths} --uid ${config.services.mover.user} --gid ${config.services.mover.group}";
           User = config.services.mover.user;
           Group = config.services.mover.group;
         };
