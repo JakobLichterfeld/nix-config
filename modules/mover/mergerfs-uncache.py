@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""Uncaching utility"""
+
 import argparse
 import shutil
 import subprocess
@@ -6,7 +8,6 @@ import os
 import socket
 import syslog
 import time
-import datetime
 import urllib.request
 from pathlib import Path
 from typing import List
@@ -136,48 +137,53 @@ if __name__ == "__main__":
     uid = args.uid
     gid = args.gid
 
-    def fix_permissions(uid, gid, cache_path, slow_path):
-        if len(uid) > 0 and len(gid) > 0:
-            syslog.syslog(syslog.LOG_INFO, f"Fixing permissions on {cache_path}...")
-            subprocess.run(
-                [
-                    "/run/wrappers/bin/sudo",
-                    "/run/current-system/sw/bin/chgrp",
-                    "-R",
-                    f"{gid}",
-                    f"{cache_path}",
-                ]
+    def fix_permissions_if_uid_and_gid_given(uid, gid, cache_path, slow_path):
+        """Fixes the permissions to the given uid and gid"""
+        if not uid or not gid:
+            syslog.syslog(
+                syslog.LOG_INFO, "No uid/gid provided. Skipping permission fix."
             )
-            subprocess.run(
-                [
-                    "/run/wrappers/bin/sudo",
-                    "/run/current-system/sw/bin/chmod",
-                    "-R",
-                    "u=rwX,go=rX",
-                    f"{cache_path}",
-                ]
-            )
-            syslog.syslog(syslog.LOG_INFO, f"Fixing permissions on {slow_path}...")
-            subprocess.run(
-                [
-                    "/run/wrappers/bin/sudo",
-                    "/run/current-system/sw/bin/chgrp",
-                    "-R",
-                    f"{gid}",
-                    f"{slow_path}",
-                ]
-            )
-            subprocess.run(
-                [
-                    "/run/wrappers/bin/sudo",
-                    "/run/current-system/sw/bin/chmod",
-                    "-R",
-                    "u=rwX,go=rX",
-                    f"{slow_path}",
-                ]
-            )
+            return
+        syslog.syslog(syslog.LOG_INFO, f"Fixing permissions on {cache_path}...")
+        subprocess.run(
+            [
+                "/run/wrappers/bin/sudo",
+                "/run/current-system/sw/bin/chgrp",
+                "-R",
+                f"{gid}",
+                f"{cache_path}",
+            ]
+        )
+        subprocess.run(
+            [
+                "/run/wrappers/bin/sudo",
+                "/run/current-system/sw/bin/chmod",
+                "-R",
+                "u=rwX,go=rX",
+                f"{cache_path}",
+            ]
+        )
+        syslog.syslog(syslog.LOG_INFO, f"Fixing permissions on {slow_path}...")
+        subprocess.run(
+            [
+                "/run/wrappers/bin/sudo",
+                "/run/current-system/sw/bin/chgrp",
+                "-R",
+                f"{gid}",
+                f"{slow_path}",
+            ]
+        )
+        subprocess.run(
+            [
+                "/run/wrappers/bin/sudo",
+                "/run/current-system/sw/bin/chmod",
+                "-R",
+                "u=rwX,go=rX",
+                f"{slow_path}",
+            ]
+        )
 
-    fix_permissions(uid, gid, cache_path, slow_path)
+    fix_permissions_if_uid_and_gid_given(uid, gid, cache_path, slow_path)
     if args.hc_url != "":
         try:
             urllib.request.urlopen(args.hc_url + "/start", timeout=3)
@@ -212,6 +218,7 @@ if __name__ == "__main__":
     semaphore = asyncio.Semaphore(1000)
 
     async def move_file(c_path, cache_path, slow_path):
+        """move the file from cache to slower"""
         async with semaphore:
             try:
                 async with aiofiles.open(c_path, "rb"):
@@ -223,7 +230,21 @@ if __name__ == "__main__":
 
                     syslog.syslog(syslog.LOG_DEBUG, f"Moving from {src} to {dest}")
                     if os.path.exists(c_path):
+                        try:
+                            original_stat = os.stat(src)
+                        except Exception as e:
+                            syslog.syslog(
+                                syslog.LOG_WARNING, f"Failed to stat {src}: {e}"
+                            )
+                            return 0
                         shutil.move(src, dest)
+                        # Attempt to preserve original ownership
+                        try:
+                            os.chown(dest, original_stat.st_uid, original_stat.st_gid)
+                        except PermissionError as e:
+                            syslog.syslog(
+                                syslog.LOG_WARNING, f"chown failed on {dest}: {e}"
+                            )
                         return os.path.getsize(c_path)
                     else:
                         syslog.syslog(
@@ -296,7 +317,7 @@ if __name__ == "__main__":
         )
     )
 
-    fix_permissions(uid, gid, cache_path, slow_path)
+    fix_permissions_if_uid_and_gid_given(uid, gid, cache_path, slow_path)
     if args.hc_url != "":
         try:
             urllib.request.urlopen(args.hc_url, timeout=3)

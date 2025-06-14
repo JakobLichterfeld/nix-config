@@ -42,16 +42,16 @@ in
         old: lib.strings.concatStringsSep " " (map (x: config.services.mover.cacheArray + "/" + x) old);
       default = [ ];
     };
-    user = mkOption {
-      description = "User to run the script as";
-      type = types.str;
-      default = "share";
-    };
-    group = mkOption {
-      description = "Group to run the script as";
-      type = types.str;
-      default = "share";
-    };
+    # user = mkOption {
+    #   description = "User to run the script as";
+    #   type = types.str;
+    #   default = "share";
+    # };
+    # group = mkOption {
+    #   description = "Group to run the script as";
+    #   type = types.str;
+    #   default = "share";
+    # };
 
   };
 
@@ -61,33 +61,33 @@ in
       (pkgs.python312Full.withPackages (ps: with ps; [ aiofiles ]))
     ];
 
-    security.sudo.extraRules = [
-      {
-        users = [ config.services.mover.user ];
-        commands = [
-          {
-            command = "/run/current-system/sw/bin/journalctl --unit=mergerfs-uncache.service *";
-            options = [ "NOPASSWD" ];
-          }
-          {
-            command = "/run/current-system/sw/bin/chgrp -R ${config.services.mover.group} ${config.services.mover.backingArray}";
-            options = [ "NOPASSWD" ];
-          }
-          {
-            command = "/run/current-system/sw/bin/chgrp -R ${config.services.mover.group} ${config.services.mover.cacheArray}";
-            options = [ "NOPASSWD" ];
-          }
-          {
-            command = "/run/current-system/sw/bin/chmod -R u=rwX\\,go=rX ${config.services.mover.backingArray}";
-            options = [ "NOPASSWD" ];
-          }
-          {
-            command = "/run/current-system/sw/bin/chmod -R u=rwX\\,go=rX ${config.services.mover.cacheArray}";
-            options = [ "NOPASSWD" ];
-          }
-        ];
-      }
-    ];
+    # security.sudo.extraRules = [
+    #   {
+    #     users = [ config.services.mover.user ];
+    #     commands = [
+    #       {
+    #         command = "/run/current-system/sw/bin/journalctl --unit=mergerfs-uncache.service *";
+    #         options = [ "NOPASSWD" ];
+    #       }
+    #       {
+    #         command = "/run/current-system/sw/bin/chgrp -R ${config.services.mover.group} ${config.services.mover.backingArray}";
+    #         options = [ "NOPASSWD" ];
+    #       }
+    #       {
+    #         command = "/run/current-system/sw/bin/chgrp -R ${config.services.mover.group} ${config.services.mover.cacheArray}";
+    #         options = [ "NOPASSWD" ];
+    #       }
+    #       {
+    #         command = "/run/current-system/sw/bin/chmod -R u=rwX\\,go=rX ${config.services.mover.backingArray}";
+    #         options = [ "NOPASSWD" ];
+    #       }
+    #       {
+    #         command = "/run/current-system/sw/bin/chmod -R u=rwX\\,go=rX ${config.services.mover.cacheArray}";
+    #         options = [ "NOPASSWD" ];
+    #       }
+    #     ];
+    #   }
+    # ];
 
     systemd = {
       services.mergerfs-uncache = {
@@ -101,9 +101,9 @@ in
         ];
         serviceConfig = {
           Type = "oneshot";
-          ExecStart = "/run/current-system/sw/bin/mergerfs-uncache --source ${config.services.mover.cacheArray} --destination ${config.services.mover.backingArray} --target ${config.services.mover.percentageFree} --exclude ${config.services.mover.excludedPaths} --uid ${config.services.mover.user} --gid ${config.services.mover.group}";
-          User = config.services.mover.user;
-          Group = config.services.mover.group;
+          ExecStart = "/run/current-system/sw/bin/mergerfs-uncache --source ${config.services.mover.cacheArray} --destination ${config.services.mover.backingArray} --target ${config.services.mover.percentageFree} --exclude ${config.services.mover.excludedPaths}"; # --uid ${config.services.mover.user} --gid ${config.services.mover.group}";
+          # User = config.services.mover.user;
+          # Group = config.services.mover.group;
         };
         onFailure = lib.lists.optionals (config ? tg-notify && config.tg-notify.enable) [
           "tg-notify@%i.service"

@@ -131,8 +131,8 @@ in
     enable = true;
     cacheArray = hl.mounts.fast;
     backingArray = hl.mounts.slower;
-    user = config.homelab.user;
-    group = config.homelab.group;
+    # user = config.homelab.user;
+    # group = config.homelab.group;
     percentageFree = 60;
     excludedPaths = [
       ".DS_Store"
