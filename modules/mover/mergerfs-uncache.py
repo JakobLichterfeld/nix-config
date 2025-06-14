@@ -92,6 +92,12 @@ if __name__ == "__main__":
         help="Desired max cache usage, in percentage (e.g. 70).",
     )
     parser.add_argument(
+        "--force",
+        dest="force",
+        action="store_true",
+        help="Force execution even if target usage is already below threshold.",
+    )
+    parser.add_argument(
         "--exclude",
         dest="exclude",
         nargs="*",
@@ -203,7 +209,7 @@ if __name__ == "__main__":
         key=lambda p: p[1].st_atime,
     )
 
-    if usage_percentage <= target:
+    if usage_percentage <= target and not args.force:
         syslog.syslog(
             syslog.LOG_INFO,
             f"Target of {target}% of used capacity already reached. Exiting.",
