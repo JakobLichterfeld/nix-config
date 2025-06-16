@@ -148,6 +148,11 @@ in
           prefetching = true;
         };
 
+        log = {
+          level = "error";
+          privacy = true;
+        };
+
         prometheus = {
           # Enable Prometheus metrics endpoint
           enable = config.services.prometheus.enable;
