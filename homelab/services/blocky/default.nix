@@ -122,7 +122,7 @@ in
                 name = "allowlists.txt";
                 text = builtins.readFile ./allowlists.txt;
               }).outPath
-              "https://github.com/hagezi/dns-blocklists/blob/main/wildcard/whitelist-referral-onlydomains.txt" # This list unblocks affiliate & tracking referral links that appear in mails, search results etc.
+              "https://raw.githubusercontent.com/hagezi/dns-blocklists/refs/heads/main/wildcard/whitelist-referral-onlydomains.txt" # This list unblocks affiliate & tracking referral links that appear in mails, search results etc.
             ];
           };
 
