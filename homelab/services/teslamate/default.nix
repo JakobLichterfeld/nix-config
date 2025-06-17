@@ -140,7 +140,7 @@ in
       enable = true;
       secretsFile = config.age.secrets.teslamateEnv.path;
       autoStart = true;
-      listenAddress = "127.0.0.1";
+      # listenAddress = "127.0.0.1"; # blank for all addresses
       port = cfg.listenPort;
       virtualHost = "${cfg.url}";
       urlPath = "/";
@@ -155,7 +155,7 @@ in
 
       grafana = {
         enable = true;
-        listenAddress = "127.0.0.1";
+        listenAddress = "0.0.0.0"; # listen on all addresses
         port = cfg.listenPortGrafana;
         urlPath = "/";
       };
