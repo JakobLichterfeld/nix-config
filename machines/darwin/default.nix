@@ -41,6 +41,7 @@ in
       "domt4/homebrew-autoupdate" = inputs.homebrew-domt4-autoupdate;
       "krtirtho/homebrew-apps" = inputs.homebrew-spotube;
       "gromgit/homebrew-fuse" = inputs.homebrew-fuse;
+      "tabbyml/homebrew-tabby" = inputs.homebrew-tabbyml;
     };
 
     # Enable fully-declarative tap management

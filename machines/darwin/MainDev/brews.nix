@@ -9,6 +9,7 @@
   { name = "ruff"; } # Extremely fast Python linter, written in Rust
   { name = "gh"; } # GitHub CLI
   { name = "firebase-cli"; }
+  { name = "tabbyml/tabby/tabby"; } # TabbyML: Self-hosted AI coding assistant
 
   # Encryption and security tools
   { name = "ophcrack"; }

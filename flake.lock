@@ -431,6 +431,22 @@
         "type": "github"
       }
     },
+    "homebrew-tabbyml": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1747882690,
+        "narHash": "sha256-eg8V6QzTGsnpWoUV9lA7H/ugkQS/tuHNDb3klJwW0Ko=",
+        "owner": "TabbyML",
+        "repo": "homebrew-tabby",
+        "rev": "a88e11bfba3cf2b12dd9f2c6c636728c97770f7f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "TabbyML",
+        "repo": "homebrew-tabby",
+        "type": "github"
+      }
+    },
     "libgit2": {
       "flake": false,
       "locked": {
@@ -739,6 +755,7 @@
         "homebrew-domt4-autoupdate": "homebrew-domt4-autoupdate",
         "homebrew-fuse": "homebrew-fuse",
         "homebrew-spotube": "homebrew-spotube",
+        "homebrew-tabbyml": "homebrew-tabbyml",
         "nix-darwin": "nix-darwin",
         "nix-darwin-unstable": "nix-darwin-unstable",
         "nix-homebrew": "nix-homebrew",
