@@ -3,6 +3,7 @@
   pkgs,
   lib,
   machinesSensitiveVars,
+  inputs,
   ...
 }:
 let
@@ -54,6 +55,8 @@ in
     networking.firewall.allowedTCPPorts = [ 53 ];
     networking.firewall.allowedUDPPorts = [ 53 ];
 
+    # If you want to debug via dig, use `nix-shell -p dnsutils`
+
     services.${service} = {
       enable = true;
 
@@ -89,7 +92,10 @@ in
               "https://raw.githubusercontent.com/DandelionSprout/adfilt/refs/heads/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareHosts.txt"
               "https://adaway.org/hosts.txt"
               "https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt"
-              "https://raw.githubusercontent.com/vincentkenny01/spotblock/refs/heads/master/spotify"
+              (pkgs.writeTextFile {
+                name = "spotblock-cleaned";
+                text = builtins.replaceStrings [ "\\" ] [ " " ] (builtins.readFile "${inputs.spotblock}/spotify");
+              }).outPath
               "https://v.firebog.net/hosts/AdguardDNS.txt"
               "https://v.firebog.net/hosts/Easylist.txt"
               "https://www.github.developerdan.com/hosts/lists/amp-hosts-extended.txt"

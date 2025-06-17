@@ -748,7 +748,24 @@
         "nixpkgs-darwin-unstable": "nixpkgs-darwin-unstable",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nur": "nur",
+        "spotblock": "spotblock",
         "teslamate": "teslamate"
+      }
+    },
+    "spotblock": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1749727765,
+        "narHash": "sha256-fLlac3kg/FQLD05Lm5FvU1MQnFWBvoHG+dyh2S4XiR0=",
+        "owner": "vincentkenny01",
+        "repo": "spotblock",
+        "rev": "164e5ae86ea42d8c9c6350d5ba936f99c2362cfa",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vincentkenny01",
+        "repo": "spotblock",
+        "type": "github"
       }
     },
     "systems": {
