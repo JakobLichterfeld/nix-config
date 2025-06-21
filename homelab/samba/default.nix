@@ -110,6 +110,8 @@ in
               + "127.0.0.1"
               + " "
               + "localhost"
+              + " "
+              + "100.64.0.0/10"
             );
             "guest account" = lib.mkDefault "nobody";
             "map to guest" = lib.mkDefault "bad user";
