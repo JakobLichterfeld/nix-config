@@ -769,7 +769,7 @@ in
                       rules = lib.map (t: {
                         alert = "BlackboxProbeFailed";
                         expr = ''probe_success{instance="${t.target}", module="${t.module}"} == 0'';
-                        for = "2m";
+                        for = "5m";
                         labels = {
                           severity = t.labels.severityLevel or "warning";
                           service = t.labels.service or "unknown";
