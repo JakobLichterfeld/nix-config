@@ -85,6 +85,7 @@ in
     lib.mkIf (cfg.enable && enabledServicesWithStateDir != { }) {
       systemd.tmpfiles.rules = lib.lists.optionals cfg.local.enable [
         "d ${cfg.local.targetDir} 0770 ${hl.user} ${hl.group} - -"
+        "z ${cfg.local.targetDir} 0770 ${hl.user} ${hl.group} - -"
         "d ${cfg.local.targetDir}/appdata-local-${config.networking.hostName} 0770 ${hl.user} ${hl.group} - -"
       ];
       users.users.restic.createHome = lib.mkForce false;
