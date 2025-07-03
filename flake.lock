@@ -607,8 +607,8 @@
       },
       "original": {
         "owner": "nixos",
-        "ref": "nixpkgs-25.05-darwin",
         "repo": "nixpkgs",
+        "rev": "8f49bca3dc47f48ef46511613450364fd82b0b36",
         "type": "github"
       }
     },
