@@ -19,6 +19,12 @@ in
     url = lib.mkOption {
       type = lib.types.str;
       default = "${service}.${homelab.baseDomain}";
+      description = "URL for the Blocky service, used for Prometheus metrics scraping.";
+    };
+    urlDoH = lib.mkOption {
+      type = lib.types.str;
+      default = "dns.${homelab.baseDomain}";
+      description = "URL for the Blocky service, used for DNS-over-HTTPS (DoH) requests.";
     };
     listenPort = lib.mkOption {
       type = lib.types.int;
@@ -80,10 +86,11 @@ in
       settings = {
         ports = {
           dns = "0.0.0.0:53"; # Port for incoming DNS Queries.
-          http = "localhost:${toString cfg.listenPort}"; # Port(s) and optional bind ip address(es) to serve HTTP used for prometheus metrics, pprof, REST API, DoH...
-          tls = "0.0.0.0:${toString cfg.listenPortDoT}"; # Port(s) and optional bind ip address(es) to serve DNS-over-TLS (DoT) requests via: https://host:port/dns-query
+          http = "localhost:${toString cfg.listenPort}"; # Port(s) and optional bind ip address(es) to serve HTTP used for prometheus metrics, pprof, REST API, DNS-over-HTTPS (DoH) requests via: https://host:port/dns-query
+          tls = "0.0.0.0:${toString cfg.listenPortDoT}"; # Port(s) and optional bind ip address(es) to serve DNS-over-TLS (DoT) requests via: host:port
         };
-        # Path to the ACME certificate and key files for DNS-over-TLS (DoT).
+        # Path to the ACME certificate and key files for DNS-over-TLS (DoT) and DNS-over-HTTPS (DoH).
+        # These files are automatically managed by the ACME service.
         certFile = config.security.acme.certs.${homelab.baseDomain}.directory + "/fullchain.pem"; # Path to the certificate file for DoT.
         keyFile = config.security.acme.certs.${homelab.baseDomain}.directory + "/key.pem"; # Path to the private key file for DoT.
 
@@ -187,6 +194,14 @@ in
         clientLookup.upstream = machinesSensitiveVars.MainServer.defaultGateway;
       };
 
+    };
+
+    # Enable reverse proxy DoH
+    services.caddy.virtualHosts."${cfg.urlDoH}" = {
+      useACMEHost = homelab.baseDomain;
+      extraConfig = ''
+        reverse_proxy /dns-query http://127.0.0.1:${toString cfg.listenPort}
+      '';
     };
 
     # Enable reverse proxy for Prometheus metrics scraping
