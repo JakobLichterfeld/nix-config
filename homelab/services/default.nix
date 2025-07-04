@@ -6,6 +6,9 @@
   inputs,
   ...
 }:
+let
+  acmeSharedGroup = "acme-shared";
+in
 {
   options.homelab.services = {
     enable = lib.mkEnableOption "Settings and services for the homelab";
@@ -16,9 +19,20 @@
       80
       443
     ];
+    users.groups.${acmeSharedGroup} = { };
+    users.users.caddy = {
+      isSystemUser = true;
+      description = "Runs Caddy service";
+      group = "caddy";
+      extraGroups = [ acmeSharedGroup ]; # Add to shared group for ACME certificate access.
+    };
+
     security.acme = {
       acceptTerms = true;
       defaults.email = "${machinesSensitiveVars.MainServer.letsencryptEmail}";
+      defaults.postRun = ''
+        ${lib.optionalString config.services.blocky.enable "systemctl restart blocky.service"}
+      '';
       certs = lib.mkMerge [
         {
           "${config.homelab.baseDomain}" = {
@@ -28,7 +42,7 @@
             dnsProvider = "${machinesSensitiveVars.MainServer.dnschallengeProvider}";
             dnsResolver = "1.1.1.1:53";
             dnsPropagationCheck = true;
-            group = config.services.caddy.group;
+            group = acmeSharedGroup;
             environmentFile = config.age.secrets.dnsApiCredentials.path;
           };
         }
@@ -40,7 +54,7 @@
             dnsProvider = "${machinesSensitiveVars.MainServer.dnschallengeProvider}";
             dnsResolver = "1.1.1.1:53";
             dnsPropagationCheck = true;
-            group = config.services.caddy.group;
+            group = acmeSharedGroup;
             environmentFile = config.age.secrets.dnsApiCredentials.path;
           };
         })

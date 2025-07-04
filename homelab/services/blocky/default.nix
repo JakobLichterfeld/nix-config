@@ -25,6 +25,11 @@ in
       default = 4001;
       description = "HTTP Port on which Blocky will provide Prometheus metrics, pprof, REST API, DoH...";
     };
+    listenPortDoT = lib.mkOption {
+      type = lib.types.int;
+      default = 853;
+      description = "Port on which Blocky will listen for DNS-over-TLS (DoT) requests.";
+    };
     prometheus.scrapeConfig = lib.mkOption {
       type = lib.types.attrs;
       default = {
@@ -52,10 +57,22 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    networking.firewall.allowedTCPPorts = [ 53 ];
+    networking.firewall.allowedTCPPorts = [
+      53
+      cfg.listenPortDoT
+    ];
     networking.firewall.allowedUDPPorts = [ 53 ];
 
     # If you want to debug via dig, use `nix-shell -p dnsutils`
+
+    # used for TLS for DoT
+    users.groups.${service} = { };
+    users.users.${service} = {
+      isSystemUser = true;
+      description = "Runs ${service} service";
+      group = service;
+      extraGroups = [ "acme-shared" ]; # Add to shared group for ACME certificate access.
+    };
 
     services.${service} = {
       enable = true;
@@ -64,7 +81,12 @@ in
         ports = {
           dns = "0.0.0.0:53"; # Port for incoming DNS Queries.
           http = "localhost:${toString cfg.listenPort}"; # Port(s) and optional bind ip address(es) to serve HTTP used for prometheus metrics, pprof, REST API, DoH...
+          tls = "0.0.0.0:${toString cfg.listenPortDoT}"; # Port(s) and optional bind ip address(es) to serve DNS-over-TLS (DoT) requests via: https://host:port/dns-query
         };
+        # Path to the ACME certificate and key files for DNS-over-TLS (DoT).
+        certFile = config.security.acme.certs.${homelab.baseDomain}.directory + "/fullchain.pem"; # Path to the certificate file for DoT.
+        keyFile = config.security.acme.certs.${homelab.baseDomain}.directory + "/key.pem"; # Path to the private key file for DoT.
+
         upstreams = {
           strategy = "strict"; # Use strict upstreams, meaning that all queries will be sent to the first upstream in the list.  If the first upstream does not respond, the second is asked, and so on.
           groups.default = [
