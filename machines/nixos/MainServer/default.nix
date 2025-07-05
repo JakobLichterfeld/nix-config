@@ -62,6 +62,7 @@ in
     enableIPv6 = false; # we do not use IPv6 on this server
     networkmanager.enable = false;
     hostName = machinesSensitiveVars.MainServer.hostName;
+    usePredictableInterfaceNames = true; # use predictable interface names to avoid issues with interface names changing on reboot
     interfaces = {
       enp1s0 = {
         ipv4.addresses = [
