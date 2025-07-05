@@ -4,8 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    # nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
-    nixpkgs-darwin.url = "github:nixos/nixpkgs?rev=8f49bca3dc47f48ef46511613450364fd82b0b36"; # https://github.com/NixOS/nixpkgs/issues/420134#issuecomment-3032188749
+    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
     nixpkgs-darwin-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     nix-darwin = {
       url = "github:LnL7/nix-darwin/nix-darwin-25.05";
