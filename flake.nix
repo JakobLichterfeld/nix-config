@@ -103,7 +103,6 @@
       home-manager-darwin-unstable,
       agenix,
       nix-index-database,
-      nur,
       deploy-rs,
       ...
     }@inputs:
