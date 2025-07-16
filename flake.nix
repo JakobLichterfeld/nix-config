@@ -127,7 +127,7 @@
               shell = pkgs.zsh;
 
               imports = [
-                inputs.nix-index-database.hmModules.nix-index
+                inputs.nix-index-database.homeModules.nix-index
                 inputs.agenix.homeManagerModules.default
                 inputs.nixpkgs-darwin
                 ./users/jakob/dots.nix
@@ -174,7 +174,7 @@
             home-manager.users.jakob.home.stateVersion = "25.05";
             home-manager.users.jakob.imports = [
               agenix.homeManagerModules.default
-              nix-index-database.hmModules.nix-index
+              nix-index-database.homeModules.nix-index
               ./users/jakob/dots.nix
               manualSensitiveDarwinMainDev
             ];
@@ -229,7 +229,7 @@
               home-manager.extraSpecialArgs = { inherit inputs; };
               home-manager.users.jakob.imports = [
                 agenix.homeManagerModules.default
-                nix-index-database.hmModules.nix-index
+                nix-index-database.homeModules.nix-index
                 ./users/jakob/dots.nix
               ];
               home-manager.backupFileExtension = "bak";
