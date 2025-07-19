@@ -36,6 +36,7 @@
         uid = 4000;
         isSystemUser = true;
         group = lib.toLower machinesSensitiveVars.HoldingCompanyChristine.name;
+        createHome = false;
       };
     };
     groups = {

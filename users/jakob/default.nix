@@ -36,12 +36,14 @@
         uid = 2000;
         isSystemUser = true;
         group = lib.toLower machinesSensitiveVars.OperatingCompany.name;
+        createHome = false;
       };
       ${lib.toLower machinesSensitiveVars.HoldingCompanyJakob.name} = {
         name = machinesSensitiveVars.HoldingCompanyJakob.name;
         uid = 3000;
         isSystemUser = true;
         group = lib.toLower machinesSensitiveVars.HoldingCompanyJakob.name;
+        createHome = false;
       };
     };
     groups = {
