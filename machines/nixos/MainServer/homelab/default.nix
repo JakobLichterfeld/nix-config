@@ -33,12 +33,6 @@ in
         }
       ];
       shares = {
-        Backups = {
-          path = "${hl.mounts.merged}/Backups";
-          filesystemOwner = hl.user;
-          filesystemGroup = hl.group;
-          validUsers = hl.user;
-        };
         TimeMachine = {
           path = "${hl.mounts.fast}/TimeMachine";
           filesystemOwner = "jakob";
