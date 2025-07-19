@@ -27,21 +27,39 @@ in
         Backups = {
           path = "${hl.mounts.merged}/Backups";
         };
-        Documents = {
-          path = "${hl.mounts.fast}/Documents";
-        };
-        Media = {
-          path = "${hl.mounts.merged}/Media";
-        };
-        Music = {
-          path = "${hl.mounts.fast}/Media/Music";
-        };
-        Misc = {
-          path = "${hl.mounts.merged}/Misc";
-        };
+        # Documents = {
+        #   path = "${hl.mounts.fast}/Documents";
+        # };
+        # Media = {
+        #   path = "${hl.mounts.merged}/Media";
+        # };
+        # Music = {
+        #   path = "${hl.mounts.fast}/Media/Music";
+        # };
+        # Misc = {
+        #   path = "${hl.mounts.merged}/Misc";
+        # };
         TimeMachine = {
           path = "${hl.mounts.fast}/TimeMachine";
           "fruit:time machine" = "yes";
+        };
+        ${machinesSensitiveVars.OperatingCompany.name} = {
+          path = "${hl.mounts.merged}/${machinesSensitiveVars.OperatingCompany.name}";
+          "valid users" = "@${lib.toLower machinesSensitiveVars.OperatingCompany.name}";
+        };
+        ${machinesSensitiveVars.HoldingCompanyJakob.name} = {
+          path = "${hl.mounts.merged}/${machinesSensitiveVars.HoldingCompanyJakob.name}";
+          "valid users" = "@${lib.toLower machinesSensitiveVars.HoldingCompanyJakob.name}";
+        };
+        ${machinesSensitiveVars.HoldingCompanyChristine.name} = {
+          path = "${hl.mounts.merged}/${machinesSensitiveVars.HoldingCompanyChristine.name}";
+          "valid users" = "@${lib.toLower machinesSensitiveVars.HoldingCompanyChristine.name}";
+        };
+        Jakob = {
+          path = "${hl.mounts.merged}/Jakob";
+        };
+        Christine = {
+          path = "${hl.mounts.merged}/Christine";
         };
       };
     };

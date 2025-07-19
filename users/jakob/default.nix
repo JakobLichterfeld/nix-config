@@ -2,6 +2,8 @@
   config,
   inputs,
   pkgs,
+  lib,
+  machinesSensitiveVars,
   ...
 }:
 {
@@ -21,16 +23,36 @@
           "video"
           "podman"
           "input"
+          (lib.toLower machinesSensitiveVars.OperatingCompany.name)
+          (lib.toLower machinesSensitiveVars.HoldingCompanyJakob.name)
         ];
         group = "jakob";
         openssh.authorizedKeys.keys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOquQ/e3s3yYUYjwk2vth18wWGTNlOmNUzjPXUzKeXZI 20231225_jakob_lichterfeld"
         ];
       };
+      ${lib.toLower machinesSensitiveVars.OperatingCompany.name} = {
+        name = machinesSensitiveVars.OperatingCompany.name;
+        uid = 2000;
+        isSystemUser = true;
+        group = lib.toLower machinesSensitiveVars.OperatingCompany.name;
+      };
+      ${lib.toLower machinesSensitiveVars.HoldingCompanyJakob.name} = {
+        name = machinesSensitiveVars.HoldingCompanyJakob.name;
+        uid = 3000;
+        isSystemUser = true;
+        group = lib.toLower machinesSensitiveVars.HoldingCompanyJakob.name;
+      };
     };
     groups = {
       jakob = {
         gid = 1000;
+      };
+      ${lib.toLower machinesSensitiveVars.OperatingCompany.name} = {
+        gid = 2000;
+      };
+      ${lib.toLower machinesSensitiveVars.HoldingCompanyJakob.name} = {
+        gid = 3000;
       };
     };
   };

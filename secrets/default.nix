@@ -15,6 +15,11 @@
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e hashedUserPassword.age
   };
 
+  age.secrets.hashedUserPasswordChristine = {
+    file = ./hashedUserPasswordChristine.age; # content is result of: `mkpasswd -m sha-512`
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e hashedUserPasswordChristine.age
+  };
+
   age.secrets.resticPassword = {
     file = ./resticPassword.age; # content is the restic password
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e resticPassword.age
