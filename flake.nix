@@ -223,6 +223,7 @@
             agenix.nixosModules.default
 
             ./users/jakob
+            ./users/christine
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = false;
