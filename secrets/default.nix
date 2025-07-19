@@ -35,6 +35,11 @@
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e sambaPassword.age
   };
 
+  age.secrets.sambaPasswordChristine = {
+    file = ./sambaPasswordChristine.age; # content is the samba password
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e sambaPasswordChristine.age
+  };
+
   age.secrets.tailscaleAuthKey = {
     file = ./tailscaleAuthKey.age; # generate for max 90 day at https://login.tailscale.com/admin/settings/keys
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e tailscaleAuthKey.age

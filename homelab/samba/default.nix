@@ -20,55 +20,110 @@ in
         value.settings
       ) cfg.shares;
     };
-    passwordFile = lib.mkOption {
-      type = lib.types.path;
-      default = /dev/null;
-      description = "Path to samba password file";
-    };
-    globalSettings = lib.mkOption {
-      description = "Global Samba parameters";
-      type = lib.types.attrsOf lib.types.str;
-      default = { };
-      example = {
-        "browseable" = "yes";
-        "writeable" = "yes";
-        "read only" = "no";
-        "guest ok" = "no";
-      };
+    sambaUsers = lib.mkOption {
+      description = "List of Samba users and their password file paths";
+      type = lib.types.listOf (
+        lib.types.submodule {
+          options = {
+            username = lib.mkOption {
+              type = lib.types.str;
+              description = "The Samba username";
+            };
+            passwordFile = lib.mkOption {
+              type = lib.types.path;
+              description = "Path to the encrypted Samba password file";
+              default = /dev/null; # default to no password file
+              example = "/path/to/passwordFile";
+            };
+          };
+        }
+      );
+      default = [ ];
+      example = lib.literalExpression ''
+        [
+          {
+            username = "userOne";
+            passwordFile = "/path/to/passwordFileForUserOne";
+          }
+          {
+            userTwo = {
+              passwordFile = "/path/to/passwordFileForUserTwo";
+            };
+          }
+        ]
+      '';
     };
     commonSettings = lib.mkOption {
       description = "Parameters applied to each share";
-      type = lib.types.attrsOf lib.types.str;
-      default = { };
-      example = {
-        "security" = "user";
-        "invalid users" = [ "root" ];
+      type = lib.types.functionTo (lib.types.attrsOf lib.types.str);
+      default = value: {
+        "preserve case" = "yes";
+        "short preserve case" = "yes";
+        "browseable" = "yes"; # show share in network, does not mean accessible just visible
+        "read only" = "no"; # allow write access
+        "guest ok" = "no"; # do not allow guest access
+        "create mask" = "0660"; # allow owner and group write access, but not others
+        "directory mask" = "0770"; # allow owner and group write access, but not others
+        "valid users" = ""; # set in share definition
+        "fruit:aapl" = "yes"; # enable Apple File Protocol for better compatibility with macOS
+        "vfs objects" = "catia fruit streams_xattr";
       };
-      apply =
-        old:
-        lib.attrsets.mergeAttrsList [
-          {
-            "preserve case" = "yes";
-            "short preserve case" = "yes";
-            "browseable" = "yes";
-            "writeable" = "yes";
-            "read only" = "no";
-            "guest ok" = "no";
-            "create mask" = "0644";
-            "directory mask" = "0755";
-            "valid users" = hl.user;
-            "fruit:aapl" = "yes";
-            "vfs objects" = "catia fruit streams_xattr";
-          }
-          old
-        ];
+      example = lib.literalExpression ''
+        value: {
+          "invalid users" = [ "root" ];
+        }
+      '';
     };
     shares = lib.mkOption {
-      type = lib.types.attrs;
+      description = "Samba share definitions with paths, owners, and permissions";
+      type = lib.types.attrsOf (
+        lib.types.submodule {
+          options = {
+            path = lib.mkOption {
+              type = lib.types.path;
+              description = "Filesystem path of the share";
+            };
+
+            filesystemOwner = lib.mkOption {
+              type = lib.types.str;
+              default = "root";
+              description = "Owner of the share directory on filesystem level";
+            };
+
+            filesystemGroup = lib.mkOption {
+              type = lib.types.str;
+              default = "users";
+              description = "Group of the share directory on filesystem level";
+            };
+
+            validUsers = lib.mkOption {
+              type = lib.types.str;
+              default = "";
+              description = "Samba valid users (e.g. 'username' for single user, or '@groupname' for groups)";
+            };
+
+            extraOptions = lib.mkOption {
+              type = lib.types.attrsOf lib.types.str;
+              default = { };
+              description = "Extra Samba share-specific options";
+              example = lib.literalExpression ''
+                {
+                  "fruit:time machine" = "yes";
+                }
+              '';
+            };
+          };
+        }
+      );
       example = lib.literalExpression ''
         CoolShare = {
           path = "/mnt/CoolShare";
-          "fruit:aapl" = "yes";
+          filesystemOwner = "shareuser";
+          filesystemGroup = "users";
+          validUsers = "@groupname";
+          extraOptions = {
+            "fruit:aapl" = "yes";
+          };
         };
       '';
       default = { };
@@ -79,13 +134,30 @@ in
 
     environment.systemPackages = [ config.services.samba.package ];
 
-    systemd.tmpfiles.rules = map (x: "d ${x.path} 0775 ${hl.user} ${hl.group} - -") (
-      lib.attrValues cfg.shares
-    );
+    # set correct access right on filesystem level
+    systemd.tmpfiles.rules = lib.attrsets.mapAttrsToList (
+      _: x: "d ${x.path} 0770 ${x.filesystemOwner} ${x.filesystemGroup} - -"
+    ) cfg.shares;
 
+    # create samba users with corresponding passwords
     system.activationScripts.samba_user_create = ''
-      smb_password=$(cat "${config.age.secrets.sambaPassword.path}")
-      echo -e "$smb_password\n$smb_password\n" | ${lib.getExe' pkgs.samba "smbpasswd"} -a -s ${hl.user}
+      set -e
+      ${lib.concatMapStringsSep "\n" (
+        user:
+        let
+          name = user.username;
+          pwFile = user.passwordFile;
+        in
+        ''
+          if [ -f '${pwFile}' ]; then
+            smb_password=$(cat '${pwFile}')
+            echo -e "$smb_password\n$smb_password\n" | ${lib.getExe' pkgs.samba "smbpasswd"} -a -s '${name}'
+          else
+            echo "Password file not found for user '${name}'" >&2
+            exit 1
+          fi
+        ''
+      ) cfg.sambaUsers}
     '';
 
     networking.firewall = {
@@ -96,14 +168,14 @@ in
     services.samba = {
       enable = true;
       openFirewall = true;
-      settings = {
-        global = lib.mkMerge [
-          {
+      settings =
+        {
+          global = {
             workgroup = lib.mkDefault "LAN";
             "server string" = lib.mkDefault config.networking.hostName;
             "netbios name" = lib.mkDefault config.networking.hostName;
-            "security" = lib.mkDefault "user";
-            "invalid users" = [ "root" ];
+            "security" = lib.mkDefault "user"; # user account needed for access
+            "invalid users" = [ "root" ]; # do not allow root access
             "hosts allow" = lib.mkDefault (
               lib.strings.removeSuffix "0/24" machinesSensitiveVars.MainServer.ipNetwork
               + " "
@@ -116,10 +188,23 @@ in
             "guest account" = lib.mkDefault "nobody";
             "map to guest" = lib.mkDefault "bad user";
             "passdb backend" = lib.mkDefault "tdbsam";
-          }
-          cfg.globalSettings
-        ];
-      } // builtins.mapAttrs (name: value: value // cfg.commonSettings) cfg.shares;
+          };
+        }
+        // builtins.mapAttrs (
+          _name: value:
+          lib.attrsets.mergeAttrsList (
+            [
+              (cfg.commonSettings value)
+              value.extraOptions
+              {
+                path = value.path;
+              }
+            ]
+            ++ lib.optional (value.validUsers != "") {
+              "valid users" = value.validUsers;
+            }
+          )
+        ) cfg.shares;
     };
     services.avahi = {
       enable = true;

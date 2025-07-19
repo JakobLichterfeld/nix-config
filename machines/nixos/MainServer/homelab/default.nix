@@ -22,44 +22,65 @@ in
     };
     samba = {
       enable = true;
-      passwordFile = config.age.secrets.sambaPassword.path;
+      sambaUsers = [
+        {
+          username = "jakob";
+          passwordFile = config.age.secrets.sambaPassword.path;
+        }
+        {
+          username = "christine";
+          passwordFile = config.age.secrets.sambaPasswordChristine.path;
+        }
+      ];
       shares = {
         Backups = {
           path = "${hl.mounts.merged}/Backups";
+          filesystemOwner = "jakob";
+          filesystemGroup = "users";
+          validUsers = "@users";
         };
-        # Documents = {
-        #   path = "${hl.mounts.fast}/Documents";
-        # };
-        # Media = {
-        #   path = "${hl.mounts.merged}/Media";
-        # };
-        # Music = {
-        #   path = "${hl.mounts.fast}/Media/Music";
-        # };
-        # Misc = {
-        #   path = "${hl.mounts.merged}/Misc";
-        # };
         TimeMachine = {
           path = "${hl.mounts.fast}/TimeMachine";
-          "fruit:time machine" = "yes";
+          filesystemOwner = "jakob";
+          filesystemGroup = "users";
+          validUsers = "@users";
+          extraOptions = {
+            "fruit:time machine" = "yes";
+          };
         };
+        # Operating Company
         ${machinesSensitiveVars.OperatingCompany.name} = {
           path = "${hl.mounts.merged}/${machinesSensitiveVars.OperatingCompany.name}";
-          "valid users" = "@${lib.toLower machinesSensitiveVars.OperatingCompany.name}";
+          filesystemOwner = "${lib.toLower machinesSensitiveVars.OperatingCompany.name}";
+          filesystemGroup = "${lib.toLower machinesSensitiveVars.OperatingCompany.name}";
+          validUsers = "@${lib.toLower machinesSensitiveVars.OperatingCompany.name}";
         };
+        # Holding Company Jakob
         ${machinesSensitiveVars.HoldingCompanyJakob.name} = {
           path = "${hl.mounts.merged}/${machinesSensitiveVars.HoldingCompanyJakob.name}";
-          "valid users" = "@${lib.toLower machinesSensitiveVars.HoldingCompanyJakob.name}";
+          filesystemOwner = "${lib.toLower machinesSensitiveVars.HoldingCompanyJakob.name}";
+          filesystemGroup = "${lib.toLower machinesSensitiveVars.HoldingCompanyJakob.name}";
+          validUsers = "@${lib.toLower machinesSensitiveVars.HoldingCompanyJakob.name}";
         };
+        # Holding Company Christine
         ${machinesSensitiveVars.HoldingCompanyChristine.name} = {
           path = "${hl.mounts.merged}/${machinesSensitiveVars.HoldingCompanyChristine.name}";
-          "valid users" = "@${lib.toLower machinesSensitiveVars.HoldingCompanyChristine.name}";
+          filesystemOwner = "${lib.toLower machinesSensitiveVars.HoldingCompanyChristine.name}";
+          filesystemGroup = "${lib.toLower machinesSensitiveVars.HoldingCompanyChristine.name}";
+          validUsers = "@${lib.toLower machinesSensitiveVars.HoldingCompanyChristine.name}";
         };
+        # Personal Shares
         Jakob = {
           path = "${hl.mounts.merged}/Jakob";
+          filesystemOwner = "jakob";
+          filesystemGroup = "jakob";
+          validUsers = "@jakob";
         };
         Christine = {
           path = "${hl.mounts.merged}/Christine";
+          filesystemOwner = "christine";
+          filesystemGroup = "christine";
+          validUsers = "@christine";
         };
       };
     };

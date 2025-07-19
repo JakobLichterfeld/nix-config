@@ -24,6 +24,7 @@ in
   "resticPassword.age".publicKeys = allKeys;
   "s3StorageEnv.age".publicKeys = allKeys;
   "sambaPassword.age".publicKeys = serverAndJakob;
+  "sambaPasswordChristine.age".publicKeys = serverAndChristine;
   "tailscaleAuthKey.age".publicKeys = allKeys;
   "telegramCredentials.age".publicKeys = allKeys;
   "teslamateEnv.age".publicKeys = allKeys;
