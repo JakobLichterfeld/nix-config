@@ -133,7 +133,10 @@ in
 
     # idiomatic backup and restore scripts
     environment.systemPackages = with pkgs; [
-      (callPackage ./backup_and_restore.nix { })
+      (callPackage ./backup_and_restore.nix {
+        databaseUser = cfg.postgres.user;
+        databaseName = cfg.postgres.database;
+      })
     ];
 
     services.teslamate = {
