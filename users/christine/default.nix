@@ -32,7 +32,7 @@
         ];
       };
       ${lib.toLower machinesSensitiveVars.HoldingCompanyChristine.name} = {
-        name = machinesSensitiveVars.HoldingCompanyChristine.name;
+        name = lib.toLower machinesSensitiveVars.HoldingCompanyChristine.name;
         uid = 4000;
         isSystemUser = true;
         group = lib.toLower machinesSensitiveVars.HoldingCompanyChristine.name;
