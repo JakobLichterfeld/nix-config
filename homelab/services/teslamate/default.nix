@@ -131,14 +131,6 @@ in
 
   config = lib.mkIf cfg.enable {
 
-    # idiomatic backup and restore scripts
-    environment.systemPackages = with pkgs; [
-      (callPackage ./backup_and_restore.nix {
-        databaseUser = cfg.postgres.user;
-        databaseName = cfg.postgres.database;
-      })
-    ];
-
     services.teslamate = {
       enable = true;
       secretsFile = config.age.secrets.teslamateEnv.path;
