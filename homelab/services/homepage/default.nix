@@ -33,8 +33,8 @@ in
         "Services"
         # "System"
         # "Health Checks"
+        "Smart Home"
         "External Services"
-        # "Smart Home"
       ];
       description = "Categories to group services on the homepage.";
     };
@@ -238,6 +238,13 @@ in
           #     style = "column";
           #   };
           # }
+          {
+            "Smart Home" = {
+              header = true;
+              icon = "mdi-home-automation";
+              style = "column";
+            };
+          }
           {
             "External Services" = {
               header = true;

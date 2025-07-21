@@ -114,6 +114,7 @@ in
   imports = [
     ./backup
     ./blocky
+    ./home-assistant
     ./homepage
     ./ntfy-sh
     ./prometheus

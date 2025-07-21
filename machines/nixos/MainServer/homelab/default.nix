@@ -92,6 +92,8 @@ in
 
       blocky.enable = true;
 
+      home-assistant.enable = true;
+
       homepage = {
         enable = true;
         extraServices = [
