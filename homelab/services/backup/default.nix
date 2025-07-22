@@ -60,6 +60,23 @@ in
       default = "${hl.mounts.merged}/Backups/Restic";
       type = lib.types.path;
     };
+    local.listenPort = lib.mkOption {
+      type = lib.types.int;
+      default = 8000;
+      description = "HTTP Port on which restic server runs.";
+    };
+    prometheus.scrapeConfig = lib.mkOption {
+      type = lib.types.attrs;
+      default = {
+        job_name = "restic";
+        metrics_path = "/metrics";
+        static_configs = [
+          {
+            targets = [ "localhost:${toString cfg.local.listenPort}" ];
+          }
+        ];
+      };
+    };
   };
   config =
     let
@@ -115,6 +132,8 @@ in
           extraFlags = [
             "--no-auth"
           ];
+          # Enable Prometheus metrics at /metrics
+          prometheus = config.services.prometheus.enable;
         };
         backups =
           lib.attrsets.optionalAttrs cfg.local.enable {
@@ -123,7 +142,7 @@ in
                 OnCalendar = "*-*-* 04:00:00"; # "Mon..Sat *-*-* 04:00:00";
                 Persistent = true;
               };
-              repository = "rest:http://localhost:8000/appdata-local-${config.networking.hostName}";
+              repository = "rest:http://localhost:${toString cfg.local.listenPort}/appdata-local-${config.networking.hostName}";
               initialize = true;
               passwordFile = cfg.passwordFile;
               inhibitsSleep = true; # Prevents the system from sleeping during backup
