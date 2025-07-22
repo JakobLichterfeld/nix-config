@@ -62,6 +62,7 @@ in
         LOG_LEVEL = "warn";
         IP_HEADER = "CF-Connecting-IP";
       };
+      environmentFile = config.age.secrets.vaultwardenEnv.path;
     };
 
     services.caddy.virtualHosts."${cfg.url}" = {

@@ -64,4 +64,9 @@
     file = ./teslamateEnvTelegramBot.age; # content is the Teslamate Telegram Bot env file, so TELEGRAM_BOT_API_KEY= and TELEGRAM_BOT_CHAT_ID=
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e teslamateEnvABRP.age
   };
+
+  age.secrets.vaultwardenEnv = {
+    file = ./vaultwardenEnv.age; # content is the Vaultwarden env file, so ADMIN_TOKEN=$argon2id$v=19$m=65540,t=3,p=4$...
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e vaultwardenEnv.age
+  };
 }

@@ -30,6 +30,7 @@ in
   "teslamateEnv.age".publicKeys = allKeys;
   "teslamateEnvABRP.age".publicKeys = allKeys;
   "teslamateEnvTelegramBot.age".publicKeys = allKeys;
+  "vaultwardenEnv.age".publicKeys = serverAndJakob;
 }
 
 # to add a secret run `EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e hashedUserPassword.age`
