@@ -198,46 +198,53 @@
         };
       };
 
-      nixosConfigurations = {
-        MainServer = nixpkgs.lib.nixosSystem {
+      nixosConfigurations =
+        let
           system = "x86_64-linux";
-          specialArgs = {
-            inherit inputs;
-            inherit self;
-            inherit machinesSensitiveVars;
+        in
+        {
+          MainServer = nixpkgs.lib.nixosSystem {
+            inherit system;
+            specialArgs = {
+              inherit inputs;
+              inherit self;
+              inherit machinesSensitiveVars;
+              pkgsUnstable = import inputs.nixpkgs-unstable {
+                inherit system;
+              };
+            };
+            modules = [
+              ./homelab
+
+              ./machines/nixos/_common
+              ./machines/nixos/MainServer
+
+              ./modules/zfs-root
+              ./modules/tailscale
+              ./modules/zerotier
+              ./modules/deadman-ping
+              ./modules/tg-notify
+              ./modules/mover
+
+              secrets/default.nix
+              agenix.nixosModules.default
+
+              ./users/jakob
+              ./users/christine
+              home-manager.nixosModules.home-manager
+              {
+                home-manager.useGlobalPkgs = false;
+                home-manager.extraSpecialArgs = { inherit inputs; };
+                home-manager.users.jakob.imports = [
+                  agenix.homeManagerModules.default
+                  nix-index-database.homeModules.nix-index
+                  ./users/jakob/dots.nix
+                ];
+                home-manager.backupFileExtension = "bak";
+              }
+            ];
           };
-          modules = [
-            ./homelab
-
-            ./machines/nixos/_common
-            ./machines/nixos/MainServer
-
-            ./modules/zfs-root
-            ./modules/tailscale
-            ./modules/zerotier
-            ./modules/deadman-ping
-            ./modules/tg-notify
-            ./modules/mover
-
-            secrets/default.nix
-            agenix.nixosModules.default
-
-            ./users/jakob
-            ./users/christine
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = false;
-              home-manager.extraSpecialArgs = { inherit inputs; };
-              home-manager.users.jakob.imports = [
-                agenix.homeManagerModules.default
-                nix-index-database.homeModules.nix-index
-                ./users/jakob/dots.nix
-              ];
-              home-manager.backupFileExtension = "bak";
-            }
-          ];
         };
-      };
 
       # Update dependencies and switch
       # This is a shell script that updates the flake.lock file, commits it, pushes it to the remote repository, and then switches to the new configuration.

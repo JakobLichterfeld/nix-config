@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  pkgsUnstable,
   ...
 }:
 let
@@ -60,6 +61,7 @@ in
 
     services.home-assistant = {
       enable = true;
+      package = pkgsUnstable.home-assistant;
       extraPackages = ps: with ps; [ psycopg2 ]; # recorder postgresql support
 
       extraComponents = [
