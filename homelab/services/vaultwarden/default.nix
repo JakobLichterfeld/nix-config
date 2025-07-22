@@ -60,7 +60,7 @@ in
         ROCKET_PORT = cfg.listenPort;
         EXTENDED_LOGGING = true;
         LOG_LEVEL = "warn";
-        IP_HEADER = "CF-Connecting-IP";
+        IP_HEADER = "X-Forwarded-For";
       };
       environmentFile = config.age.secrets.vaultwardenEnv.path;
     };
