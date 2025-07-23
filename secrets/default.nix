@@ -66,7 +66,7 @@
   };
 
   age.secrets.vaultwardenEnv = {
-    file = ./vaultwardenEnv.age; # content is the Vaultwarden env file, so ADMIN_TOKEN=$argon2id$v=19$m=65540,t=3,p=4$...
+    file = ./vaultwardenEnv.age; # content is the Vaultwarden env file, so ADMIN_TOKEN=$argon2id$v=19$m=65540,t=3,p=4$... and DATABASE_URL=postgresql://vaultwarden:secretpassword@localhost/vaultwarden or DATABASE_URL=postgresql://vaultwarden@/vaultwarden
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e vaultwardenEnv.age
   };
 }

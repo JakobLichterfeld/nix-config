@@ -51,8 +51,16 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = config.services.postgresql.enable;
+        message = "Vaultwarden requires PostgreSQL in this config. Please set services.postgresql.enable = true;";
+      }
+    ];
+
     services.${service} = {
       enable = true;
+      dbBackend = "postgresql";
       config = {
         DOMAIN = "https://${cfg.url}";
         SIGNUPS_ALLOWED = false;
@@ -61,8 +69,20 @@ in
         EXTENDED_LOGGING = true;
         LOG_LEVEL = "warn";
         IP_HEADER = "X-Forwarded-For";
+        DATABASE_URL = "postgresql://vaultwarden@/vaultwarden"; # Connect via UNIX socket using peer auth; no password needed if user matches
       };
       environmentFile = config.age.secrets.vaultwardenEnv.path;
+    };
+
+    services.postgresql = {
+      enable = true;
+      ensureDatabases = [ "vaultwarden" ];
+      ensureUsers = [
+        {
+          name = "vaultwarden";
+          ensureDBOwnership = true;
+        }
+      ];
     };
 
     services.caddy.virtualHosts."${cfg.url}" = {
