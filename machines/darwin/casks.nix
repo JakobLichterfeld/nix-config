@@ -26,6 +26,7 @@
   # Security
   { name = "avast-security"; }
   { name = "keepassxc"; } # Password manager
+  { name = "bitwarden"; } # Password manager
 
   # System Tools
   { name = "applite"; }

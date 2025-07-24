@@ -133,8 +133,10 @@ in
       { path = "/System/Applications/Calculator.app/"; }
       # Obsidian
       { path = "/Applications/Obsidian.app/"; }
-      # KeepassXC
-      { path = "/Applications/KeePassXC.app/"; }
+      # # KeepassXC
+      # { path = "/Applications/KeePassXC.app/"; }
+      # Bitwarden
+      { path = "/Applications/Bitwarden.app/"; }
       # Join
       { path = "/Users/${user}/Applications/Chrome Apps.localized/Join by Joaoapps.app/"; }
       # Windows App (formerly Microsoft Remote Desktop)
