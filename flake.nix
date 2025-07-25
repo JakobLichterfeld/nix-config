@@ -2,75 +2,75 @@
   description = "Configuration for MacOS and NixOS";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
-    nixpkgs-darwin-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05?shallow=1";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable?shallow=1";
+    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin?shallow=1";
+    nixpkgs-darwin-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable?shallow=1";
     nix-darwin = {
-      url = "github:LnL7/nix-darwin/nix-darwin-25.05";
+      url = "github:LnL7/nix-darwin/nix-darwin-25.05?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     nix-darwin-unstable = {
-      url = "github:LnL7/nix-darwin/master";
+      url = "github:LnL7/nix-darwin/master?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
     };
-    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew?shallow=1";
 
     # Declarative tap management
     homebrew-core = {
-      url = "github:homebrew/homebrew-core";
+      url = "github:homebrew/homebrew-core?shallow=1";
       flake = false;
     };
     homebrew-cask = {
-      url = "github:homebrew/homebrew-cask";
+      url = "github:homebrew/homebrew-cask?shallow=1";
       flake = false;
     };
     # automatically update Homebrew, installed via declarative tap management of nix-homebrew
     homebrew-domt4-autoupdate = {
-      url = "github:DomT4/homebrew-autoupdate";
+      url = "github:DomT4/homebrew-autoupdate?shallow=1";
       flake = false;
     };
     # Spotube
     homebrew-spotube = {
-      url = "github:KRTirtho/homebrew-apps";
+      url = "github:KRTirtho/homebrew-apps?shallow=1";
       flake = false;
     };
     # sshfs-mac
     homebrew-fuse = {
-      url = "github:gromgit/homebrew-fuse";
+      url = "github:gromgit/homebrew-fuse?shallow=1";
       flake = false;
     };
     # TabbyML
     homebrew-tabbyml = {
-      url = "github:TabbyML/homebrew-tabby";
+      url = "github:TabbyML/homebrew-tabby?shallow=1";
       flake = false;
     };
 
     home-manager = {
-      # url = "github:nix-community/home-manager/release-25.05"; # gets timeouts
+      # url = "github:nix-community/home-manager/release-25.05?shallow=1"; # gets timeouts
       url = "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager-darwin = {
-      # url = "github:nix-community/home-manager/release-25.05"; # gets timeouts
+      # url = "github:nix-community/home-manager/release-25.05?shallow=1"; # gets timeouts
       url = "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     home-manager-darwin-unstable = {
-      url = "github:nix-community/home-manager/master";
+      url = "github:nix-community/home-manager/master?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
     };
     agenix = {
-      url = "github:ryantm/agenix";
+      url = "github:ryantm/agenix?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
     nix-index-database = {
-      url = "github:nix-community/nix-index-database";
+      url = "github:nix-community/nix-index-database?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    deploy-rs.url = "github:serokell/deploy-rs";
+    deploy-rs.url = "github:serokell/deploy-rs?shallow=1";
 
     teslamate = {
       url = "github:teslamate-org/teslamate?rev=92b504bf405b7238b13231869b6ef73c7564f520"; # v2.1.0
@@ -78,7 +78,7 @@
     };
 
     spotblock = {
-      url = "github:vincentkenny01/spotblock";
+      url = "github:vincentkenny01/spotblock?shallow=1";
       flake = false;
     };
   };
