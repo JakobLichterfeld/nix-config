@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgsUnstable,... }:
 let
   service = "vaultwarden";
   cfg = config.homelab.services.${service};
@@ -60,6 +60,7 @@ in
 
     services.${service} = {
       enable = true;
+      package = pkgsUnstable.vaultwarden;
       dbBackend = "postgresql";
       config = {
         DOMAIN = "https://${cfg.url}";
