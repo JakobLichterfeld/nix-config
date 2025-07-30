@@ -190,6 +190,8 @@ in
 
       ntfy-sh.enable = true;
 
+      owntracks-recorder.enable = true;
+
       prometheus = {
         enable = true;
         telegramCredentialsFile = config.age.secrets.telegramCredentials.path;

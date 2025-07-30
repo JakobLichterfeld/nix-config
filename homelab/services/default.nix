@@ -117,6 +117,7 @@ in
     ./home-assistant
     ./homepage
     ./ntfy-sh
+    ./owntracks-recorder
     ./prometheus
     ./stirling-pdf
     ./syncthing
