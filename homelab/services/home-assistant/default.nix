@@ -58,6 +58,12 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = config.services.postgresql.enable;
+        message = "Home Assistant requires PostgreSQL in this config. Please set services.postgresql.enable = true;";
+      }
+    ];
 
     services.home-assistant = {
       enable = true;
@@ -67,22 +73,22 @@ in
       extraComponents = [
         # Components required to complete the onboarding
         "analytics"
-        "google_translate"
-        "met"
+        "google_translate" # Google Translate text-to-speech
+        "met" # default weather provider: Meteorologisk institutt (Met.no)
         "radio_browser"
         "shopping_list"
-        # Intelligent Storage Acceleration, recommended for fast zlib compression, see https://www.home-assistant.io/integrations/isal
-        "isal"
+        "isal" # Intelligent Storage Acceleration, recommended for fast zlib compression, see https://www.home-assistant.io/integrations/isal
 
         "apple_tv" # Apple TV
         "devolo_home_control" # Devolo Home Control
         "devolo_home_network" # Devolo
         "dlna_dmr" # DLNA Digital Media Renderer
-        "fritz" # AVM FritzBox TR-064 connection
-        "fritzbox" # AVM Fritz!Box homeautomation
+        "fritz" # AVM FRITZ!Box Tools, presence detection via TR-064
+        "fritzbox" # AVM FRITZ!SmartHome
         "home_connect" # Home Connect
         "nmap_tracker" # Nmap Tracker
-        "upnp" # Universal Plug and Play
+        "upnp" # Universal Plug and Play to collect data from routers
+        "vacuum" # home cleaning robots
 
       ];
 
@@ -90,7 +96,8 @@ in
         {
           homeassistant.time_zone = homelab.timeZone;
 
-          recorder.db_url = "postgresql://@/hass"; # Use PostgreSQL as the database backend for the recorder component
+          # Use PostgreSQL as the database backend for the recorder component
+          recorder.db_url = "postgresql://@/hass"; # connect via UNIX socket using peer auth; no password needed if user matches
 
           http = {
             server_port = cfg.listenPort;
