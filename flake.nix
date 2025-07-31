@@ -131,7 +131,6 @@
                 inputs.agenix.homeManagerModules.default
                 inputs.nixpkgs-darwin
                 ./users/jakob/dots.nix
-                manualSensitiveDarwin
               ];
             };
 
@@ -161,6 +160,8 @@
           # Imports
           ./machines/darwin
           ./machines/darwin/MainDev
+          manualSensitiveDarwin
+          manualSensitiveDarwinMainDev
 
           # Services
           # ./modules/tailscale
@@ -176,7 +177,6 @@
               agenix.homeManagerModules.default
               nix-index-database.homeModules.nix-index
               ./users/jakob/dots.nix
-              manualSensitiveDarwinMainDev
             ];
           })
         ];
