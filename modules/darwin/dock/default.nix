@@ -84,7 +84,10 @@ in
       wantURIs = concatMapStrings (entry: "${entryURI entry.path}\n") cfg.entries;
       createEntries = concatMapStrings (
         entry:
-        "${dockutil}/bin/dockutil --no-restart --add '${entry.path}' --section ${entry.section} ${entry.options}\n"
+        let
+          esc = str: "'" + builtins.replaceStrings [ "'" ] [ "'\\''" ] str + "'";
+        in
+        "${dockutil}/bin/dockutil --no-restart --add ${esc entry.path} --section ${esc entry.section} ${entry.options}\n"
       ) cfg.entries;
     in
     {
