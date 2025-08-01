@@ -92,16 +92,20 @@ in
     in
     {
       system.activationScripts.postActivation.text = ''
-        echo >&2 "Scheduling Dock setup for ${cfg.username}..."
+        echo >&2 ""
+        echo >&2 "ℹ️ Dock setup for ${cfg.username} ..."
         sudo -u ${cfg.username} ${pkgs.writeShellScript "dock-setup" ''
           haveURIs="$(${dockutil}/bin/dockutil --list | ${pkgs.coreutils}/bin/cut -f2)"
-          if ! diff -wu <(echo -n "$haveURIs") <(echo -n '${wantURIs}') >&2 ; then
-            echo >&2 "Resetting Dock."
+          if ! diff -q <(echo -n "$haveURIs") <(echo -n '${wantURIs}') >/dev/null; then
+            echo >&2 "Dock entries differ, showing changes:"
+            diff -wu <(echo -n "$haveURIs") <(echo -n '${wantURIs}') >&2
+            echo >&2 "🔨 Resetting Dock ..."
             ${dockutil}/bin/dockutil --no-restart --remove all
             ${createEntries}
             killall Dock
+            echo >&2 "✅ Dock setup complete."
           else
-            echo >&2 "Dock setup complete."
+            echo >&2 "✅ Dock already up to date."
           fi
         ''}
       '';
