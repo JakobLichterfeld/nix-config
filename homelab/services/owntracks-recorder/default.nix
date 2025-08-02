@@ -121,6 +121,50 @@ in
           },
         };
       '';
+      owntracksRemoteConfig = pkgs.writeText "config.otrc" (
+        builtins.toJSON {
+          _type = "configuration";
+          _id = "ab5dea50";
+          waypoints = [ ];
+          _build = 420503003;
+          autostartOnBoot = true;
+          cmd = true;
+          connectionTimeoutSeconds = 30;
+          debugLog = false;
+          deviceId = "TODO";
+          dontReuseHttpClient = false;
+          enableMapRotation = true;
+          encryptionKey = "";
+          experimentalFeatures = [ ];
+          extendedData = true;
+          fusedRegionDetection = true;
+          ignoreInaccurateLocations = 100;
+          ignoreStaleLocations = 0.0;
+          locatorDisplacement = 50;
+          locatorInterval = 60;
+          mapLayerStyle = "GoogleMapDefault";
+          mode = 3;
+          monitoring = 1;
+          moveModeLocatorInterval = 10;
+          notificationEvents = true;
+          notificationGeocoderErrors = true;
+          notificationHigherPriority = false;
+          notificationLocation = true;
+          opencageApiKey = "";
+          osmTileScaleFactor = 1.0;
+          password = "";
+          pegLocatorFastestIntervalToInterval = false;
+          ping = 15;
+          publishLocationOnConnect = false;
+          remoteConfiguration = false;
+          reverseGeocodeProvider = "Device";
+          showRegionsOnMap = true;
+          theme = 2;
+          tid = "";
+          url = "https://${cfg.url}/pub";
+          username = "TODO";
+        }
+      );
       owntracksFrontend = pkgs.buildNpmPackage {
         pname = "owntracks-frontend";
         version = "2.15.3";
@@ -141,6 +185,10 @@ in
           ${lib.optionalString (owntracksFrontendConfig != null) ''
             mkdir -p $out/usr/share/owntracks-frontend/config
             cp ${owntracksFrontendConfig} $out/usr/share/owntracks-frontend/config/config.js
+          ''}
+          ${lib.optionalString (owntracksRemoteConfig != null) ''
+            mkdir -p $out/usr/share/owntracks-frontend/config
+            cp ${owntracksRemoteConfig} $out/usr/share/owntracks-frontend/config/config.otrc
           ''}
         '';
       };
@@ -257,5 +305,6 @@ in
             '';
       };
       # Android App and iOS App can be configured to use the Caddy URL as the HTTP interface, use HTTP mode with the url: ${cfg.url}/pub
+      # the config for the Android App and the iOS App is available at: ${cfg.url}/config/config.otrc, just copy it to the app and fill the deviceId, username and tid
     };
 }
