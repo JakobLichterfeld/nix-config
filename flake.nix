@@ -222,6 +222,7 @@
               ./modules/zfs-root
               ./modules/tailscale
               ./modules/zerotier
+              ./modules/email
               ./modules/deadman-ping
               ./modules/tg-notify
               ./modules/mover

@@ -89,7 +89,7 @@ in
         enable = true;
       };
       mail = {
-        enable = false;
+        enable = config.email.enable;
         sender = config.email.fromAddress;
         recipient = config.email.toAddress;
       };

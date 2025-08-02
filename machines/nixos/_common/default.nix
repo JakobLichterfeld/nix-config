@@ -70,14 +70,14 @@
   #   defaultEditor = true;
   # };
 
-  # email = {
-  #   enable = true;
-  #   fromAddress = "";
-  #   toAddress = "";
-  #   smtpServer = "";
-  #   smtpUsername = "";
-  #   smtpPasswordPath = config.age.secrets.smtpPassword.path;
-  # };
+  email = {
+    enable = true;
+    fromAddress = machinesSensitiveVars.Mail.fromAddress;
+    toAddress = machinesSensitiveVars.Mail.toAddress;
+    smtpServer = machinesSensitiveVars.Mail.smtpServer;
+    smtpUsername = machinesSensitiveVars.Mail.smtpUsername;
+    smtpPasswordPath = config.age.secrets.smtpPassword.path;
+  };
 
   security = {
     doas.enable = lib.mkDefault false;
