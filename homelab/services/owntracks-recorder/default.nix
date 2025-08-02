@@ -98,6 +98,7 @@ in
           blackbox = import ../../../lib/blackbox.nix { inherit lib; };
         in
         [
+          (blackbox.mkTcpTarget "${service}" "127.0.0.1:${toString cfg.listenPort}" "internal")
           (blackbox.mkHttpTarget "${service}" "http://127.0.0.1:${toString cfg.listenPort}" "internal")
           (blackbox.mkHttpTarget "${service}" "${cfg.url}" "external")
         ];
