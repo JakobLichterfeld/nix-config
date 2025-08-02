@@ -71,7 +71,8 @@
   };
 
   age.secrets.vaultwardenEnv = {
-    file = ./vaultwardenEnv.age; # content is the Vaultwarden env file, so ADMIN_TOKEN=$argon2id$v=19$m=65540,t=3,p=4$... and DATABASE_URL=postgresql://vaultwarden:secretpassword@localhost/vaultwarden or DATABASE_URL=postgresql://vaultwarden@/vaultwarden
+    file = ./vaultwardenEnv.age; # content is the Vaultwarden env file, so ADMIN_TOKEN=$argon2id$v=19$m=65540,t=3,p=4$..., SMTP_PASSWORD= and DATABASE_URL=postgresql://vaultwarden:secretpassword@localhost/vaultwarden or DATABASE_URL=postgresql://vaultwarden@/vaultwarden if using different auth method
+    # if you use gmail, you need an app specific password https://myaccount.google.com/apppasswords
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e vaultwardenEnv.age
   };
 }
