@@ -99,7 +99,7 @@ in
       autoPrune.enable = true;
       extraPackages = [ pkgs.zfs ];
       defaultNetwork.settings = {
-        dns_enabled = !config.homelab.services.blocky.enable; # only enable podman's internal DNS if blocky is not enabled
+        dns_enabled = lib.mkForce (!config.homelab.services.blocky.enable); # only enable podman's internal DNS if blocky is not enabled
       };
     };
     virtualisation.oci-containers = {
@@ -114,6 +114,7 @@ in
   imports = [
     ./backup
     ./blocky
+    ./changedetection-io
     ./home-assistant
     ./homepage
     ./ntfy-sh

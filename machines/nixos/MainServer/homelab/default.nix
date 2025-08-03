@@ -92,6 +92,8 @@ in
 
       blocky.enable = true;
 
+      changedetection-io.enable = true;
+
       home-assistant.enable = true;
 
       homepage = {
