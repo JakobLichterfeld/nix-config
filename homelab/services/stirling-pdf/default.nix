@@ -16,7 +16,7 @@ in
     };
     url = lib.mkOption {
       type = lib.types.str;
-      default = "${service}.${homelab.baseDomain}";
+      default = "pdf.${homelab.baseDomain}";
     };
     listenPort = lib.mkOption {
       type = lib.types.int;
