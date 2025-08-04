@@ -17,5 +17,5 @@
   "reMarkable desktop" = 1276493162;
 
   # social network
-  "X" = 333903271;
+  # "X" = 333903271;
 }
