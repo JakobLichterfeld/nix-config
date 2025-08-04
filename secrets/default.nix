@@ -20,6 +20,12 @@
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e hashedUserPasswordChristine.age
   };
 
+  age.secrets.linkwardenEnv = {
+    file = ./linkwardenEnv.age; # content is the linkwarden env file, so NEXTAUTH_SECRET=<secret> and optional POSTGRES_PASSWORD=<pass>
+    # to generate the NEXTAUTH_SECRET, you can use `openssl rand -base64 32`
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e linkwardenEnv.age
+  };
+
   age.secrets.resticPassword = {
     file = ./resticPassword.age; # content is the restic password
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e resticPassword.age

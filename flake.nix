@@ -81,6 +81,13 @@
       url = "github:vincentkenny01/spotblock?shallow=1";
       flake = false;
     };
+
+    # Linkwarden, as PR is not yet merged
+    # Todo(JakobLichterfeld): remove once the PR is merged: https://github.com/NixOS/nixpkgs/pull/347353
+    linkwarden-pr = {
+      url = "github:NixOS/nixpkgs/f0809e9f3402644c0987842727cb1d3f93d2e4a6?shallow=1";
+      flake = false;
+    };
   };
 
   outputs =
@@ -215,6 +222,58 @@
             };
             modules = [
               ./homelab
+              # Linkwarden, as PR is not yet merged
+              # Todo(JakobLichterfeld): remove once the PR is merged: https://github.com/NixOS/nixpkgs/pull/347353
+              "${inputs.linkwarden-pr}/nixos/modules/services/web-apps/linkwarden.nix"
+              (
+                { config, pkgs, ... }:
+                {
+                  nixpkgs.overlays = [
+                    # Overlay for patched prisma from the PR
+                    (final: prev: {
+                      prisma = import "${inputs.linkwarden-pr}/pkgs/by-name/pr/prisma/package.nix" {
+                        inherit (prev)
+                          lib
+                          fetchFromGitHub
+                          stdenv
+                          nodejs
+                          pnpm_9
+                          prisma-engines
+                          jq
+                          makeWrapper
+                          moreutils
+                          callPackage
+                          ;
+                      };
+                    })
+                    # Overlay for linkwarden with localFontPatch
+                    (final: prev: {
+                      linkwarden = import "${inputs.linkwarden-pr}/pkgs/by-name/li/linkwarden/package.nix" {
+                        inherit (prev)
+                          lib
+                          stdenvNoCC
+                          buildNpmPackage
+                          fetchFromGitHub
+                          fetchYarnDeps
+                          makeWrapper
+                          nixosTests
+                          yarnConfigHook
+                          fetchpatch
+
+                          bash
+                          monolith
+                          nodejs
+                          openssl
+                          google-fonts
+                          playwright-driver
+                          prisma
+                          prisma-engines
+                          ;
+                      };
+                    })
+                  ];
+                }
+              )
 
               ./machines/nixos/_common
               ./machines/nixos/MainServer

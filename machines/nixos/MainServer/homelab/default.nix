@@ -190,6 +190,8 @@ in
         ];
       };
 
+      linkwarden.enable = true;
+
       ntfy-sh.enable = true;
 
       owntracks-recorder.enable = true;

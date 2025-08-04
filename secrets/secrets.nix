@@ -21,6 +21,7 @@ in
   "dnsApiCredentials.age".publicKeys = allKeys;
   "hashedUserPassword.age".publicKeys = serverAndJakob;
   "hashedUserPasswordChristine.age".publicKeys = serverAndChristine;
+  "linkwardenEnv.age".publicKeys = allKeys;
   "resticPassword.age".publicKeys = allKeys;
   "s3StorageEnv.age".publicKeys = allKeys;
   "sambaPassword.age".publicKeys = serverAndJakob;
