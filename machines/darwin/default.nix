@@ -124,7 +124,7 @@ in
       # Figma
       { path = "/Applications/Figma.app/"; }
       # App Store
-      { path = "/System/Applications/App Store.app/"; }
+      # { path = "/System/Applications/App Store.app/"; }
       # Applite
       # { path = "/Applications/Applite.app/"; }
       # System Settings
