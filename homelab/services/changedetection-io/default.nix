@@ -37,7 +37,7 @@ in
     };
     homepage.description = lib.mkOption {
       type = lib.types.str;
-      default = "website change detection";
+      default = "Website change detection";
     };
     homepage.icon = lib.mkOption {
       type = lib.types.str;
