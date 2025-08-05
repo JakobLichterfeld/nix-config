@@ -206,6 +206,7 @@ in
           {
             Services = {
               header = true;
+              icon = "mdi-tools";
               style = "column";
             };
           }
