@@ -133,6 +133,14 @@ in
           }
           {
             category = "Mobile";
+            name = "Localsend Web";
+            description = "Service to seamless share clipboard, files, notifications";
+            icon = "https://play-lh.googleusercontent.com/t2xwoWAJPoIHZlYiw82J31fZl40kj962j5DVHohn-Pgn7ZiuoXCl-2_NMyMERa7cCFw=w240-h480-rw";
+            href = "https://web.localsend.org";
+            siteMonitor = "https://web.localsend.org";
+          }
+          {
+            category = "Mobile";
             name = "WhatsApp Web";
             description = "Quickly send and receive WhatsApp messages right from your browser";
             icon = "whatsapp";
