@@ -24,16 +24,16 @@ in
       type = lib.types.listOf lib.types.str;
       default = [
         # "Arr"
-        # "Media"
         # "Downloads"
+        # "Media"
         # "Network"
         "Tesla"
-        "Other Devices"
-        "Mobile"
         "Services"
+        "Smart Home"
+        "Mobile"
+        "Other Devices"
         # "System"
         # "Health Checks"
-        "Smart Home"
         "External Services"
       ];
       description = "Categories to group services on the homepage.";
@@ -204,9 +204,15 @@ in
             };
           }
           {
-            "Other Devices" = {
+            Services = {
               header = true;
-              icon = "mdi-devices";
+              style = "column";
+            };
+          }
+          {
+            "Smart Home" = {
+              header = true;
+              icon = "mdi-home-automation";
               style = "column";
             };
           }
@@ -218,11 +224,14 @@ in
             };
           }
           {
-            Services = {
+            "Other Devices" = {
               header = true;
+              icon = "mdi-devices";
               style = "column";
+              initiallyCollapsed = true;
             };
           }
+
           # {
           #   System = {
           #     header = true;
@@ -238,13 +247,6 @@ in
           #     style = "column";
           #   };
           # }
-          {
-            "Smart Home" = {
-              header = true;
-              icon = "mdi-home-automation";
-              style = "column";
-            };
-          }
           {
             "External Services" = {
               header = true;
