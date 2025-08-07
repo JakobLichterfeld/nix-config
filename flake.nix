@@ -130,13 +130,13 @@
               nixpkgs.overlays =
                 [
                 ];
-              #home.homeDirectory = nixpkgs-darwin.lib.mkForce "/Users/jakob";
+              #home.homeDirectory = nixpkgs-darwin-unstable.lib.mkForce "/Users/jakob";
               shell = pkgs.zsh;
 
               imports = [
                 inputs.nix-index-database.homeModules.nix-index
                 inputs.agenix.homeManagerModules.default
-                inputs.nixpkgs-darwin
+                inputs.nixpkgs-darwin-unstable
                 ./users/jakob/dots.nix
               ];
             };
@@ -146,7 +146,7 @@
       };
     in
     {
-      darwinConfigurations."MainDev" = inputs.nix-darwin.lib.darwinSystem {
+      darwinConfigurations."MainDev" = inputs.nix-darwin-unstable.lib.darwinSystem {
         system = "aarch64-darwin";
         specialArgs = {
           inherit inputs;
@@ -176,9 +176,9 @@
 
           # Users
           { system.primaryUser = "jakob"; }
-          inputs.home-manager-darwin.darwinModules.home-manager
-          (inputs.nixpkgs-darwin.lib.attrsets.recursiveUpdate (homeManagerCfg true [ ]) {
-            home-manager.users.jakob.home.homeDirectory = inputs.nixpkgs-darwin.lib.mkForce "/Users/jakob";
+          inputs.home-manager-darwin-unstable.darwinModules.home-manager
+          (inputs.nixpkgs-darwin-unstable.lib.attrsets.recursiveUpdate (homeManagerCfg true [ ]) {
+            home-manager.users.jakob.home.homeDirectory = inputs.nixpkgs-darwin-unstable.lib.mkForce "/Users/jakob";
             home-manager.users.jakob.home.stateVersion = "25.05";
             home-manager.users.jakob.imports = [
               agenix.homeManagerModules.default
