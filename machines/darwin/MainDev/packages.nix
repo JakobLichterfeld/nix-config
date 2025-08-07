@@ -38,6 +38,7 @@ with pkgs;
   nodePackages.prettier
   nodePackages.npm # globally install npm
   nodejs
+  yarn
 
   # infrastructure
   ansible
