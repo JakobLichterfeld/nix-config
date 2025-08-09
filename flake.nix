@@ -73,7 +73,7 @@
     deploy-rs.url = "github:serokell/deploy-rs?shallow=1";
 
     teslamate = {
-      url = "github:teslamate-org/teslamate?rev=92b504bf405b7238b13231869b6ef73c7564f520"; # v2.1.0
+      url = "github:teslamate-org/teslamate?rev=5ecb4868cf87d6cd1bed28536b58aa4edff1f503"; # v2.1.0 with Grafana fixes
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -83,7 +83,7 @@
     };
 
     # Linkwarden, as PR is not yet merged
-    # Todo(JakobLichterfeld): remove once the PR is merged: https://github.com/NixOS/nixpkgs/pull/347353
+    # TODO(JakobLichterfeld): remove once the PR is merged: https://github.com/NixOS/nixpkgs/pull/347353
     linkwarden-pr = {
       url = "github:NixOS/nixpkgs/f0809e9f3402644c0987842727cb1d3f93d2e4a6?shallow=1";
       flake = false;
@@ -223,7 +223,7 @@
             modules = [
               ./homelab
               # Linkwarden, as PR is not yet merged
-              # Todo(JakobLichterfeld): remove once the PR is merged: https://github.com/NixOS/nixpkgs/pull/347353
+              # TODO(JakobLichterfeld): remove once the PR is merged: https://github.com/NixOS/nixpkgs/pull/347353
               "${inputs.linkwarden-pr}/nixos/modules/services/web-apps/linkwarden.nix"
               (
                 { config, pkgs, ... }:

@@ -86,7 +86,7 @@ in
       settings = {
         ports = {
           dns = "0.0.0.0:53"; # Port for incoming DNS Queries.
-          http = "localhost:${toString cfg.listenPort}"; # Port(s) and optional bind ip address(es) to serve HTTP used for prometheus metrics, pprof, REST API, DNS-over-HTTPS (DoH) requests via: https://host:port/dns-query
+          http = "127.0.0.1:${toString cfg.listenPort}"; # Port(s) and optional bind ip address(es) to serve HTTP used for prometheus metrics, pprof, REST API, DNS-over-HTTPS (DoH) requests via: https://host:port/dns-query
           tls = "0.0.0.0:${toString cfg.listenPortDoT}"; # Port(s) and optional bind ip address(es) to serve DNS-over-TLS (DoT) requests via: host:port
         };
         # Path to the ACME certificate and key files for DNS-over-TLS (DoT) and DNS-over-HTTPS (DoH).
