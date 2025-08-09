@@ -9,7 +9,9 @@ let
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
   serviceSubService = "alertmanager";
+  serviceSubServiceTwo = "grafana";
   cfgSubService = config.homelab.services.${serviceSubService};
+  cfgSubServiceTwo = config.homelab.services.${serviceSubServiceTwo};
 in
 {
   options.homelab.services.${service} = {
@@ -130,6 +132,7 @@ in
     };
   };
 
+  # Alertmanager
   options.homelab.services.${serviceSubService} = {
     # used for automatic generation of the service entry in the homepage
     enable = lib.mkEnableOption {
@@ -154,6 +157,38 @@ in
     homepage.icon = lib.mkOption {
       type = lib.types.str;
       default = "alertmanager.svg";
+    };
+    homepage.category = lib.mkOption {
+      type = lib.types.str;
+      default = "Services";
+    };
+  };
+
+  # Grafana
+  options.homelab.services.${serviceSubServiceTwo} = {
+    # used for automatic generation of the service entry in the homepage
+    enable = lib.mkEnableOption {
+      description = "Enable ${serviceSubServiceTwo}";
+    };
+    url = lib.mkOption {
+      type = lib.types.str;
+      default = "${serviceSubServiceTwo}.${homelab.baseDomain}";
+    };
+    listenPort = lib.mkOption {
+      type = lib.types.int;
+      default = 3000;
+    };
+    homepage.name = lib.mkOption {
+      type = lib.types.str;
+      default = "Grafana";
+    };
+    homepage.description = lib.mkOption {
+      type = lib.types.str;
+      default = "Data visualization.";
+    };
+    homepage.icon = lib.mkOption {
+      type = lib.types.str;
+      default = "grafana.svg";
     };
     homepage.category = lib.mkOption {
       type = lib.types.str;
@@ -956,6 +991,34 @@ in
           );
       };
 
+    # If Grafana is enabled, configure it to use Prometheus and Loki as a data source and add dashboards
+    services.grafana = lib.mkIf config.services.grafana.enable {
+      provision = {
+        enable = true;
+        datasources.settings.datasources =
+          [
+            {
+              name = "Prometheus";
+              type = "prometheus";
+              id = "prometheus";
+              access = "proxy";
+              url = "http://127.0.0.1:${toString config.services.prometheus.port}";
+            }
+          ];
+        dashboards.settings.providers = [
+          {
+            name = "Prometheus";
+            folder = "Prometheus";
+            type = "file";
+            # disableDeletion = false;
+            # allowUiUpdates = true;
+            # updateIntervalSeconds = 86400;
+            options.path = lib.sources.sourceFilesBySuffices ./grafana-dashboards [ ".json" ];
+          }
+        ];
+      };
+    };
+
     # Prometheus
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
@@ -969,6 +1032,14 @@ in
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
         reverse_proxy http://127.0.0.1:${toString cfgSubService.listenPort}
+      '';
+    };
+
+    # Grafana
+    services.caddy.virtualHosts."${cfgSubServiceTwo.url}" = lib.mkIf config.services.grafana.enable {
+      useACMEHost = homelab.baseDomain;
+      extraConfig = ''
+        reverse_proxy http://${toString config.services.grafana.settings.server.http_addr}:${toString config.services.grafana.settings.server.http_port}
       '';
     };
   };
