@@ -11,6 +11,7 @@
   { name = "firebase-cli"; }
   { name = "tabbyml/tabby/tabby"; } # TabbyML: Self-hosted AI coding assistant
   { name = "ollama"; } # Ollama: Local LLM inference
+  { name = "gemini-cli"; }
 
   # Encryption and security tools
   { name = "ophcrack"; }
