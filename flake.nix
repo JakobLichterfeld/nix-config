@@ -284,6 +284,7 @@
               ./modules/email
               ./modules/deadman-ping
               ./modules/tg-notify
+              ./modules/nvme-thermal-management
               ./modules/mover
 
               secrets/default.nix

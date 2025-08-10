@@ -162,6 +162,12 @@ in
     nvme-cli # Command line interface for NVMe devices
   ];
 
+  services.nvme-thermal-management = {
+    enable = true;
+    thermalThresholdLower = 110; # Set TMT1 to 110°C, as this is the minimum allowed value for lower limit by this NVMe drive
+    thermalThresholdUpper = 118; # Set TMT2 to 118°C, as this is the minimum allowed value for upper limit by this NVMe drive
+  };
+
   services.deadman-ping = {
     enable = true;
     credentialsFile = config.age.secrets.deadmanPingEnvMainServer.path;
