@@ -176,7 +176,9 @@ in
               inhibitsSleep = true; # Prevents the system from sleeping during backup
               user = "root"; # User to run the backup as, default is root, this ensures the backup has access to all files
               pruneOpts = [
-                "--keep-last 5"
+                "--keep-daily 7"
+                "--keep-weekly 4"
+                "--keep-monthly 6"
               ];
               exclude =
                 [
@@ -191,7 +193,6 @@ in
                 preBackupCommandsToStopServicesAndStartAfter
                 + ''
                   ${restic} stats || ${restic} init
-                  ${pkgs.restic}/bin/restic forget --prune --no-cache --keep-last 5
                   ${pkgs.gnutar}/bin/tar -cf /tmp/appdata-local-${config.networking.hostName}.tar --ignore-failed-read ${allStateDirs}
                   ${restic} unlock
                 '';
@@ -216,7 +217,9 @@ in
                 inhibitsSleep = true; # Prevents the system from sleeping during backup
                 user = "root"; # User to run the backup as, default is root, this ensures the backup has access to all files
                 pruneOpts = [
-                  "--keep-last 3"
+                  "--keep-daily 7"
+                  "--keep-weekly 4"
+                  "--keep-monthly 3"
                 ];
                 exclude =
                   [
@@ -231,7 +234,6 @@ in
                   preBackupCommandsToStopServicesAndStartAfter
                   + ''
                     ${restic} stats || ${restic} init
-                    ${pkgs.restic}/bin/restic forget --prune --no-cache --keep-last 3
                     ${pkgs.gnutar}/bin/tar -cf /tmp/appdata-s3-${config.networking.hostName}.tar --ignore-failed-read ${allStateDirs}
                     ${restic} unlock
                   '';
