@@ -9,7 +9,7 @@ let
   service = "teslamate";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
-  serviceSubService = "teslamate_grafana";
+  serviceSubService = "teslamate-grafana";
   cfgSubService = config.homelab.services.${serviceSubService};
 in
 {
@@ -27,7 +27,7 @@ in
     };
     homepage.name = lib.mkOption {
       type = lib.types.str;
-      default = "${service}";
+      default = "TeslaMate";
     };
     homepage.description = lib.mkOption {
       type = lib.types.str;
@@ -97,7 +97,7 @@ in
     };
     homepage.name = lib.mkOption {
       type = lib.types.str;
-      default = "${serviceSubService}";
+      default = "TeslaMate Grafana";
     };
     homepage.description = lib.mkOption {
       type = lib.types.str;
@@ -168,7 +168,7 @@ in
     # DATA_SOURCE_NAME=postgres://${cfg.postgres.user}:${DATABASE_PASS}@${cfg.postgres.host}:${cfg.listenPortPostgres}/${cfg.postgres.database}?sslmode=disable
     services.prometheus.exporters.postgres.dataSourceName = "$DATA_SOURCE_NAME"; # as the eventsub is not implemented for this exporter, we must use the complete data source name
 
-    homelab.services.teslamate_grafana = {
+    homelab.services.${serviceSubService} = {
       enable = true;
       listenPort = homelab.services.teslamate.listenPortGrafana;
     };
