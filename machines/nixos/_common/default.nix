@@ -89,6 +89,10 @@
 
   # homelab.motd.enable = true;
 
+  # Firmware updates
+  # to search for available updates, run `fwupdmgr refresh` and `sudo fwupdmgr get-updates`
+  services.fwupd.enable = true;
+
   environment.systemPackages = with pkgs; [
     wget
     iperf3
