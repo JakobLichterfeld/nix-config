@@ -55,7 +55,7 @@ in
     };
     homepage.name = lib.mkOption {
       type = lib.types.str;
-      default = "${service}";
+      default = "Linkwarden";
     };
     homepage.description = lib.mkOption {
       type = lib.types.str;
