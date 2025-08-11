@@ -41,7 +41,7 @@ in
     };
     homepage.name = lib.mkOption {
       type = lib.types.str;
-      default = "${service}";
+      default = "Syncthing";
     };
     homepage.description = lib.mkOption {
       type = lib.types.str;
