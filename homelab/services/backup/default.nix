@@ -254,7 +254,7 @@ in
                 pruneOpts = [
                   "--keep-daily 7"
                   "--keep-weekly 4"
-                  # "--keep-monthly 3"
+                  "--keep-monthly 3"
                 ];
                 exclude =
                   [
