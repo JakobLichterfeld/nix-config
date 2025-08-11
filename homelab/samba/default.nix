@@ -112,6 +112,12 @@ in
                 }
               '';
             };
+
+            managePermissions = lib.mkOption {
+              type = lib.types.bool;
+              description = "Whether to manage filesystem permissions for this share with tmpfiles.d";
+              default = true;
+            };
           };
         }
       );
@@ -136,10 +142,13 @@ in
 
     # set correct access right on filesystem level, creating directories if they do not exist
     systemd.tmpfiles.rules = lib.flatten (
-      lib.attrsets.mapAttrsToList (_: x: [
-        "z ${x.path} 0770 ${x.filesystemOwner} ${x.filesystemGroup} - -"
-        "d ${x.path} 0770 ${x.filesystemOwner} ${x.filesystemGroup} - -"
-      ]) cfg.shares
+      lib.attrsets.mapAttrsToList (
+        _: x:
+        lib.lists.optionals x.managePermissions [
+          "z ${x.path} 0770 ${x.filesystemOwner} ${x.filesystemGroup} - -"
+          "d ${x.path} 0770 ${x.filesystemOwner} ${x.filesystemGroup} - -"
+        ]
+      ) cfg.shares
     );
 
     # create samba users with corresponding passwords

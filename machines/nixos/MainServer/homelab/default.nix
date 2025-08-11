@@ -76,6 +76,16 @@ in
           filesystemGroup = "christine";
           validUsers = "@christine";
         };
+        # Paperless Import Share
+        "Paperless-Import" = {
+          path = config.homelab.services.paperless.consumptionDir;
+          managePermissions = false; # Let the paperless module handle permissions
+          validUsers = "@users"; # Allow all users to access the import share
+          extraOptions = {
+            "guest ok" = "yes";
+            "writable" = "yes";
+          };
+        };
       };
     };
     services = {
