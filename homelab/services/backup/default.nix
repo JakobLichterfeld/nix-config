@@ -25,6 +25,11 @@ in
       description = "Directory containing the persistent state data to back up, in this case the database dumps";
       default = "/var/backup";
     };
+    paperless.enable = lib.mkOption {
+      type = lib.types.bool;
+      description = "Enable backups for Paperless documents to S3";
+      default = hl.services.paperless.enable;
+    };
     passwordFile = lib.mkOption {
       description = "File with password to the Restic repository";
       type = lib.types.path;
@@ -162,7 +167,7 @@ in
           lib.attrsets.optionalAttrs cfg.local.enable {
             appdata-local = {
               timerConfig = {
-                OnCalendar = "*-*-* 04:00:00"; # "Mon..Sat *-*-* 04:00:00";
+                OnCalendar = "*-*-* 04:00:00"; # or "Mon..Sat *-*-* 04:00:00";
                 Persistent = true;
               };
               repository = "rest:http://localhost:${toString cfg.local.listenPort}/appdata-local-${config.networking.hostName}";
@@ -201,7 +206,7 @@ in
               in
               {
                 timerConfig = {
-                  OnCalendar = "*-*-* 04:30:00"; # "Sun *-*-* 04:30:00";
+                  OnCalendar = "*-*-* 04:30:00"; # or "Sun *-*-* 04:30:00";
                   Persistent = true;
                 };
                 environmentFile = cfg.s3.environmentFile;
@@ -233,6 +238,45 @@ in
               };
             # restore via: `restic-appdata-s3 restore latest`
             # to only test the S3 backup, you can run: `restic-appdata-s3 restore latest --target /tmp/restic-s3-test`
+          }
+          // lib.attrsets.optionalAttrs (cfg.s3.enable && cfg.paperless.enable) {
+            paperless-s3 =
+              let
+                backupFolder = "paperless-${config.networking.hostName}";
+              in
+              {
+                timerConfig = {
+                  OnCalendar = "*-*-* 05:00:00"; # or "Sun *-*-* 05:00:00";
+                  Persistent = true;
+                };
+                environmentFile = cfg.s3.environmentFile;
+                repository = "s3:${cfg.s3.url}/${backupFolder}";
+                initialize = true;
+                passwordFile = cfg.passwordFile;
+                inhibitsSleep = true; # Prevents the system from sleeping during backup
+                user = "root"; # User to run the backup as, default is root, this ensures the backup has access to all files
+                pruneOpts = [
+                  "--keep-daily 7"
+                  "--keep-weekly 4"
+                  # "--keep-monthly 3"
+                ];
+                exclude =
+                  [
+                  ];
+                paths = [
+                  hl.services.paperless.mediaDir
+                ];
+                backupPrepareCommand =
+                  let
+                    restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.paperless-s3.repository}' -p ${cfg.passwordFile}";
+                  in
+                  ''
+                    ${restic} stats || ${restic} init
+                    ${restic} unlock
+                  '';
+              };
+            # restore via: `restic-paperless-s3 restore latest`
+            # to only test the paperless-S3 backup, you can run: `restic-paperless-s3 restore latest --target /tmp/restic-paperless-s3-test`
           };
       };
     };
