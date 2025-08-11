@@ -84,6 +84,29 @@ in
         name: value: value ? stateDir && value ? enable && value.enable
       ) hl.services;
 
+      # read the 'servicesToManage' lists from all enabled services
+      # and merge them into a single flat list.
+      serviceNamesToManage = lib.flatten (
+        lib.attrsets.mapAttrsToList (
+          name: value:
+          if (value ? "backup" && value.backup ? "servicesToManage" && value.enable) then
+            value.backup.servicesToManage
+          else
+            [ ]
+        ) hl.services
+      );
+      servicesToStopBeforeBackupAndStartAfterBackupStr = lib.concatStringsSep " " serviceNamesToManage;
+
+      # Commands to stop and start services
+      stopServicesCmd = "systemctl stop ${servicesToStopBeforeBackupAndStartAfterBackupStr}";
+      startServicesCmd = "systemctl start ${servicesToStopBeforeBackupAndStartAfterBackupStr}";
+      trapCmd = "trap '${startServicesCmd}' EXIT";
+
+      preBackupCommandsToStopServicesAndStartAfter = lib.optionalString (serviceNamesToManage != [ ]) ''
+        ${stopServicesCmd}
+        ${trapCmd}
+      '';
+
       stateDirsList = lib.attrsets.mapAttrsToList (
         name: value: lib.attrsets.attrByPath [ name "stateDir" ] false enabledServicesWithStateDir
       ) enabledServicesWithStateDir;
@@ -160,7 +183,8 @@ in
                 let
                   restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-local.repository}' -p ${cfg.passwordFile}";
                 in
-                ''
+                preBackupCommandsToStopServicesAndStartAfter
+                + ''
                   ${restic} stats || ${restic} init
                   ${pkgs.restic}/bin/restic forget --prune --no-cache --keep-last 5
                   ${pkgs.gnutar}/bin/tar -cf /tmp/appdata-local-${config.networking.hostName}.tar --ignore-failed-read ${allStateDirs}
@@ -199,7 +223,8 @@ in
                   let
                     restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-s3.repository}' -p ${cfg.passwordFile}";
                   in
-                  ''
+                  preBackupCommandsToStopServicesAndStartAfter
+                  + ''
                     ${restic} stats || ${restic} init
                     ${pkgs.restic}/bin/restic forget --prune --no-cache --keep-last 3
                     ${pkgs.gnutar}/bin/tar -cf /tmp/appdata-s3-${config.networking.hostName}.tar --ignore-failed-read ${allStateDirs}

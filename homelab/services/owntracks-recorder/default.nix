@@ -19,6 +19,14 @@ in
       description = "Directory containing the persistent state data to back up";
       default = "/var/lib/owntracks-recorder";
     };
+    backup.servicesToManage = lib.mkOption {
+      type = with lib.types; listOf str;
+      default = [ "${service}.service" ];
+      description = ''
+        A list of systemd service names to stop before a backup and start afterwards.
+        Defaults to the service name itself.
+      '';
+    };
     url = lib.mkOption {
       type = lib.types.str;
       default = "owntracks.${homelab.baseDomain}";

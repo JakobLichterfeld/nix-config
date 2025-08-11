@@ -19,6 +19,14 @@ in
       description = "Directory containing the persistent state data to back up";
       default = "/var/lib/syncthing";
     };
+    backup.servicesToManage = lib.mkOption {
+      type = with lib.types; listOf str;
+      default = [ "${service}.service" ];
+      description = ''
+        A list of systemd service names to stop before a backup and start afterwards.
+        Defaults to the service name itself.
+      '';
+    };
     dataDir = lib.mkOption {
       type = lib.types.str;
       default = "${homelab.mounts.fast}/Syncthing";
