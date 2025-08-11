@@ -204,6 +204,8 @@ in
 
       owntracks-recorder.enable = true;
 
+      paperless.enable = true;
+
       prometheus = {
         enable = true;
         telegramCredentialsFile = config.age.secrets.telegramCredentials.path;

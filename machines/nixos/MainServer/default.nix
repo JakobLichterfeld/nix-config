@@ -135,10 +135,14 @@ in
     # user = config.homelab.user;
     # group = config.homelab.group;
     percentageFree = 60;
-    excludedPaths = [
-      ".DS_Store"
-      ".cache"
-    ];
+    excludedPaths =
+      [
+        ".DS_Store"
+        ".cache"
+      ]
+      ++ lib.lists.optionals config.homelab.services.paperless.enable [
+        config.homelab.services.paperless.consumptionDir
+      ];
   };
 
   powerManagement = {

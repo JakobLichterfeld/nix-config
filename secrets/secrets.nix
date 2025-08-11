@@ -22,6 +22,8 @@ in
   "hashedUserPassword.age".publicKeys = serverAndJakob;
   "hashedUserPasswordChristine.age".publicKeys = serverAndChristine;
   "linkwardenEnv.age".publicKeys = allKeys;
+  "paperlessEnv.age".publicKeys = allKeys;
+  "paperlessPassword.age".publicKeys = allKeys;
   "resticPassword.age".publicKeys = allKeys;
   "s3StorageEnv.age".publicKeys = allKeys;
   "sambaPassword.age".publicKeys = serverAndJakob;

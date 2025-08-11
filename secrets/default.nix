@@ -26,6 +26,16 @@
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e linkwardenEnv.age
   };
 
+  age.secrets.paperlessEnv = {
+    file = ./paperlessEnv.age; # content is the paperless env file, so PAPERLESS_SECRET_KEY=<secret>
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e paperlessEnv.age
+  };
+
+  age.secrets.paperlessPassword = {
+    file = ./paperlessPassword.age; # content is the paperless admin password to the Paperless-ngx web interface
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e paperlessPassword.age
+  };
+
   age.secrets.resticPassword = {
     file = ./resticPassword.age; # content is the restic password
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e resticPassword.age

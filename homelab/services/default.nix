@@ -120,6 +120,7 @@ in
     ./linkwarden
     ./ntfy-sh
     ./owntracks-recorder
+    ./paperless-ngx
     ./prometheus
     ./stirling-pdf
     ./syncthing
