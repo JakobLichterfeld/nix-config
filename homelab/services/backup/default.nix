@@ -183,9 +183,7 @@ in
               exclude =
                 [
                 ];
-              paths = [
-                "/tmp/appdata-local-${config.networking.hostName}.tar"
-              ];
+              paths = allStateDirsList;
               backupPrepareCommand =
                 let
                   restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-local.repository}' -p ${cfg.passwordFile}";
@@ -193,7 +191,6 @@ in
                 preBackupCommandsToStopServicesAndStartAfter
                 + ''
                   ${restic} stats || ${restic} init
-                  ${pkgs.gnutar}/bin/tar -cf /tmp/appdata-local-${config.networking.hostName}.tar --ignore-failed-read ${allStateDirs}
                   ${restic} unlock
                 '';
             };
@@ -224,9 +221,7 @@ in
                 exclude =
                   [
                   ];
-                paths = [
-                  "/tmp/appdata-s3-${config.networking.hostName}.tar"
-                ];
+                paths = allStateDirsList;
                 backupPrepareCommand =
                   let
                     restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-s3.repository}' -p ${cfg.passwordFile}";
@@ -234,7 +229,6 @@ in
                   preBackupCommandsToStopServicesAndStartAfter
                   + ''
                     ${restic} stats || ${restic} init
-                    ${pkgs.gnutar}/bin/tar -cf /tmp/appdata-s3-${config.networking.hostName}.tar --ignore-failed-read ${allStateDirs}
                     ${restic} unlock
                   '';
               };
