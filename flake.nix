@@ -355,11 +355,12 @@
               text = ''
                 set -e
 
-                echo "[1/2] Pulling latest config from Git..."
+                echo "[1/2] Pulling latest config from Git and rebase if needed..."
                 if [[ "$(uname)" != "Darwin" ]]; then
                   cd /etc/nixos
                 fi
-                git pull
+                # Use --rebase to maintain a clean, linear history, especially for config updates on target machines.
+                git pull --rebase
 
                 if [[ "$(uname)" == "Darwin" ]]; then
                   echo "[2/2] Rebuilding and switching macOS system..."
