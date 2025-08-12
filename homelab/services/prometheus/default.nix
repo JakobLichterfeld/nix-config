@@ -26,7 +26,7 @@ let
         backup = builtins.getAttr name resticBackups;
       in
       {
-        name = "restic-exporter-${name}";
+        name = "${name}";
         value = {
           port = cfg.listenPortResticExporterBase + i;
           repository = backup.repository;
