@@ -15,11 +15,6 @@ in
     enable = lib.mkEnableOption {
       description = "Enable backups for application state folders";
     };
-    state.enable = lib.mkOption {
-      description = "Enable backups for application state folders";
-      type = lib.types.bool;
-      default = false;
-    };
     stateDir = lib.mkOption {
       type = lib.types.path;
       description = "Directory containing the persistent state data to back up, in this case the database dumps";
@@ -85,9 +80,23 @@ in
   };
   config =
     let
-      enabledServicesWithStateDir = lib.attrsets.filterAttrs (
-        name: value: value ? stateDir && value ? enable && value.enable
+      enabledServices = lib.attrsets.filterAttrs (
+        name: value: value ? enable && value.enable
       ) hl.services;
+
+      enabledServicesWithStateDir = lib.attrsets.filterAttrs (
+        name: value: value ? stateDir
+      ) enabledServices;
+
+      enabledServicesWithAdditionalPathsToBackup = lib.attrsets.filterAttrs (
+        name: value: value ? "backup" && value.backup ? "additionalPathsToBackup"
+      ) enabledServices;
+
+      additionalPathsToBackup = lib.flatten (
+        lib.attrsets.mapAttrsToList (
+          name: value: value.backup.additionalPathsToBackup
+        ) enabledServicesWithAdditionalPathsToBackup
+      );
 
       # read the 'servicesToManage' lists from all enabled services
       # and merge them into a single flat list.
@@ -124,8 +133,8 @@ in
         #"/var/backup" # already included in stateDirs as homelab.services.backup.stateDir is set to /var/backup and is included in enabledServicesWithStateDir
       ];
 
-      allStateDirsList = stateDirsList ++ additionalStateDirs;
-      allStateDirs = lib.concatStringsSep " " allStateDirsList;
+      allStateDirsAndBackupPathsList = stateDirsList ++ additionalStateDirs ++ additionalPathsToBackup;
+      allStateDirsAndBackupPaths = lib.concatStringsSep " " allStateDirsAndBackupPathsList;
     in
     lib.mkIf (cfg.enable && enabledServicesWithStateDir != { }) {
       systemd.tmpfiles.rules = lib.lists.optionals cfg.local.enable [
@@ -183,7 +192,7 @@ in
               exclude =
                 [
                 ];
-              paths = allStateDirsList;
+              paths = allStateDirsAndBackupPathsList;
               backupPrepareCommand =
                 let
                   restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-local.repository}' -p ${cfg.passwordFile}";
@@ -221,7 +230,7 @@ in
                 exclude =
                   [
                   ];
-                paths = allStateDirsList;
+                paths = allStateDirsAndBackupPathsList;
                 backupPrepareCommand =
                   let
                     restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-s3.repository}' -p ${cfg.passwordFile}";
@@ -234,46 +243,8 @@ in
               };
             # restore via: `restic-appdata-s3 restore latest`
             # to only test the S3 backup, you can run: `restic-appdata-s3 restore latest --target /tmp/restic-s3-test`
-          }
-          // lib.attrsets.optionalAttrs (cfg.s3.enable && cfg.paperless.enable) {
-            paperless-s3 =
-              let
-                backupFolder = "paperless-${config.networking.hostName}";
-              in
-              {
-                timerConfig = {
-                  OnCalendar = "*-*-* 05:00:00"; # or "Sun *-*-* 05:00:00";
-                  Persistent = true;
-                };
-                environmentFile = cfg.s3.environmentFile;
-                repository = "s3:${cfg.s3.url}/${backupFolder}";
-                initialize = true;
-                passwordFile = cfg.passwordFile;
-                inhibitsSleep = true; # Prevents the system from sleeping during backup
-                user = "root"; # User to run the backup as, default is root, this ensures the backup has access to all files
-                pruneOpts = [
-                  "--keep-daily 7"
-                  "--keep-weekly 4"
-                  "--keep-monthly 3"
-                ];
-                exclude =
-                  [
-                  ];
-                paths = [
-                  hl.services.paperless.mediaDir
-                ];
-                backupPrepareCommand =
-                  let
-                    restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.paperless-s3.repository}' -p ${cfg.passwordFile}";
-                  in
-                  ''
-                    ${restic} stats || ${restic} init
-                    ${restic} unlock
-                  '';
-              };
-            # restore via: `restic-paperless-s3 restore latest`
-            # to only test the paperless-S3 backup, you can run: `restic-paperless-s3 restore latest --target /tmp/restic-paperless-s3-test`
           };
+
       };
     };
 }

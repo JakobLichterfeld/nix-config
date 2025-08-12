@@ -40,6 +40,10 @@ in
       This will be backed up via the 'config.homelab.services.backup' service.";
       default = "${homelab.mounts.merged}/Paperless/Documents";
     };
+    backup.additionalPathsToBackup = import ../../../lib/options/backupAdditionalPathsToBackup.nix {
+      inherit lib;
+      additionalPathsToBackup = [ cfg.mediaDir ];
+    };
     consumptionDir = lib.mkOption {
       type = lib.types.str;
       description = "Directory where documents are placed for Paperless-ngx to consume, so that they can be processed and indexed.
@@ -94,7 +98,6 @@ in
           (blackbox.mkHttpTarget "${service}" "${cfg.url}" "external")
         ];
     };
-
   };
   config = lib.mkIf cfg.enable {
     services.${service} = {
