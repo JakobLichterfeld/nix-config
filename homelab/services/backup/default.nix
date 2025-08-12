@@ -73,7 +73,7 @@ in
     prometheus.scrapeConfig = lib.mkOption {
       type = lib.types.attrs;
       default = {
-        job_name = "restic";
+        job_name = "rest server";
         metrics_path = "/metrics";
         static_configs = [
           {
@@ -160,7 +160,7 @@ in
           extraFlags = [
             "--no-auth"
           ];
-          # Enable Prometheus metrics at /metrics
+          # Enable rest server Prometheus metrics at /metrics
           prometheus = config.services.prometheus.enable;
         };
         backups =
