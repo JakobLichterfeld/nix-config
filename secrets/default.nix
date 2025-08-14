@@ -10,6 +10,11 @@
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e dnsApiCredentials.age
   };
 
+  age.secrets.fritzboxExporterEnv = {
+    file = ./fritzboxExporterEnv.age; # content is the fritzbox_exporter env file, so USERNAME='your FritzBox username goes here', PASSWORD='your FritzBox password goes here', GATEWAY_URL='http://<IP of your FritzBox>:49000', GATEWAY_LUAURL='http://<your FritzBox IP>'
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e fritzboxExporterEnv.age
+  };
+
   age.secrets.hashedUserPassword = {
     file = ./hashedUserPassword.age; # content is result of: `mkpasswd -m sha-512`
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e hashedUserPassword.age

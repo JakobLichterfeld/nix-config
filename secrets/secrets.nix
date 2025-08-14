@@ -19,6 +19,7 @@ in
 {
   "deadmanPingEnvMainServer.age".publicKeys = allKeys;
   "dnsApiCredentials.age".publicKeys = allKeys;
+  "fritzboxExporterEnv.age".publicKeys = allKeys;
   "hashedUserPassword.age".publicKeys = serverAndJakob;
   "hashedUserPasswordChristine.age".publicKeys = serverAndChristine;
   "linkwardenEnv.age".publicKeys = allKeys;

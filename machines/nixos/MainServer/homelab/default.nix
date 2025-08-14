@@ -218,6 +218,7 @@ in
 
       prometheus = {
         enable = true;
+        fritzboxExporter.enable = true;
         telegramCredentialsFile = config.age.secrets.telegramCredentials.path;
         telegramChatId = machinesSensitiveVars.MainServer.telegramChatId;
         blackbox.hostSpecificTargets =
