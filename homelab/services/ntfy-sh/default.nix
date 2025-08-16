@@ -46,7 +46,7 @@ in
     };
     homepage.category = lib.mkOption {
       type = lib.types.str;
-      default = "Services";
+      default = "System Services";
     };
 
     blackbox.targets = import ../../../lib/options/blackboxTargets.nix {

@@ -225,7 +225,7 @@ in
     };
     homepage.category = lib.mkOption {
       type = lib.types.str;
-      default = "Services";
+      default = "System Services";
     };
     blackbox.targets = import ../../../lib/options/blackboxTargets.nix {
       inherit lib;
@@ -279,7 +279,7 @@ in
     };
     homepage.name = lib.mkOption {
       type = lib.types.str;
-      default = "Alertmanager";
+      default = "Prometheus Alertmanager";
     };
     homepage.description = lib.mkOption {
       type = lib.types.str;
@@ -291,7 +291,7 @@ in
     };
     homepage.category = lib.mkOption {
       type = lib.types.str;
-      default = "Services";
+      default = "System Services";
     };
   };
 
@@ -323,7 +323,7 @@ in
     };
     homepage.category = lib.mkOption {
       type = lib.types.str;
-      default = "Services";
+      default = "System Services";
     };
   };
 

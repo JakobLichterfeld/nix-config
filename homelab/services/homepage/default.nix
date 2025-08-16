@@ -32,7 +32,7 @@ in
         "Smart Home"
         "Mobile"
         "Other Devices"
-        # "System"
+        "System Services"
         # "Health Checks"
         "External Services"
       ];
@@ -206,7 +206,7 @@ in
           {
             Services = {
               header = true;
-              icon = "mdi-tools";
+              icon = "mdi-desktop-classic";
               style = "column";
             };
           }
@@ -233,14 +233,15 @@ in
             };
           }
 
-          # {
-          #   System = {
-          #     header = true;
-          #     icon = "mdi-desktop-classic";
-          #     style = "column";
-          #     showStats = true;
-          #   };
-          # }
+          {
+            "System Services" = {
+              header = true;
+              icon = "mdi-tools";
+              style = "column";
+              showStats = true;
+              initiallyCollapsed = true;
+            };
+          }
           # {
           #   "Health Checks" = {
           #     header = true;
