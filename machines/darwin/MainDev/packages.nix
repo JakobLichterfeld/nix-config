@@ -27,6 +27,7 @@ with pkgs;
   devenv # Fast, Declarative, Reproducible, and Composable Developer Environments
   nil # Nix Language server: An incremental analysis assistant for writing in Nix
   bundletool # Tool for creating and managing Android App Bundles
+  fvm # Flutter Version Management: A simple CLI to manage Flutter SDK versions.
 
   # Python packages
   python313
