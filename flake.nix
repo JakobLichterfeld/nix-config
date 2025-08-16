@@ -73,7 +73,7 @@
     deploy-rs.url = "github:serokell/deploy-rs?shallow=1";
 
     teslamate = {
-      url = "github:teslamate-org/teslamate?rev=5ecb4868cf87d6cd1bed28536b58aa4edff1f503"; # v2.1.0 with Grafana fixes
+      url = "github:teslamate-org/teslamate?rev=73f12e84eea0163aad4fa691f25ce8322956aee1"; # v2.1.1
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
