@@ -51,7 +51,7 @@
 
       # Flutter
       # add flutter to path if using manual install
-      #export PATH="$PATH":"$HOME/development/flutter/bin"
+      #export PATH="$HOME/development/flutter/bin":"$PATH"
     '';
   };
 }
