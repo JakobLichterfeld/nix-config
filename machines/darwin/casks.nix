@@ -71,7 +71,7 @@
   { name = "spotube"; } # Open source Spotify client, via krtirtho/homebrew-apps
 
   # Video
-  { name = "vlc"; }
+  { name = "iina"; }
   { name = "obs"; }
 
   # Remote Desktop
