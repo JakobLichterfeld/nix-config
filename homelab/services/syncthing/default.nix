@@ -82,7 +82,10 @@ in
   config = lib.mkIf cfg.enable {
 
     # Create directories for Syncthing with the correct permissions and ownership.
-    systemd.tmpfiles.rules = [ "d ${cfg.stateDir} 0775 ${homelab.user} ${homelab.group} - -" ];
+    systemd.tmpfiles.rules = [
+      "d ${cfg.stateDir} 0770 ${homelab.user} ${homelab.group} - -"
+      "d ${cfg.dataDir} 0770 ${homelab.user} ${homelab.group} - -"
+    ];
 
     # Syncthing ports: 8384 for remote access to GUI
     # 22000 TCP and/or UDP for sync traffic
