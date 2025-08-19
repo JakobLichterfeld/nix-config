@@ -110,6 +110,19 @@ in
       overrideFolders = false;
       overrideDevices = false;
       extraFlags = [ "--no-default-folder" ]; # Don't create default ~/Sync folder
+      settings = {
+        gui = {
+          # wait till https://github.com/NixOS/nixpkgs/pull/290485 is merged, which will add guiPasswordFile module option
+          # user = "";
+          # password = ""; # Contains the bcrypt hash of the real password.
+          theme = "black";
+        };
+        options = {
+          urAccepted = -1; # do not submit anonymous usage data
+          autoUpgradeIntervalH = "0";
+          minHomeDiskFree = "5%";
+        };
+      };
     };
 
     services.caddy.virtualHosts."${cfg.url}" = {
