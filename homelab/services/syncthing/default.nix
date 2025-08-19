@@ -2,6 +2,7 @@
   config,
   lib,
   machinesSensitiveVars,
+  pkgsUnstable,
   ...
 }:
 let
@@ -101,6 +102,7 @@ in
     ];
     services.${service} = {
       enable = true;
+      package = pkgsUnstable.syncthing;
 
       group = homelab.group; # Group to run Syncthing as
       user = homelab.user; # User to run Syncthing as
@@ -112,7 +114,7 @@ in
       extraFlags = [ "--no-default-folder" ]; # Don't create default ~/Sync folder
       settings = {
         gui = {
-          # wait till https://github.com/NixOS/nixpkgs/pull/290485 is merged, which will add guiPasswordFile module option
+          # TODO: wait till https://github.com/NixOS/nixpkgs/pull/290485 is merged, which will add guiPasswordFile module option
           # user = "";
           # password = ""; # Contains the bcrypt hash of the real password.
           theme = "black";
