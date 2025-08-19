@@ -109,9 +109,8 @@ in
       guiAddress = "0.0.0.0:${toString cfg.listenPort}"; # Listen on all interfaces
       overrideFolders = false;
       overrideDevices = false;
+      extraFlags = [ "--no-default-folder" ]; # Don't create default ~/Sync folder
     };
-
-    systemd.services.syncthing.environment.STNODEFAULTFOLDER = "true"; # Don't create default ~/Sync folder
 
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
