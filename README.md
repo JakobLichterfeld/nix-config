@@ -1,5 +1,3 @@
-<!-- markdownlint-disable MD033 -->
-
 # nix-config
 
 Infrastructure as Code (IaC)
@@ -12,7 +10,9 @@ End of 2023 I migrated to Nix.
 
 [Hardware documentation](machines/nixos/MainServer/HARDWARE.md) | [System design documentation](machines/nixos/MainServer/design.md)
 
+<!-- markdownlint-disable MD033 -->
 <details><summary>Installation process</summary><p>
+<!-- markdownlint-enable MD033 -->
 
 Download [NixOS minimal ISO image](https://channels.nixos.org/nixos-25.05/latest-nixos-minimal-x86_64-linux.iso) copy it to a USB stick, using USBImager for example, see [creating bootable USB flash drive with a graphical tool](https://nixos.org/manual/nixos/stable/#sec-booting-from-usb).
 
@@ -116,7 +116,9 @@ reboot
 
 </p></details>
 
+<!-- markdownlint-disable MD033 -->
 <details><summary>Update to newest config</summary><p>
+<!-- markdownlint-enable MD033 -->
 
 ```bash
 sudo su
@@ -137,7 +139,9 @@ nix --experimental-features 'nix-command flakes' run .#pullAndSwitch
 
 Managed by `nix-darwin` and `home-manager`. Impure packages and applications are managed by `homebrew` and `mas`.
 
+<!-- markdownlint-disable MD033 -->
 <details><summary>Installation process</summary><p>
+<!-- markdownlint-enable MD033 -->
 
 [Make sure nix is installed](https://nixos.org/download#nix-install-macos)
 
