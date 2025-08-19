@@ -97,7 +97,7 @@ nixos-install \
 --flake "git+file:///mnt/etc/nixos#MainServer"
 ```
 
-Unmount the filesystems
+Unmount the file systems
 
 ```bash
 umount /mnt/boot/efis/nvme-FIKWOT_FN960_2TB_AA234330561-part3/
