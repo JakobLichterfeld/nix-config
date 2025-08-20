@@ -52,6 +52,9 @@
       # Flutter
       # add flutter to path if using manual install
       #export PATH="$HOME/development/flutter/bin":"$PATH"
+
+      # FVM Flutter Version Manger
+      export PATH="$HOME/fvm":"$PATH"
     '';
   };
 }
