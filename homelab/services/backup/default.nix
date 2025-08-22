@@ -50,6 +50,11 @@ in
         '''
       '';
     };
+    s3.useTarball = lib.mkOption {
+      description = "Whether to bundle all backup files into a single tarball before uploading. This drastically reduces the number of S3 API transactions, which is necessary for services with a low free transaction limit. The downside is less granular deduplication.";
+      default = true;
+      type = lib.types.bool;
+    };
     local.enable = lib.mkOption {
       description = "Enable local backups for application state directories";
       default = false;
@@ -210,6 +215,7 @@ in
             appdata-s3 =
               let
                 backupFolder = "appdata-${config.networking.hostName}";
+                tarballPath = "/tmp/appdata-s3-${config.networking.hostName}.tar";
               in
               {
                 timerConfig = {
@@ -230,7 +236,7 @@ in
                 exclude =
                   [
                   ];
-                paths = allStateDirsAndBackupPathsList;
+                paths = if cfg.s3.useTarball then [ tarballPath ] else allStateDirsAndBackupPathsList;
                 backupPrepareCommand =
                   let
                     restic = "${pkgs.restic}/bin/restic -r '${config.services.restic.backups.appdata-s3.repository}' -p ${cfg.passwordFile}";
@@ -238,8 +244,14 @@ in
                   preBackupCommandsToStopServicesAndStartAfter
                   + ''
                     ${restic} stats || ${restic} init
+                    ${lib.optionalString cfg.s3.useTarball ''
+                      ${pkgs.gnutar}/bin/tar -cf ${tarballPath} --ignore-failed-read ${allStateDirsAndBackupPaths}
+                    ''}
                     ${restic} unlock
                   '';
+                backupCleanupCommand = lib.optionalString cfg.s3.useTarball ''
+                  rm ${tarballPath}
+                '';
               };
             # restore via: `restic-appdata-s3 restore latest`
             # to only test the S3 backup, you can run: `restic-appdata-s3 restore latest --target /tmp/restic-s3-test`
