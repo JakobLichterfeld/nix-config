@@ -54,7 +54,7 @@
       #export PATH="$HOME/development/flutter/bin":"$PATH"
 
       # FVM Flutter Version Manger
-      export PATH="$HOME/fvm":"$PATH"
+      export PATH="$HOME/fvm/default/bin":"$PATH"
     '';
   };
 }
