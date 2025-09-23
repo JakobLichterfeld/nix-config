@@ -111,7 +111,6 @@ in
       guiAddress = "0.0.0.0:${toString cfg.listenPort}"; # Listen on all interfaces
       overrideFolders = false;
       overrideDevices = false;
-      extraFlags = [ "--no-default-folder" ]; # Don't create default ~/Sync folder
       settings = {
         gui = {
           # TODO: wait till https://github.com/NixOS/nixpkgs/pull/290485 is merged, which will add guiPasswordFile module option
