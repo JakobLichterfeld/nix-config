@@ -61,8 +61,8 @@ in
         src = fetchFromGitHub {
           owner = "sberk42";
           repo = "fritzbox_exporter";
-          rev = "305bfbafc57261c2a6497295ca24ffc325e0cdb1";
-          sha256 = "sha256-TtvHLyiC5GMVffuKl9iNBgiFDpr9cJ1j6zOW65OA/XM=";
+          rev = "f773cc96651f057c20b053f55a802590320aa0d0";
+          sha256 = "sha256-5znsUz9UtKulSEoxtQeyVljllzeIqaU47lzrTr2P+o0=";
         };
 
         vendorHash = "sha256-uPNVt/a4Dtu7/6hdvtKYFw/76V4KRZhSa21qk6RcVl4=";
