@@ -12,6 +12,7 @@
   { name = "tabbyml/tabby/tabby"; } # TabbyML: Self-hosted AI coding assistant
   { name = "ollama"; } # Ollama: Local LLM inference
   { name = "gemini-cli"; }
+  { name = "minify"; } # Go minifiers for web formats, tdewolff/minify
 
   # Encryption and security tools
   { name = "ophcrack"; }
