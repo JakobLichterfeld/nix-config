@@ -435,17 +435,17 @@
     "linkwarden-pr": {
       "flake": false,
       "locked": {
-        "lastModified": 1753180371,
-        "narHash": "sha256-twrzVKa9ylf1Y2q29913bvYIPineFcblu/252FMnMvs=",
+        "lastModified": 1759246671,
+        "narHash": "sha256-iO+dWCJKAeVRlTY2HOUm2Myo6CE2kqn4i0QxgK+LaSg=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "f0809e9f3402644c0987842727cb1d3f93d2e4a6",
+        "rev": "096e196f0ebfca516b8c271a710a33928abc60fb",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "f0809e9f3402644c0987842727cb1d3f93d2e4a6",
+        "rev": "096e196f0ebfca516b8c271a710a33928abc60fb",
         "type": "github"
       }
     },

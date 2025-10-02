@@ -85,7 +85,7 @@
     # Linkwarden, as PR is not yet merged
     # TODO(JakobLichterfeld): remove once the PR is merged: https://github.com/NixOS/nixpkgs/pull/347353
     linkwarden-pr = {
-      url = "github:NixOS/nixpkgs/f0809e9f3402644c0987842727cb1d3f93d2e4a6?shallow=1";
+      url = "github:NixOS/nixpkgs/096e196f0ebfca516b8c271a710a33928abc60fb?shallow=1";
       flake = false;
     };
   };
@@ -255,7 +255,7 @@
                           buildNpmPackage
                           fetchFromGitHub
                           fetchYarnDeps
-                          makeWrapper
+                          makeBinaryWrapper
                           nixosTests
                           yarnConfigHook
                           fetchpatch
