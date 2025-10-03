@@ -219,7 +219,7 @@ in
               in
               {
                 timerConfig = {
-                  OnCalendar = "Thu *-*-* 04:30:00"; # or "Sun *-*-* 04:30:00";
+                  OnCalendar = "*-*-* 04:30:00"; # or "Sun *-*-* 04:30:00";
                   Persistent = true;
                 };
                 environmentFile = cfg.s3.environmentFile;
