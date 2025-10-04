@@ -13,7 +13,7 @@
   { name = "zoom"; }
 
   # Development
-  { name = "dehesselle-meld"; } # Visual diff and merge tool
+  { name = "meld"; } # Visual diff and merge tool
 
   # Design Tools
   { name = "figma"; }
