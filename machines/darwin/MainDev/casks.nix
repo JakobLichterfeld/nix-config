@@ -9,7 +9,7 @@
   # { name = "flutter"; } # we currently use Flutter Version Management (FVM) to manage the global flutter version
   { name = "balenaetcher"; }
   { name = "orbstack"; } # Fast, light, powerful way to run containers
-  { name = "wireshark"; } # Network protocol analyzer
+  { name = "wireshark-app"; } # Network protocol analyzer
 
   # Hardware
   { name = "logitech-g-hub"; } # adjust Logitech Keyboard Lights
