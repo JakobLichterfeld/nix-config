@@ -52,7 +52,7 @@ in
     };
     s3.useTarball = lib.mkOption {
       description = "Whether to bundle all backup files into a single tarball before uploading. This drastically reduces the number of S3 API transactions, which is necessary for services with a low free transaction limit. The downside is less granular deduplication.";
-      default = true;
+      default = false;
       type = lib.types.bool;
     };
     local.enable = lib.mkOption {
