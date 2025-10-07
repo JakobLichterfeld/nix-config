@@ -51,12 +51,17 @@ let
       description = "Restic Exporter for ${name} repository";
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" ];
-      environment = {
-        LISTEN_ADDRESS = "0.0.0.0";
-        LISTEN_PORT = toString exporterConfig.port;
-        REFRESH_INTERVAL = toString 60;
-        RESTIC_CACHE_DIR = "$CACHE_DIRECTORY";
-      };
+      environment =
+        let
+          isS3 = lib.strings.hasPrefix "s3:" exporterConfig.repository;
+          refreshInterval = if isS3 then 43200 else 600; # 12h for S3 to reduce the number of S3 API transaction, 10min for others
+        in
+        {
+          LISTEN_ADDRESS = "0.0.0.0";
+          LISTEN_PORT = toString exporterConfig.port;
+          REFRESH_INTERVAL = toString refreshInterval;
+          RESTIC_CACHE_DIR = "$CACHE_DIRECTORY";
+        };
       script = ''
         export RESTIC_REPOSITORY=${
           if exporterConfig.repositoryFile != null then
