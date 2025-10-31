@@ -28,6 +28,7 @@ with pkgs;
   nil # Nix Language server: An incremental analysis assistant for writing in Nix
   bundletool # Tool for creating and managing Android App Bundles
   fvm # Flutter Version Management: A simple CLI to manage Flutter SDK versions.
+  koboldcpp # self-host LLMs; way to run various GGML and GGUF models.
 
   # Python packages
   python313
