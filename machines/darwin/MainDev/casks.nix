@@ -34,7 +34,7 @@
   { name = "tor-browser"; }
 
   # Image
-  { name = "digikam"; } # Photo management applicatio
+  { name = "digikam"; } # Photo management application
 
   # Other
   { name = "tradingview"; }
