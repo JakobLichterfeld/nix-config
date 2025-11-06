@@ -310,72 +310,92 @@
       # Update dependencies and switch
       # This is a shell script that updates the flake.lock file, commits it, pushes it to the remote repository, and then switches to the new configuration.
       # run with `nix run .#updateDependenciesAndSwitch`
-      apps = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (system: {
-        updateDependenciesAndSwitch =
-          let
-            pkgs = import nixpkgs { inherit system; };
-          in
-          let
-            app = pkgs.writeShellApplication {
-              name = "update-dependencies-and-switch";
-              text = ''
-                set -e
-
-                echo "[1/4] Updating flake.lock..."
-                nix --experimental-features 'nix-command flakes' flake update
-
-                echo "[2/4] Committing lockfile..."
-                git add flake.lock
-                git commit -m "chore: update flake.lock with new dependency revisions" || true
-
-                echo "[3/4] Pushing to remote..."
-                git push
-
-                if [[ "$(uname)" == "Darwin" ]]; then
-                  echo "[4/4] Switching to new config with nix-darwin..."
-                  sudo darwin-rebuild switch --flake .#
-                else
-                  echo "[4/4] Not running nix-darwin switch on non-macOS system."
-                fi
-              '';
-            };
-          in
-          {
-            type = "app";
-            program = "${app}/bin/update-dependencies-and-switch";
+      apps = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
+        system:
+        let
+          pkgs = import nixpkgs { inherit system; };
+          sudo-keep-alive-wrapper = pkgs.writeShellApplication {
+            name = "sudo-keep-alive-wrapper";
+            runtimeInputs = [ pkgs.bash ];
+            text = ''
+              #!/usr/bin/env bash
+              set -e
+              if [ "$#" -eq 0 ]; then
+                echo "Usage: $0 <command-to-run-with-sudo>" >&2
+                exit 1
+              fi
+              echo "Keeping sudo session alive for the duration of the command..."
+              sudo -v
+              while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+              SUDO_KEEPALIVE_PID=$!
+              trap 'kill "$SUDO_KEEPALIVE_PID"' EXIT
+              sudo "$@"
+              trap - EXIT
+              kill "$SUDO_KEEPALIVE_PID"
+            '';
           };
+        in
+        {
+          updateDependenciesAndSwitch =
+            let
+              app = pkgs.writeShellApplication {
+                name = "update-dependencies-and-switch";
+                text = ''
+                  set -e
 
-        pullAndSwitch =
-          let
-            pkgs = import nixpkgs { inherit system; };
-          in
-          let
-            app = pkgs.writeShellApplication {
-              name = "pull-and-switch";
-              text = ''
-                set -e
+                  echo "[1/4] Updating flake.lock..."
+                  nix --experimental-features 'nix-command flakes' flake update
 
-                echo "[1/2] Pulling latest config from Git and rebase if needed..."
-                if [[ "$(uname)" != "Darwin" ]]; then
-                  cd /etc/nixos
-                fi
-                # Use --rebase to maintain a clean, linear history, especially for config updates on target machines.
-                git pull --rebase
+                  echo "[2/4] Committing lockfile..."
+                  git add flake.lock
+                  git commit -m "chore: update flake.lock with new dependency revisions" || true
 
-                if [[ "$(uname)" == "Darwin" ]]; then
-                  echo "[2/2] Rebuilding and switching macOS system..."
-                  sudo darwin-rebuild switch --flake .#
-                else
-                  echo "[2/2] Rebuilding and switching Linux system..."
-                  nixos-rebuild switch --flake .#
-                fi
-              '';
+                  echo "[3/4] Pushing to remote..."
+                  git push
+
+                  if [[ "$(uname)" == "Darwin" ]]; then
+                    echo "[4/4] Switching to new config with nix-darwin..."
+                    ${sudo-keep-alive-wrapper}/bin/sudo-keep-alive-wrapper darwin-rebuild switch --flake .#
+                  else
+                    echo "[4/4] Not running nix-darwin switch on non-macOS system."
+                  fi
+                '';
+              };
+            in
+            {
+              type = "app";
+              program = "${app}/bin/update-dependencies-and-switch";
             };
-          in
-          {
-            type = "app";
-            program = "${app}/bin/pull-and-switch";
-          };
-      });
+
+          pullAndSwitch =
+            let
+              app = pkgs.writeShellApplication {
+                name = "pull-and-switch";
+                text = ''
+                  set -e
+
+                  echo "[1/2] Pulling latest config from Git and rebase if needed..."
+                  if [[ "$(uname)" != "Darwin" ]]; then
+                    cd /etc/nixos
+                  fi
+                  # Use --rebase to maintain a clean, linear history, especially for config updates on target machines.
+                  git pull --rebase
+
+                  if [[ "$(uname)" == "Darwin" ]]; then
+                    echo "[2/2] Rebuilding and switching macOS system..."
+                    ${sudo-keep-alive-wrapper}/bin/sudo-keep-alive-wrapper darwin-rebuild switch --flake .#
+                  else
+                    echo "[2/2] Rebuilding and switching Linux system..."
+                    nixos-rebuild switch --flake .#
+                  fi
+                '';
+              };
+            in
+            {
+              type = "app";
+              program = "${app}/bin/pull-and-switch";
+            };
+        }
+      );
     };
 }
