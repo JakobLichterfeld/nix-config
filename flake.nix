@@ -307,9 +307,7 @@
           };
         };
 
-      # Update dependencies and switch
-      # This is a shell script that updates the flake.lock file, commits it, pushes it to the remote repository, and then switches to the new configuration.
-      # run with `nix run .#updateDependenciesAndSwitch`
+      # Applications for managing this Nix configuration.
       apps = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
         system:
         let
@@ -336,29 +334,16 @@
           };
         in
         {
+          # Update dependencies and switch
+          # Update dependencies in flake.lock, commits it, pushes it to the remote repository, and then switches to the new configuration.
+          #  run with: `nix run .#updateDependenciesAndSwitch`
           updateDependenciesAndSwitch =
             let
               app = pkgs.writeShellApplication {
                 name = "update-dependencies-and-switch";
                 text = ''
-                  set -e
-
-                  echo "[1/4] Updating flake.lock..."
-                  nix --experimental-features 'nix-command flakes' flake update
-
-                  echo "[2/4] Committing lockfile..."
-                  git add flake.lock
-                  git commit -m "chore: update flake.lock with new dependency revisions" || true
-
-                  echo "[3/4] Pushing to remote..."
-                  git push
-
-                  if [[ "$(uname)" == "Darwin" ]]; then
-                    echo "[4/4] Switching to new config with nix-darwin..."
-                    ${sudo-keep-alive-wrapper}/bin/sudo-keep-alive-wrapper darwin-rebuild switch --flake .#
-                  else
-                    echo "[4/4] Not running nix-darwin switch on non-macOS system."
-                  fi
+                  export SUDO_WRAPPER="${sudo-keep-alive-wrapper}/bin/sudo-keep-alive-wrapper"
+                  ${builtins.readFile ./apps/update-dependencies-and-switch.sh}
                 '';
               };
             in
@@ -367,27 +352,16 @@
               program = "${app}/bin/update-dependencies-and-switch";
             };
 
+          # Pull and switch
+          # Pull the latest configuration from git (with rebase) and switch to it.
+          # Run with: `nix run .#pullAndSwitch`
           pullAndSwitch =
             let
               app = pkgs.writeShellApplication {
                 name = "pull-and-switch";
                 text = ''
-                  set -e
-
-                  echo "[1/2] Pulling latest config from Git and rebase if needed..."
-                  if [[ "$(uname)" != "Darwin" ]]; then
-                    cd /etc/nixos
-                  fi
-                  # Use --rebase to maintain a clean, linear history, especially for config updates on target machines.
-                  git pull --rebase
-
-                  if [[ "$(uname)" == "Darwin" ]]; then
-                    echo "[2/2] Rebuilding and switching macOS system..."
-                    ${sudo-keep-alive-wrapper}/bin/sudo-keep-alive-wrapper darwin-rebuild switch --flake .#
-                  else
-                    echo "[2/2] Rebuilding and switching Linux system..."
-                    nixos-rebuild switch --flake .#
-                  fi
+                  export SUDO_WRAPPER="${sudo-keep-alive-wrapper}/bin/sudo-keep-alive-wrapper"
+                  ${builtins.readFile ./apps/pull-and-switch.sh}
                 '';
               };
             in
