@@ -118,32 +118,6 @@
 
       manualSensitiveDarwin = import ./machines/darwin/manualSensitive.nix;
       manualSensitiveDarwinMainDev = import ./machines/darwin/MainDev/manualSensitive.nix;
-
-      homeManagerCfg = userPackages: extraImports: {
-        home-manager = {
-          useGlobalPkgs = false; # makes hm use nixos's pkgs value
-          useUserPackages = userPackages;
-          extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
-          users.jakob =
-            { config, pkgs, ... }:
-            {
-              nixpkgs.overlays =
-                [
-                ];
-              #home.homeDirectory = nixpkgs-darwin-unstable.lib.mkForce "/Users/jakob";
-              shell = pkgs.zsh;
-
-              imports = [
-                inputs.nix-index-database.homeModules.nix-index
-                inputs.agenix.homeManagerModules.default
-                inputs.nixpkgs-darwin-unstable
-                ./users/jakob/dots.nix
-              ];
-            };
-
-          backupFileExtension = "bak";
-        };
-      };
     in
     {
       darwinConfigurations."MainDev" = inputs.nix-darwin-unstable.lib.darwinSystem {
@@ -177,15 +151,18 @@
           # Users
           { system.primaryUser = "jakob"; }
           inputs.home-manager-darwin-unstable.darwinModules.home-manager
-          (inputs.nixpkgs-darwin-unstable.lib.attrsets.recursiveUpdate (homeManagerCfg true [ ]) {
-            home-manager.users.jakob.home.homeDirectory = inputs.nixpkgs-darwin-unstable.lib.mkForce "/Users/jakob";
-            home-manager.users.jakob.home.stateVersion = "25.05";
-            home-manager.users.jakob.imports = [
-              agenix.homeManagerModules.default
-              nix-index-database.homeModules.nix-index
-              ./users/jakob/dots.nix
-            ];
-          })
+          {
+            home-manager = {
+              useGlobalPkgs = false; # makes hm use nixos's pkgs value
+              useUserPackages = true;
+              extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
+              backupFileExtension = "bak";
+              users.jakob = {
+                imports = [ ./users/jakob/home.nix ];
+                home.homeDirectory = inputs.nixpkgs-darwin-unstable.lib.mkForce "/Users/jakob";
+              };
+            };
+          }
         ];
       };
 
@@ -294,14 +271,12 @@
               ./users/christine
               home-manager.nixosModules.home-manager
               {
-                home-manager.useGlobalPkgs = false;
-                home-manager.extraSpecialArgs = { inherit inputs; };
-                home-manager.users.jakob.imports = [
-                  agenix.homeManagerModules.default
-                  nix-index-database.homeModules.nix-index
-                  ./users/jakob/dots.nix
-                ];
-                home-manager.backupFileExtension = "bak";
+                home-manager = {
+                  useGlobalPkgs = false; # makes hm use nixos's pkgs value
+                  extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
+                  backupFileExtension = "bak";
+                  users.jakob.imports = [ ./users/jakob/home.nix ];
+                };
               }
             ];
           };
