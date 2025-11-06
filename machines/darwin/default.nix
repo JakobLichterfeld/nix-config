@@ -109,8 +109,8 @@ in
     dock.entries = [
       # Finder
       # { path = "/System/Applications/Finder.app/"; }
-      # Launchpad, removed in macOS Tahoe 26.0 as it is now part of Spotlight
-      # { path = "/System/Applications/Launchpad.app/"; }
+      # Show applications via Finder, as Launchpad has been removed in macOS Tahoe 26.0, as it is now part of Spotlight
+      { path = "/System/Applications"; }
       # Google Chrome
       { path = "/Applications/Google Chrome.app/"; }
       # Warp
