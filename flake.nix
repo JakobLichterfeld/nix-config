@@ -364,7 +364,7 @@
 
                 if [[ "$(uname)" == "Darwin" ]]; then
                   echo "[2/2] Rebuilding and switching macOS system..."
-                  sudo nix run nix-darwin -- switch --flake .#
+                  sudo darwin-rebuild switch --flake .#
                 else
                   echo "[2/2] Rebuilding and switching Linux system..."
                   nixos-rebuild switch --flake .#
