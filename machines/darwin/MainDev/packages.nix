@@ -34,6 +34,7 @@ with pkgs;
   python313
   python313Packages.virtualenv # globally install virtualenv
   python313Packages.pip # globally install pip
+  python313Packages.pillow # Friendly PIL fork (Python Imaging Library)
 
   # Node.js development tools
   nodePackages.nodemon
