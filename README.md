@@ -120,6 +120,18 @@ reboot
 <details><summary>Update to newest config</summary><p>
 <!-- markdownlint-enable MD033 -->
 
+### Recommended: Remote Deployment (from local machine)
+
+From your local machine (e.g., `MainDev`), run the `deployMainServer` app. This will build the configuration, copy it to the server, and activate it.
+
+```bash
+nix run .#deployMainServer
+```
+
+### Manual: On the Server
+
+Log into the server, pull the latest changes, and activate the configuration.
+
 ```bash
 sudo su
 cd /etc/nixos

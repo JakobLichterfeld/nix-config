@@ -169,14 +169,18 @@
       deploy.nodes = {
         MainServer = {
           hostname = machinesSensitiveVars.MainServer.ipAddress;
+          sshUser = machinesSensitiveVars.MainServer.sshUsername; # The user on the local machine to use for SSH connection to the deploy node.
           profiles.system = {
-            sshUser = machinesSensitiveVars.MainServer.username;
-            user = machinesSensitiveVars.MainServer.username;
+            user = machinesSensitiveVars.MainServer.adminUsername; # The user on the remote machine to deploy the configuration as.
             sshOpts = [
               "-p"
-              machinesSensitiveVars.MainServer.sshPort
+              (builtins.toString machinesSensitiveVars.MainServer.sshPort)
             ];
             remoteBuild = true;
+            interactiveSudo = false;
+            autoRollback = true;
+            magicRollback = true;
+            confirmTimeout = 60;
             path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.MainServer;
           };
         };
@@ -286,7 +290,14 @@
       apps = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ] (
         system:
         let
-          pkgs = import nixpkgs { inherit system; };
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [
+              (final: prev: {
+                deploy-rs = inputs.deploy-rs.packages.${prev.system}.deploy-rs; # overlay to get deploy-rs package from binary cache instead of building from source
+              })
+            ];
+          };
           sudo-keep-alive-wrapper = pkgs.writeShellApplication {
             name = "sudo-keep-alive-wrapper";
             runtimeInputs = [ pkgs.bash ];
@@ -325,6 +336,7 @@
             {
               type = "app";
               program = "${app}/bin/update-dependencies-and-switch";
+              meta.description = "Update dependencies in flake.lock, commits it, pushes it to the remote repository, and then switches to the new configuration.";
             };
 
           # Pull and switch
@@ -343,8 +355,33 @@
             {
               type = "app";
               program = "${app}/bin/pull-and-switch";
+              meta.description = "Pull the latest configuration from git (with rebase) and switch to it.";
+            };
+
+          # Deploy MainServer
+          # Deploys the MainServer configuration remotely using deploy-rs.
+          # Run with: `nix run .#deployMainServer`
+          deployMainServer =
+            let
+              app = pkgs.writeShellApplication {
+                name = "deploy-main-server";
+                runtimeInputs = [ pkgs.deploy-rs ];
+                text = ''
+                  #!/usr/bin/env bash
+                  set -e
+                  ${pkgs.deploy-rs}/bin/deploy .#MainServer
+                '';
+              };
+            in
+            {
+              type = "app";
+              program = "${app}/bin/deploy-main-server";
+              meta.description = "Deploy the MainServer configuration remotely using deploy-rs.";
             };
         }
       );
+
+      # depoly-rs checks
+      checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
     };
 }
