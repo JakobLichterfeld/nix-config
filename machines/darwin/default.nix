@@ -107,10 +107,16 @@ in
   local = {
     dock.enable = true;
     dock.entries = [
+      # position_options:
+      # --section [ apps | others ]                                   section of the dock to place the item in
+
+      # folder_options:
+      # --view [grid|fan|list|auto]                                   stack view option
+      # --display [folder|stack]                                      how to display a folder's icon
+      # --sort [name|dateadded|datemodified|datecreated|kind]         sets sorting option for a folder view
+
       # Finder
       # { path = "/System/Applications/Finder.app/"; }
-      # Show applications via Finder, as Launchpad has been removed in macOS Tahoe 26.0, as it is now part of Spotlight
-      { path = "/System/Applications"; }
       # Google Chrome
       { path = "/Applications/Google Chrome.app/"; }
       # Warp
@@ -147,6 +153,15 @@ in
       { path = "/Applications/ChatGPT.app/"; }
       # Telegram
       { path = "/Applications/Telegram.app/"; }
+
+      # others section
+
+      # Show applications via Finder, as Launchpad has been removed in macOS Tahoe 26.0, as it is now part of Spotlight
+      {
+        path = "/Applications/";
+        section = "others";
+        options = "--sort name --view grid --display stack";
+      }
       # Downloads
       {
         path = "/Users/${user}/Downloads/";
