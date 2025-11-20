@@ -222,8 +222,11 @@ in
         group = "owntracks";
       };
 
-      # Create directories for Owntracks-Recoder with the correct permissions and ownership.
-      systemd.tmpfiles.rules = [ "d ${cfg.stateDir} 0750 owntracks owntracks - -" ];
+      # Create directory for Owntracks-Recoder and enforce the correct permissions and ownership recursively.
+      systemd.tmpfiles.rules = [
+        "d ${cfg.stateDir} 0750 owntracks owntracks - -"
+        "Z ${cfg.stateDir} 0750 owntracks owntracks - -"
+      ];
 
       systemd.services."owntracks-recorder" = {
         description = "Store and access data published by OwnTracks apps";

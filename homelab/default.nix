@@ -95,11 +95,12 @@ in
       };
     };
 
-    # Create config directory with the correct permissions and ownership.
+    # Create config directory and enforce the correct permissions and ownership recursively.
     systemd.tmpfiles.rules = lib.mkBefore [
       "d /persist 0755 root root - -"
       "d /persist/opt 0755 root root - -"
       "d ${cfg.mounts.config} 0775 ${cfg.user} ${cfg.group} - -"
+      "Z ${cfg.mounts.config} 0775 ${cfg.user} ${cfg.group} - -"
     ];
   };
 }

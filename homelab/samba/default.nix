@@ -140,13 +140,13 @@ in
 
     environment.systemPackages = [ config.services.samba.package ];
 
-    # set correct access right on filesystem level, creating directories if they do not exist
+    # set correct access right on filesystem level and enforce the correct permissions and ownership recursively.
     systemd.tmpfiles.rules = lib.flatten (
       lib.attrsets.mapAttrsToList (
         _: x:
         lib.lists.optionals x.managePermissions [
-          "z ${x.path} 0770 ${x.filesystemOwner} ${x.filesystemGroup} - -"
           "d ${x.path} 0770 ${x.filesystemOwner} ${x.filesystemGroup} - -"
+          "Z ${x.path} 0770 ${x.filesystemOwner} ${x.filesystemGroup} - -"
         ]
       ) cfg.shares
     );
