@@ -161,7 +161,7 @@ in
             category = "Mobile";
             name = "AirDroid ${machinesSensitiveVars.MobileMainDev.name}";
             description = "Dateiübertragung und -verwaltung";
-            icon = "https://cdn.icon-icons.com/icons2/278/PNG/512/AirDroid_30195.png";
+            icon = "https://img-2-cdn.airdroid.com/assets/img/home/logo_airdroid_square-e472fb0a24.png";
             href = "https://${machinesSensitiveVars.MobileMainDev.ipAddress}:${toString machinesSensitiveVars.MobileMainDev.airDroidPort}";
             siteMonitor = "https://${machinesSensitiveVars.MobileMainDev.ipAddress}:${toString machinesSensitiveVars.MobileMainDev.airDroidPort}";
           }
@@ -169,7 +169,7 @@ in
             category = "Mobile";
             name = "AirDroid ${machinesSensitiveVars.MobileMainDevTablet.name}";
             description = "Dateiübertragung und -verwaltung";
-            icon = "https://cdn.icon-icons.com/icons2/278/PNG/512/AirDroid_30195.png";
+            icon = "https://img-2-cdn.airdroid.com/assets/img/home/logo_airdroid_square-e472fb0a24.png";
             href = "https://${machinesSensitiveVars.MobileMainDevTablet.ipAddress}:${toString machinesSensitiveVars.MobileMainDevTablet.airDroidPort}";
             siteMonitor = "https://${machinesSensitiveVars.MobileMainDevTablet.ipAddress}:${toString machinesSensitiveVars.MobileMainDevTablet.airDroidPort}";
           }
