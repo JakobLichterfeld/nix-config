@@ -433,23 +433,6 @@
         "type": "github"
       }
     },
-    "linkwarden-pr": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1759246671,
-        "narHash": "sha256-iO+dWCJKAeVRlTY2HOUm2Myo6CE2kqn4i0QxgK+LaSg=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "096e196f0ebfca516b8c271a710a33928abc60fb",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "096e196f0ebfca516b8c271a710a33928abc60fb",
-        "type": "github"
-      }
-    },
     "nix": {
       "inputs": {
         "flake-compat": [
@@ -685,7 +668,6 @@
         "homebrew-fuse": "homebrew-fuse",
         "homebrew-spotube": "homebrew-spotube",
         "homebrew-tabbyml": "homebrew-tabbyml",
-        "linkwarden-pr": "linkwarden-pr",
         "nix-darwin": "nix-darwin",
         "nix-darwin-unstable": "nix-darwin-unstable",
         "nix-homebrew": "nix-homebrew",

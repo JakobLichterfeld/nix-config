@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgsUnstable,
   ...
 }:
 let
@@ -85,6 +86,7 @@ in
   config = lib.mkIf cfg.enable {
     services.${service} = {
       enable = true;
+      package = pkgsUnstable.linkwarden;
       host = cfg.listenAddress;
       port = cfg.listenPort;
       database.port = cfg.database.port;
