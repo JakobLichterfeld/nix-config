@@ -197,6 +197,47 @@
             modules = [
               ./homelab
               "${inputs.nixpkgs-unstable}/nixos/modules/services/web-apps/linkwarden.nix"
+              # Use the unstable module for syncthing and provide it with a patched `lib`.
+              (
+                {
+                  config,
+                  options,
+                  lib,
+                  pkgs,
+                  inputs,
+                  specialArgs,
+                  ...
+                }:
+                let
+                  # Create a patched version of `lib` that includes the `cli` tools from unstable.
+                  # This is scoped and only visible to the unstable syncthing module below.
+                  unstablePkgs = import inputs.nixpkgs-unstable { system = pkgs.system; };
+                  patchedLib = lib // {
+                    cli = unstablePkgs.lib.cli;
+                  };
+
+                  # Path to the real module.
+                  unstableSyncthingModulePath = "${inputs.nixpkgs-unstable}/nixos/modules/services/networking/syncthing.nix";
+                in
+                {
+                  # 1. Disable the conflicting stable module.
+                  disabledModules = [ "services/networking/syncthing.nix" ];
+
+                  # 2. Import the unstable module, but manually call it with the patched `lib`
+                  # and all other original arguments.
+                  imports = [
+                    (import unstableSyncthingModulePath {
+                      inherit
+                        config
+                        options
+                        pkgs
+                        specialArgs
+                        ;
+                      lib = patchedLib;
+                    })
+                  ];
+                }
+              )
 
               ./machines/nixos/_common
               ./machines/nixos/MainServer
