@@ -30,6 +30,7 @@ in
   "sambaPassword.age".publicKeys = serverAndJakob;
   "sambaPasswordChristine.age".publicKeys = serverAndChristine;
   "smtpPassword.age".publicKeys = serverAndJakob;
+"syncthingGuiPassword.age".publicKeys = serverAndJakob;
   "tailscaleAuthKey.age".publicKeys = allKeys;
   "telegramCredentials.age".publicKeys = allKeys;
   "teslamateEnv.age".publicKeys = allKeys;

@@ -244,7 +244,10 @@ in
 
       stirling-pdf.enable = true;
 
-      syncthing.enable = true;
+      syncthing = {
+        enable = true;
+        guiPasswordFile = config.age.secrets.syncthingGuiPassword.path;
+      };
 
       teslamate.enable = true;
       teslamate-abrp.enable = true;

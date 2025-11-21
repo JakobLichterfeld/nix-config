@@ -66,6 +66,11 @@
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e smtpPassword.age
   };
 
+  age.secrets.syncthingGuiPassword = {
+    file = ./syncthingGuiPassword.age; # content is the plaintext password for Syncthing's GUI.
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e syncthingGuiPassword.age
+  };
+
   age.secrets.tailscaleAuthKey = {
     file = ./tailscaleAuthKey.age; # generate for max 90 day at https://login.tailscale.com/admin/settings/keys
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e tailscaleAuthKey.age

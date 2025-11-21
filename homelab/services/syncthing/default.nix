@@ -40,6 +40,16 @@ in
       type = lib.types.int;
       default = 8384;
     };
+    guiPasswordFile = lib.mkOption {
+      description = "Path to file containing the plaintext password for Syncthing's GUI.";
+      type = with lib.types; nullOr path;
+      default = null;
+      example = lib.literalExpression ''
+        pkgs.writeText "syncthingGuiPassword" '''
+          <your-gui-password>
+        '''
+      '';
+    };
     homepage.name = lib.mkOption {
       type = lib.types.str;
       default = "Syncthing";
@@ -113,11 +123,9 @@ in
       guiAddress = "0.0.0.0:${toString cfg.listenPort}"; # Listen on all interfaces
       overrideFolders = false;
       overrideDevices = false;
+      guiPasswordFile = lib.mkIf (cfg.guiPasswordFile != null) cfg.guiPasswordFile;
       settings = {
         gui = {
-          # TODO: wait till https://github.com/NixOS/nixpkgs/pull/290485 is merged, which will add guiPasswordFile module option
-          # user = "";
-          # password = ""; # Contains the bcrypt hash of the real password.
           theme = "black";
         };
         options = {
