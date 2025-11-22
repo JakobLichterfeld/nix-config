@@ -23,6 +23,7 @@ in
   "hashedUserPassword.age".publicKeys = serverAndJakob;
   "hashedUserPasswordChristine.age".publicKeys = serverAndChristine;
   "linkwardenEnv.age".publicKeys = allKeys;
+  "matomoCloudflared.age".publicKeys = serverAndJakob;
   "paperlessEnv.age".publicKeys = allKeys;
   "paperlessPassword.age".publicKeys = allKeys;
   "resticPassword.age".publicKeys = allKeys;
@@ -30,7 +31,7 @@ in
   "sambaPassword.age".publicKeys = serverAndJakob;
   "sambaPasswordChristine.age".publicKeys = serverAndChristine;
   "smtpPassword.age".publicKeys = serverAndJakob;
-"syncthingGuiPassword.age".publicKeys = serverAndJakob;
+  "syncthingGuiPassword.age".publicKeys = serverAndJakob;
   "tailscaleAuthKey.age".publicKeys = allKeys;
   "telegramCredentials.age".publicKeys = allKeys;
   "teslamateEnv.age".publicKeys = allKeys;

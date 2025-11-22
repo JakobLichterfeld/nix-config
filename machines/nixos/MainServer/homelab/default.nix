@@ -216,6 +216,16 @@ in
 
       # paperless.enable = true; # TODO(JakobLichterfeld): re-enable once the error "attribute 'nltkData' missing" is resolved
 
+      # professional
+      matomo = {
+        enable = true;
+        cloudflared = {
+          fqdn = "${machinesSensitiveVars.OperatingCompany.statsA.fqdn}";
+          tunnelId = "${machinesSensitiveVars.OperatingCompany.statsA.tunnelId}";
+          credentialsFile = config.age.secrets.matomoCloudflared.path;
+        };
+      };
+
       prometheus = {
         enable = true;
         fritzboxExporter.enable = true;

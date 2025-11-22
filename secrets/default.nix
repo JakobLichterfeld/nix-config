@@ -31,6 +31,16 @@
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e linkwardenEnv.age
   };
 
+  age.secrets.matomoCloudflared = {
+    file = ./matomoCloudflared.age;
+    # https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/tunnel-permissions/
+    # First get a Account certificat (cert.pem) by running:
+    # nix run nixpkgs#cloudflared -- tunnel login <the-token-you-see-in-dashboard>
+    # Then get the credentialsFile (<TUNNEL-UUID>.json) which is needed here:
+    # nix run nixpkgs#cloudflared -- tunnel create <tunnel-name>
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e matomoCloudflared.age
+  };
+
   age.secrets.paperlessEnv = {
     file = ./paperlessEnv.age; # content is the paperless env file, so PAPERLESS_SECRET_KEY=<secret>
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e paperlessEnv.age

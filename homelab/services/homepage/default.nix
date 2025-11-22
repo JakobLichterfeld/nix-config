@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  machinesSensitiveVars,
   ...
 }:
 let
@@ -32,6 +33,7 @@ in
         "Smart Home"
         "Mobile"
         "Other Devices"
+        "${machinesSensitiveVars.OperatingCompany.name}"
         "System Services"
         # "Health Checks"
         "External Services"
@@ -221,6 +223,13 @@ in
             Mobile = {
               header = true;
               icon = "si-oneplus";
+              style = "column";
+            };
+          }
+          {
+            "${machinesSensitiveVars.OperatingCompany.name}" = {
+              header = true;
+              icon = "mdi-domain";
               style = "column";
             };
           }
