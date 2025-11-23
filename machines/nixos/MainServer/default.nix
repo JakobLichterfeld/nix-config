@@ -29,6 +29,11 @@ in
     };
   };
   boot = {
+    kernel.sysctl = {
+      # increase the maximum send and the receive socket buffer size, see https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes#non-bsd
+      "net.core.rmem_max" = 7500000; # The maximum receive socket buffer size in bytes.
+      "net.core.wmem_max" = 7500000; # The maximum send socket buffer size in bytes
+    };
     zfs.forceImportRoot = true;
     kernelParams = [
       "consoleblank=60"

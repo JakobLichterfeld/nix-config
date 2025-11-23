@@ -121,6 +121,7 @@ in
     ./ntfy-sh
     ./owntracks-recorder
     ./paperless-ngx
+    ./professional/matomo
     ./prometheus
     ./stirling-pdf
     ./syncthing
