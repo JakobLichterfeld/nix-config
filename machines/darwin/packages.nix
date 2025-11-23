@@ -44,6 +44,7 @@ with pkgs;
   # Image
   exiv2 # Image metadata manipulation tool
   graphicsmagick # Image processing tools collection
+  imagemagick # Software suite to create, edit, compose, or convert bitmap images
   jhead # JPEG Exif header manipulation tool
   jpegoptim # Utility to optimize/compress JPEG files
 
