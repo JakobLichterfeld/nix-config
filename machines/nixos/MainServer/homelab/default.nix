@@ -219,6 +219,8 @@ in
       # professional
       matomo = {
         enable = true;
+        enableConsole = true;
+        homepage.category = "${machinesSensitiveVars.OperatingCompany.name}";
         cloudflared = {
           fqdn = "${machinesSensitiveVars.OperatingCompany.statsA.fqdn}";
           tunnelId = "${machinesSensitiveVars.OperatingCompany.statsA.tunnelId}";
