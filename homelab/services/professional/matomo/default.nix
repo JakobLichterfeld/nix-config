@@ -31,7 +31,7 @@ in
     apiHostName = lib.mkOption {
       type = lib.types.str;
       description = "Internal hostname for the Matomo API endpoint, primarily used by the Cloudflare Tunnel.";
-      default = "matomo-api.${homelab.baseDomain}";
+      default = "matomo-api.internal";
     };
     homepage.name = lib.mkOption {
       type = lib.types.str;
@@ -163,13 +163,25 @@ in
       };
 
       # only API endpoint for cloudflared access
-      services.caddy.virtualHosts."${cfg.apiHostName}" = {
+      services.caddy.virtualHosts."http://${cfg.apiHostName}" = {
         extraConfig = ''
+          # Set the web root to the Matomo package directory so Caddy can find the files
+          root * ${config.services.matomo.package}/share
+
+          # Unset the X-Forwarded-Host header. Matomo would otherwise prioritize
+          # this header, see it's not a trusted host, and issue a redirect.
+          header -X-Forwarded-Host
+
           # Rewrite all paths to matomo.php to only expose the API endpoint for the cloudflared tunnel
           rewrite * /matomo.php
 
           # FastCGI settings
-          php_fastcgi unix/${config.services.phpfpm.pools.matomo.socket}
+          # We explicitly set the HTTP_HOST for PHP to the main, trusted URL.
+          # This prevents Matomo from redirecting to its primary hostname.
+          php_fastcgi unix/${config.services.phpfpm.pools.matomo.socket} {
+            env HTTP_HOST ${cfg.url}
+            env SERVER_NAME ${cfg.url}
+          }
         '';
       };
 
@@ -182,7 +194,7 @@ in
             default = "http_status:404"; # All requests that do not comply with one of the following rules will be blocked.
             ingress = {
               "${cfg.cloudflared.fqdn}" = {
-                service = "http://${cfg.apiHostName}";
+                service = "http://localhost";
                 originRequest = {
                   httpHostHeader = "${cfg.apiHostName}";
                 };
