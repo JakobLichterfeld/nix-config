@@ -78,7 +78,7 @@ in
         in
         [
           (blackbox.mkHttpTarget "${service}" "${cfg.url}" "external")
-          (blackbox.mkHttpTarget "${service}" "${cfg.cloudflared.fqdn}" "external")
+          (blackbox.mkHttpTarget "${service}" "${cfg.cloudflared.fqdn}/healthz" "external")
         ];
     };
   };
@@ -203,13 +203,22 @@ in
       # only API endpoint for cloudflared access
       services.caddy.virtualHosts."http://${cfg.apiHostName}" = {
         extraConfig = ''
-          # Set the web root to the Matomo package directory so Caddy can find the files
+          # Health check endpoint that bypasses Matomo
+          @healthz path /healthz
+          respond @healthz "OK" 200
+
+          # Disallow all crawlers
+          @robots path /robots.txt
+          respond @robots "User-agent: *\nDisallow: /\n" 200
+
+          # Set the web root for all other requests to the Matomo package directory so Caddy can find the files
           root * ${config.services.matomo.package}/share
 
-          # Rewrite all paths to matomo.php to only expose the API endpoint for the cloudflared tunnel
-          rewrite * /matomo.php
+          # Rewrite all other paths to matomo.php to only expose the API endpoint for the cloudflared tunnel
+          @not_healthz not path /healthz /robots.txt
+          rewrite @not_healthz /matomo.php
 
-          # FastCGI settings
+          # FastCGI settings for the rewritten paths
           php_fastcgi unix/${config.services.phpfpm.pools.matomo.socket}
         '';
       };
