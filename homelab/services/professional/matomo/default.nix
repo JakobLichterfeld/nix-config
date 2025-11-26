@@ -92,6 +92,44 @@ in
         periodicArchiveProcessing = true; # Enable periodic archive processing, which generates aggregated reports from the visits.
       };
 
+      # Update Matomo Config
+      systemd.services.matomo-setup-update.postStart = ''
+        config_file="/var/lib/matomo/config/config.ini.php"
+
+        # Add trusted_hosts entry for the Cloudflare FQDN
+        trusted_host_line='trusted_hosts[] = "${cfg.cloudflared.fqdn}"'
+        if ! grep -qF -- "$trusted_host_line" "$config_file"; then
+          # Use `echo` and `r /dev/stdin` for robust insertion of the variable's value
+          echo "$trusted_host_line" | sed -i '/\[General\]/r /dev/stdin' "$config_file"
+        fi
+
+        # Ensure HTTP_X_FORWARDED_FOR is present
+        proxy_xff_line='proxy_client_headers[] = "HTTP_X_FORWARDED_FOR"'
+        if ! grep -qF -- "$proxy_xff_line" "$config_file"; then
+          echo "$proxy_xff_line" | sed -i '/\[General\]/r /dev/stdin' "$config_file"
+        fi
+
+        # Ensure HTTP_CF_CONNECTING_IP is present and comes after HTTP_X_FORWARDED_FOR
+        proxy_cf_line='proxy_client_headers[] = "HTTP_CF_CONNECTING_IP"'
+        if ! grep -qF -- "$proxy_cf_line" "$config_file"; then
+          # Check if XFF is already there (or was just added)
+          if grep -qF -- "$proxy_xff_line" "$config_file"; then
+            # Use grep -n to get the line number and sed with the line number to append.
+            # This is more robust than using a variable with regex metacharacters in a sed address.
+            line_num=$(grep -nF -- "$proxy_xff_line" "$config_file" | cut -d: -f1)
+            if [ -n "$line_num" ]; then
+              echo "$proxy_cf_line" | sed -i "$line_num r /dev/stdin" "$config_file"
+            else
+              # Fallback just in case grep fails unexpectedly after succeeding before
+              echo "$proxy_cf_line" | sed -i '/\[General\]/r /dev/stdin' "$config_file"
+            fi
+          else
+            # Fallback: if XFF isn't there, add CF after [General].
+            echo "$proxy_cf_line" | sed -i '/\[General\]/r /dev/stdin' "$config_file"
+          fi
+        fi
+      '';
+
       # enable mySQL database, as the service does not configure it by itself
       # https://matomo.org/faq/how-to-install/faq_55/
       # PostgreSQL is not "yet" supported, see https://github.com/matomo-org/matomo/issues/500
@@ -168,20 +206,11 @@ in
           # Set the web root to the Matomo package directory so Caddy can find the files
           root * ${config.services.matomo.package}/share
 
-          # Unset the X-Forwarded-Host header. Matomo would otherwise prioritize
-          # this header, see it's not a trusted host, and issue a redirect.
-          header -X-Forwarded-Host
-
           # Rewrite all paths to matomo.php to only expose the API endpoint for the cloudflared tunnel
           rewrite * /matomo.php
 
           # FastCGI settings
-          # We explicitly set the HTTP_HOST for PHP to the main, trusted URL.
-          # This prevents Matomo from redirecting to its primary hostname.
-          php_fastcgi unix/${config.services.phpfpm.pools.matomo.socket} {
-            env HTTP_HOST ${cfg.url}
-            env SERVER_NAME ${cfg.url}
-          }
+          php_fastcgi unix/${config.services.phpfpm.pools.matomo.socket}
         '';
       };
 
