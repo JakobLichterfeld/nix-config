@@ -8,7 +8,7 @@ let
   service = "teslamate-telegram-bot";
   cfg = config.homelab.services.teslamate-telegram-bot;
   homelab = config.homelab;
-  teslamate-telegram-bot-version = "0.7.8";
+  teslamate-telegram-bot-version = "0.7.9";
 in
 {
   options.homelab.services.${service} = {
