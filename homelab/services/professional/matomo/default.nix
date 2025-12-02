@@ -97,7 +97,7 @@ in
         (pkgs.writeShellScript "matomo-config-update" ''
           set -e
           CONFIG_FILE="/var/lib/matomo/config/config.ini.php"
-          FQDN="${cfg.cloudflared.fqdn}"
+
 
           # Exit if the config file doesn't exist.
           if [ ! -f "$CONFIG_FILE" ]; then
@@ -108,19 +108,52 @@ in
           # Create a temporary file containing a cleaned version of the config,
           # without the lines we intend to manage. This is safer than in-place sed.
           CLEAN_CONFIG=$(mktemp)
-          grep -vF 'trusted_hosts[] = "'"$FQDN"'"' "$CONFIG_FILE" \
-          | grep -vF 'proxy_client_headers[] = "HTTP_CF_CONNECTING_IP"' \
-          | grep -vF 'proxy_client_headers[] = "HTTP_X_FORWARDED_FOR"' \
+
+          # Ensure temp files are cleaned up on exit
+          trap 'rm -f "$CLEAN_CONFIG" "$FINAL_CONFIG"' EXIT
+
+          # Create a clean version of the config without our managed lines.
+          # We use `grep -vE` to match keys regardless of their value, making the script robust.
+          grep -vE '^\s*host\s*=' "$CONFIG_FILE" \
+          | grep -vE '^\s*username\s*=' \
+          | grep -vE '^\s*dbname\s*=' \
+          | grep -vE '^\s*tables_prefix\s*=' \
+          | grep -vE '^\s*schema\s*=' \
+          | grep -vE '^\s*charset\s*=' \
+          | grep -vE '^\s*collation\s*=' \
+          \
+          | grep -vE '^\s*proxy_client_headers\[\]\s*=' \
+          | grep -vE '^\s*trusted_hosts\[\]\s*=' \
           > "$CLEAN_CONFIG"
 
-          # Create the final config file by reading the clean config and using awk
-          # to insert our managed lines in the correct order under the [General] section.
           FINAL_CONFIG=$(mktemp)
-          ${pkgs.gawk}/bin/awk -v fqdn="$FQDN" '
+
+          # Use awk to build the correct final config
+          ${pkgs.gawk}/bin/awk -v fqdn="${cfg.cloudflared.fqdn}" -v url="${cfg.url}" \
+                -v db_host="localhost" \
+                -v db_username="matomo" \
+                -v db_name="matomo" \
+                -v db_prefix="matomo_" \
+                -v db_schema="Mariadb" \
+                -v db_charset="utf8mb4" \
+                -v db_collation="utf8mb4_general_ci" '
             { print } # Print the current line from the clean config
+
+            # --- Insert lines for [database] section ---
+            /^\[database\]/ {
+              print "host = \"" db_host "\""
+              print "username = \"" db_username "\""
+              print "dbname = \"" db_name "\""
+              print "tables_prefix = \"" db_prefix "\""
+              print "schema = \"" db_schema "\""
+              print "charset = \"" db_charset "\""
+              print "collation = \"" db_collation "\""
+            }
+
+            # --- Insert lines for [General] section ---
             /^\[General\]/ {
-              # After printing the [General] line, print our managed lines
               print "trusted_hosts[] = \"" fqdn "\""
+              print "trusted_hosts[] = \"" url "\""
               print "proxy_client_headers[] = \"HTTP_CF_CONNECTING_IP\""
               print "proxy_client_headers[] = \"HTTP_X_FORWARDED_FOR\""
             }
@@ -132,9 +165,6 @@ in
           # Correct the ownership and permissions to match what Matomo expects
           chown ${config.services.phpfpm.pools.matomo.user}:${config.services.phpfpm.pools.matomo.group} "$CONFIG_FILE"
           chmod 660 "$CONFIG_FILE"
-
-          # Clean up the temporary file
-          rm "$CLEAN_CONFIG"
         '').outPath;
 
       # enable mySQL database, as the service does not configure it by itself
