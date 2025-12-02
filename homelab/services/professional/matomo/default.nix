@@ -93,42 +93,49 @@ in
       };
 
       # Update Matomo Config
-      systemd.services.matomo-setup-update.postStart = ''
-        config_file="/var/lib/matomo/config/config.ini.php"
+      systemd.services.matomo-setup-update.postStart =
+        (pkgs.writeShellScript "matomo-config-update" ''
+          set -e
+          CONFIG_FILE="/var/lib/matomo/config/config.ini.php"
+          FQDN="${cfg.cloudflared.fqdn}"
 
-        # Add trusted_hosts entry for the Cloudflare FQDN
-        trusted_host_line='trusted_hosts[] = "${cfg.cloudflared.fqdn}"'
-        if ! grep -qF -- "$trusted_host_line" "$config_file"; then
-          # Use `echo` and `r /dev/stdin` for robust insertion of the variable's value
-          echo "$trusted_host_line" | sed -i '/\[General\]/r /dev/stdin' "$config_file"
-        fi
-
-        # Ensure HTTP_X_FORWARDED_FOR is present
-        proxy_xff_line='proxy_client_headers[] = "HTTP_X_FORWARDED_FOR"'
-        if ! grep -qF -- "$proxy_xff_line" "$config_file"; then
-          echo "$proxy_xff_line" | sed -i '/\[General\]/r /dev/stdin' "$config_file"
-        fi
-
-        # Ensure HTTP_CF_CONNECTING_IP is present and comes after HTTP_X_FORWARDED_FOR
-        proxy_cf_line='proxy_client_headers[] = "HTTP_CF_CONNECTING_IP"'
-        if ! grep -qF -- "$proxy_cf_line" "$config_file"; then
-          # Check if XFF is already there (or was just added)
-          if grep -qF -- "$proxy_xff_line" "$config_file"; then
-            # Use grep -n to get the line number and sed with the line number to append.
-            # This is more robust than using a variable with regex metacharacters in a sed address.
-            line_num=$(grep -nF -- "$proxy_xff_line" "$config_file" | cut -d: -f1)
-            if [ -n "$line_num" ]; then
-              echo "$proxy_cf_line" | sed -i "$line_num r /dev/stdin" "$config_file"
-            else
-              # Fallback just in case grep fails unexpectedly after succeeding before
-              echo "$proxy_cf_line" | sed -i '/\[General\]/r /dev/stdin' "$config_file"
-            fi
-          else
-            # Fallback: if XFF isn't there, add CF after [General].
-            echo "$proxy_cf_line" | sed -i '/\[General\]/r /dev/stdin' "$config_file"
+          # Exit if the config file doesn't exist.
+          if [ ! -f "$CONFIG_FILE" ]; then
+            echo "Matomo config file not found at $CONFIG_FILE, skipping update."
+            exit 0
           fi
-        fi
-      '';
+
+          # Create a temporary file containing a cleaned version of the config,
+          # without the lines we intend to manage. This is safer than in-place sed.
+          CLEAN_CONFIG=$(mktemp)
+          grep -vF 'trusted_hosts[] = "'"$FQDN"'"' "$CONFIG_FILE" \
+          | grep -vF 'proxy_client_headers[] = "HTTP_CF_CONNECTING_IP"' \
+          | grep -vF 'proxy_client_headers[] = "HTTP_X_FORWARDED_FOR"' \
+          > "$CLEAN_CONFIG"
+
+          # Create the final config file by reading the clean config and using awk
+          # to insert our managed lines in the correct order under the [General] section.
+          FINAL_CONFIG=$(mktemp)
+          ${pkgs.gawk}/bin/awk -v fqdn="$FQDN" '
+            { print } # Print the current line from the clean config
+            /^\[General\]/ {
+              # After printing the [General] line, print our managed lines
+              print "trusted_hosts[] = \"" fqdn "\""
+              print "proxy_client_headers[] = \"HTTP_CF_CONNECTING_IP\""
+              print "proxy_client_headers[] = \"HTTP_X_FORWARDED_FOR\""
+            }
+          ' "$CLEAN_CONFIG" > "$FINAL_CONFIG"
+
+          # Atomically replace the original config file with the corrected version
+          mv "$FINAL_CONFIG" "$CONFIG_FILE"
+
+          # Correct the ownership and permissions to match what Matomo expects
+          chown ${config.services.phpfpm.pools.matomo.user}:${config.services.phpfpm.pools.matomo.group} "$CONFIG_FILE"
+          chmod 660 "$CONFIG_FILE"
+
+          # Clean up the temporary file
+          rm "$CLEAN_CONFIG"
+        '').outPath;
 
       # enable mySQL database, as the service does not configure it by itself
       # https://matomo.org/faq/how-to-install/faq_55/
