@@ -112,7 +112,7 @@ in
       22000
       21027
     ];
-    services.${service} = {
+    services.syncthing = {
       enable = true;
       package = pkgsUnstable.syncthing;
 
@@ -134,6 +134,13 @@ in
           minHomeDiskFree = "5%";
         };
       };
+    };
+
+    # Set HOME environment variable for Syncthing service to dataDir
+    # This correctly resolves the tilde `~` path in the UI, so other devices can
+    # share folders with this instance correctly
+    systemd.services.syncthing.serviceConfig = {
+      Environment = "HOME=${cfg.dataDir}";
     };
 
     services.caddy.virtualHosts."${cfg.url}" = {
