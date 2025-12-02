@@ -61,11 +61,11 @@ in
         src = fetchFromGitHub {
           owner = "sberk42";
           repo = "fritzbox_exporter";
-          rev = "f773cc96651f057c20b053f55a802590320aa0d0";
-          sha256 = "sha256-5znsUz9UtKulSEoxtQeyVljllzeIqaU47lzrTr2P+o0=";
+          rev = "b61ea2bc17626994ed319a5640d408c0cc9c0061";
+          sha256 = "sha256-vXpWcEgi3YFeANMO1aezcHvYo0fvEkdwEJ1TJEeo+3c=";
         };
 
-        vendorHash = "sha256-uPNVt/a4Dtu7/6hdvtKYFw/76V4KRZhSa21qk6RcVl4=";
+        vendorHash = "sha256-kI1P0sDp+tKtQe6apqbQzgRj/6pJ4ncEuQlZ8Cmix1w=";
 
         meta = with lib; {
           description = "Fritz!Box Upnp statistics exporter for prometheus";
