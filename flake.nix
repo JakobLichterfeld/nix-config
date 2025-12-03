@@ -2,12 +2,12 @@
   description = "Configuration for MacOS and NixOS";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05?shallow=1";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11?shallow=1";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable?shallow=1";
-    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin?shallow=1";
+    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-25.11-darwin?shallow=1";
     nixpkgs-darwin-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable?shallow=1";
     nix-darwin = {
-      url = "github:LnL7/nix-darwin/nix-darwin-25.05?shallow=1";
+      url = "github:LnL7/nix-darwin/nix-darwin-25.11?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     nix-darwin-unstable = {
@@ -47,13 +47,13 @@
     };
 
     home-manager = {
-      # url = "github:nix-community/home-manager/release-25.05?shallow=1"; # gets timeouts
-      url = "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz";
+      # url = "github:nix-community/home-manager/release-25.11?shallow=1"; # gets timeouts
+      url = "https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager-darwin = {
-      # url = "github:nix-community/home-manager/release-25.05?shallow=1"; # gets timeouts
-      url = "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz";
+      # url = "github:nix-community/home-manager/release-25.11?shallow=1"; # gets timeouts
+      url = "https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     home-manager-darwin-unstable = {
@@ -196,80 +196,6 @@
             };
             modules = [
               ./homelab
-              "${inputs.nixpkgs-unstable}/nixos/modules/services/web-apps/linkwarden.nix"
-              # Use the unstable module for syncthing and provide it with a patched `lib`.
-              (
-                {
-                  config,
-                  options,
-                  lib,
-                  pkgs,
-                  inputs,
-                  specialArgs,
-                  ...
-                }:
-                let
-                  # Create a patched version of `lib` that includes the `cli` tools from unstable.
-                  # This is scoped and only visible to the unstable syncthing module below.
-                  unstablePkgs = import inputs.nixpkgs-unstable { system = pkgs.system; };
-                  patchedLib = lib // {
-                    cli = unstablePkgs.lib.cli;
-                  };
-
-                  # Path to the real module.
-                  unstableSyncthingModulePath = "${inputs.nixpkgs-unstable}/nixos/modules/services/networking/syncthing.nix";
-                in
-                {
-                  # 1. Disable the conflicting stable module.
-                  disabledModules = [ "services/networking/syncthing.nix" ];
-
-                  # 2. Import the unstable module, but manually call it with the patched `lib`
-                  # and all other original arguments.
-                  imports = [
-                    (import unstableSyncthingModulePath {
-                      inherit
-                        config
-                        options
-                        pkgs
-                        specialArgs
-                        ;
-                      lib = patchedLib;
-                    })
-                  ];
-                }
-              )
-
-              # Import the unstable module for Umami
-              (
-                {
-                  config,
-                  options,
-                  lib,
-                  pkgs,
-                  inputs,
-                  specialArgs,
-                  pkgsUnstable,
-                  ...
-                }:
-                {
-                  imports = [
-                    (import "${inputs.nixpkgs-unstable}/nixos/modules/services/web-apps/umami.nix" {
-                      inherit
-                        config
-                        options
-                        lib
-                        pkgs
-                        specialArgs
-                        ;
-                    })
-                  ];
-
-                  config = {
-                    # Set the package for the unstable module to the package from pkgsUnstable.
-                    services.umami.package = pkgsUnstable.umami;
-                  };
-                }
-              )
 
               ./machines/nixos/_common
               ./machines/nixos/MainServer

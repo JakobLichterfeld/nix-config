@@ -96,9 +96,9 @@ in
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = (
-    with inputs.nixpkgs-unstable.legacyPackages."${pkgs.system}";
+    with inputs.nixpkgs-unstable.legacyPackages."${pkgs.stdenv.hostPlatform.system}";
     [
-      inputs.agenix.packages."${pkgs.system}".default
+      inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
     ]
     ++ (import ./packages.nix { inherit pkgs; })
   );

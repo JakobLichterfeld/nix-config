@@ -106,7 +106,7 @@
     jq
     ripgrep
     sqlite
-    inputs.agenix.packages."${system}".default
+    inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
     lm_sensors
     jc
     moreutils

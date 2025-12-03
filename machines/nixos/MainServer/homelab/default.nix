@@ -214,7 +214,7 @@ in
 
       owntracks-recorder.enable = true;
 
-      # paperless.enable = true; # TODO(JakobLichterfeld): re-enable once the error "attribute 'nltkData' missing" is resolved
+      paperless.enable = true;
 
       # professional
       matomo = {

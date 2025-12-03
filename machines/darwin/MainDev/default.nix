@@ -29,6 +29,6 @@ in
   '';
 
   environment.systemPackages =
-    with inputs.nixpkgs-unstable.legacyPackages."${pkgs.system}";
+    with inputs.nixpkgs-unstable.legacyPackages."${pkgs.stdenv.hostPlatform.system}";
     pkgs.callPackage ./packages.nix { };
 }
