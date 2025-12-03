@@ -58,7 +58,6 @@ in
   config = mkIf cfg.enable {
     environment.systemPackages = [
       mergerfs-uncache
-      (pkgs.python312Full.withPackages (ps: with ps; [ aiofiles ]))
     ];
 
     # security.sudo.extraRules = [
@@ -94,14 +93,21 @@ in
         description = "MergerFS Mover script";
         path = [
           pkgs.rsync
-          (pkgs.python312Full.withPackages (ps: with ps; [ aiofiles ]))
+          (pkgs.python313.withPackages (ps: with ps; [ aiofiles ]))
           pkgs.systemd
           pkgs.coreutils
           pkgs.gawk
+          mergerfs-uncache
         ];
         serviceConfig = {
           Type = "oneshot";
-          ExecStart = "/run/current-system/sw/bin/mergerfs-uncache --source ${config.services.mover.cacheArray} --destination ${config.services.mover.backingArray} --target ${config.services.mover.percentageFree} --exclude ${config.services.mover.excludedPaths}"; # --uid ${config.services.mover.user} --gid ${config.services.mover.group}";
+          ExecStart = ''
+            ${lib.getExe mergerfs-uncache} \
+            --source ${config.services.mover.cacheArray} \
+            --destination ${config.services.mover.backingArray} \
+            --target ${config.services.mover.percentageFree} \
+            --exclude ${config.services.mover.excludedPaths}
+          ''; # --uid ${config.services.mover.user} --gid ${config.services.mover.group}";
           # User = config.services.mover.user;
           # Group = config.services.mover.group;
         };

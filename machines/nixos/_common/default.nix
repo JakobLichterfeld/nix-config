@@ -98,7 +98,6 @@
     iperf3
     eza # A modern, maintained replacement for ls
     fastfetch
-    (python312.withPackages (ps: with ps; [ pip ]))
     tmux
     rsync
     iotop
