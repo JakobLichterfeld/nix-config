@@ -49,6 +49,7 @@ in
   fileSystems.${hl.mounts.slower} = {
     device = "/mnt/data*";
     options = [
+      "category.create=mfs" # MergerFS strategy: Create new files on the disk with the most free space to ensure even distribution.
       "defaults"
       "allow_other"
       "moveonenospc=1"
