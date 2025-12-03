@@ -239,6 +239,38 @@
                 }
               )
 
+              # Import the unstable module for Umami
+              (
+                {
+                  config,
+                  options,
+                  lib,
+                  pkgs,
+                  inputs,
+                  specialArgs,
+                  pkgsUnstable,
+                  ...
+                }:
+                {
+                  imports = [
+                    (import "${inputs.nixpkgs-unstable}/nixos/modules/services/web-apps/umami.nix" {
+                      inherit
+                        config
+                        options
+                        lib
+                        pkgs
+                        specialArgs
+                        ;
+                    })
+                  ];
+
+                  config = {
+                    # Set the package for the unstable module to the package from pkgsUnstable.
+                    services.umami.package = pkgsUnstable.umami;
+                  };
+                }
+              )
+
               ./machines/nixos/_common
               ./machines/nixos/MainServer
 

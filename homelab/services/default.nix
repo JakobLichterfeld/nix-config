@@ -122,6 +122,7 @@ in
     ./owntracks-recorder
     ./paperless-ngx
     ./professional/matomo
+    ./professional/umami
     ./prometheus
     ./stirling-pdf
     ./syncthing

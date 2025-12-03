@@ -34,7 +34,7 @@
   age.secrets.matomoCloudflared = {
     file = ./matomoCloudflared.age;
     # https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/tunnel-permissions/
-    # First get a Account certificat (cert.pem) by running:
+    # First get a Account certificate (cert.pem) by running:
     # nix run nixpkgs#cloudflared -- tunnel login <the-token-you-see-in-dashboard>
     # Then get the credentialsFile (<TUNNEL-UUID>.json) which is needed here:
     # nix run nixpkgs#cloudflared -- tunnel create <tunnel-name>
@@ -104,6 +104,22 @@
   age.secrets.teslamateEnvTelegramBot = {
     file = ./teslamateEnvTelegramBot.age; # content is the Teslamate Telegram Bot env file, so TELEGRAM_BOT_API_KEY= and TELEGRAM_BOT_CHAT_ID=
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e teslamateEnvABRP.age
+  };
+
+  age.secrets.umamiAppSecretFile = {
+    file = ./umamiAppSecretFile.age; # content is a secure random string. This is used for signing user sessions.
+    # to generate a random string, you can use `openssl rand -base64 32`
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e umamiAppSecretFile.age
+  };
+
+  age.secrets.umamiCloudflared = {
+    file = ./umamiCloudflared.age;
+    # https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/local-management/tunnel-permissions/
+    # First get a Account certificate (cert.pem) by running:
+    # nix run nixpkgs#cloudflared -- tunnel login <the-token-you-see-in-dashboard>
+    # Then get the credentialsFile (<TUNNEL-UUID>.json) which is needed here:
+    # nix run nixpkgs#cloudflared -- tunnel create <tunnel-name>
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e umamiCloudflared.age
   };
 
   age.secrets.vaultwardenEnv = {
