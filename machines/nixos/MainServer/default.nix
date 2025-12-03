@@ -38,6 +38,7 @@ in
     kernelParams = [
       "consoleblank=60"
       "acpi_enforce_resources=lax"
+      "nvme_core.default_ps_max_latency_us=50000" # Set NVMe power state transition latency to 50ms for better resume from power saving
     ];
     kernelModules = [
       "kvm-intel"
