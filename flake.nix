@@ -195,6 +195,24 @@
               };
             };
             modules = [
+              # Overlay to fix prometheus-mqtt-exporter which is broken in nixos-25.11.
+              # This applies the fix from https://github.com/NixOS/nixpkgs/pull/466886
+              # The underlying issue is tracked here: https://github.com/kpetremann/mqtt-exporter/pull/117
+              ({
+                nixpkgs.overlays = [
+                  (final: prev: {
+                    mqtt-exporter = prev.mqtt-exporter.overrideAttrs (oldAttrs: {
+                      postPatch = ''
+                        substituteInPlace pyproject.toml \
+                          --replace-fail "mqtt_exporter.main:main" "mqtt_exporter.main:main_mqtt_exporter"
+                      '';
+                      version = oldAttrs.version + "-patched"; # Force rebuild
+                      __intentionallyOverridingVersion = true;
+                    });
+                  })
+                ];
+              })
+
               ./homelab
 
               ./machines/nixos/_common
