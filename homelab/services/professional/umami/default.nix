@@ -93,8 +93,7 @@ in
         in
         [
           (blackbox.mkHttpTarget "${service}" "${cfg.url}" "external")
-          (blackbox.mkHttpTarget "${service}" "${cfg.cloudflared.fqdn}${cfg.collectApiEndpoint}" "external") # Umami's collect endpoint
-          (blackbox.mkHttpTarget "${service}" "${cfg.cloudflared.fqdn}/${cfg.trackerScriptName}" "external") # Umami's collect endpoint
+          (blackbox.mkHttpTarget "${service}" "${cfg.cloudflared.fqdn}/healthz" "external")
         ];
     };
   };
@@ -127,8 +126,15 @@ in
     # This serves the tracker script with a cache header and proxies the collect endpoint.
     services.caddy.virtualHosts."http://${cfg.apiHostName}" = {
       extraConfig = ''
+        # Health check endpoint
+        handle /healthz {
+          respond "OK" 200
+        }
+
         # Disallow all crawlers
-        respond /robots.txt "User-agent: *\nDisallow: /\n" 200
+        handle /robots.txt {
+          respond "User-agent: *\nDisallow: /\n" 200
+        }
 
         # Handle the tracker script with a custom cache header.
         handle /${cfg.trackerScriptName} {
