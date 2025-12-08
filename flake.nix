@@ -47,13 +47,13 @@
     };
 
     home-manager = {
-      # url = "github:nix-community/home-manager/release-25.11?shallow=1"; # gets timeouts
-      url = "https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz";
+      url = "github:nix-community/home-manager/release-25.11?shallow=1";
+      # url = "https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz"; # if the above gets timeouts
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager-darwin = {
-      # url = "github:nix-community/home-manager/release-25.11?shallow=1"; # gets timeouts
-      url = "https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz";
+      url = "github:nix-community/home-manager/release-25.11?shallow=1";
+      # url = "https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz"; # if the above gets timeouts
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     home-manager-darwin-unstable = {
