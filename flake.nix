@@ -230,6 +230,7 @@
               secrets/default.nix
               agenix.nixosModules.default
 
+              ./users
               ./users/jakob
               ./users/christine
               home-manager.nixosModules.home-manager

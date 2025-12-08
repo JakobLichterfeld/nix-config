@@ -117,6 +117,7 @@ in
     ./changedetection-io
     ./home-assistant
     ./homepage
+    ./immich
     ./linkwarden
     ./ntfy-sh
     ./owntracks-recorder

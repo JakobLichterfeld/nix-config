@@ -86,6 +86,25 @@ in
             "writable" = "yes";
           };
         };
+        # Immich Upload Shares (separate for each user)
+        "Immich-Upload-Jakob" = {
+          path = "${hl.mounts.merged}/immich-upload/jakob";
+          filesystemOwner = "jakob";
+          filesystemGroup = "media";
+          validUsers = "@jakob";
+          extraOptions = {
+            "force group" = "media";
+          };
+        };
+        "Immich-Upload-Christine" = {
+          path = "${hl.mounts.merged}/immich-upload/christine";
+          filesystemOwner = "christine";
+          filesystemGroup = "media";
+          validUsers = "@christine";
+          extraOptions = {
+            "force group" = "media";
+          };
+        };
       };
     };
     services = {
@@ -207,6 +226,8 @@ in
           }
         ];
       };
+
+      immich.enable = true;
 
       linkwarden.enable = true;
 

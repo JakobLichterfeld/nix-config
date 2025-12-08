@@ -23,6 +23,7 @@
           "video"
           "podman"
           "input"
+          "media"
           (lib.toLower machinesSensitiveVars.OperatingCompany.name)
           (lib.toLower machinesSensitiveVars.HoldingCompanyJakob.name)
         ];
