@@ -247,7 +247,7 @@ in
                   + ''
                     ${restic} stats || ${restic} init
                     ${lib.optionalString cfg.s3.useTarball ''
-                      ${pkgs.gnutar}/bin/tar -cf ${tarballPath} --ignore-failed-read ${allStateDirsAndBackupPaths}
+                      ${pkgs.gnutar}/bin/tar -cf ${tarballPath} --ignore-failed-read --one-file-system ${allStateDirsAndBackupPaths}
                     ''}
                     ${restic} unlock
                   '';
