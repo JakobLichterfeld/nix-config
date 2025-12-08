@@ -15,7 +15,6 @@ in
 
     timeZone = "Europe/Berlin";
     mounts = {
-      config = "/persist/opt/services";
       slower = "/mnt/mergerfs_slower";
       fast = "/mnt/cache";
       merged = "/mnt/user";
