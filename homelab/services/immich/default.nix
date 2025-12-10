@@ -69,8 +69,8 @@ in
   config = lib.mkIf cfg.enable {
     # Ensure media directory exists with correct permissions
     systemd.tmpfiles.rules = [
-      "d ${cfg.mediaDir} 0775 ${cfg.user} ${cfg.group} - -"
-      "Z ${cfg.mediaDir} 0775 ${cfg.user} ${cfg.group} - -"
+      "d ${cfg.mediaDir} 0770 ${cfg.user} ${cfg.group} - -"
+      "Z ${cfg.mediaDir} 0770 ${cfg.user} ${cfg.group} - -"
     ];
 
     users.users.immich.extraGroups = [
