@@ -112,6 +112,7 @@ in
   };
 
   imports = [
+    ./audiobookshelf
     ./backup
     ./blocky
     ./changedetection-io

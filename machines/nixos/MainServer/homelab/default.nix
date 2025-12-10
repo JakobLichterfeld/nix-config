@@ -104,10 +104,30 @@ in
             "force group" = "media";
           };
         };
+        "Audiobooks" = {
+          path = hl.services.audiobookshelf.audiobooksDir;
+          filesystemOwner = "jakob";
+          filesystemGroup = "media";
+          validUsers = "@media";
+          extraOptions = {
+            "force group" = "media";
+          };
+        };
+        "Podcasts" = {
+          path = hl.services.audiobookshelf.podcastsDir;
+          filesystemOwner = "jakob";
+          filesystemGroup = "media";
+          validUsers = "@media";
+          extraOptions = {
+            "force group" = "media";
+          };
+        };
       };
     };
     services = {
       enable = true;
+
+      audiobookshelf.enable = true;
 
       backup = {
         enable = true;
