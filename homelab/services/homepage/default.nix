@@ -29,6 +29,7 @@ in
         # "Media"
         # "Network"
         "Tesla"
+        "Media"
         "Services"
         "Smart Home"
         "Mobile"
@@ -203,6 +204,13 @@ in
               icon = "si-tesla";
               style = "column";
               showStats = true;
+            };
+          }
+          {
+            Media = {
+              header = true;
+              icon = "mdi-multimedia";
+              style = "column";
             };
           }
           {
