@@ -19,6 +19,7 @@
 
   # Image
   { name = "geeqie"; } # Image viewer
+  { name = "immich-go"; } # Immich CLI client
 
   # GPS
   { name = "gpsbabel"; } # GPS data conversion
