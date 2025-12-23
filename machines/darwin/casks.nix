@@ -76,6 +76,7 @@
 
   # Remote Desktop
   { name = "teamviewer"; }
+  { name = "rustdesk"; }
 
   # Mobile devices
   { name = "android-file-transfer"; }
