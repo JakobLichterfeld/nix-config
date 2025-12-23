@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -77,6 +78,10 @@ in
       "video" # Enabling Hardware Accelerated Video Transcoding
       "render" # Enabling Hardware Accelerated Video Transcoding
       "media" # for access to upload directories
+    ];
+
+    environment.systemPackages = [
+      pkgs.immich-go
     ];
 
     services.immich = {
