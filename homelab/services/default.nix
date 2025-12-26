@@ -122,6 +122,7 @@ in
     ./linkwarden
     ./ntfy-sh
     ./owntracks-recorder
+    ./pairdrop
     ./paperless-ngx
     ./professional/matomo
     ./professional/umami

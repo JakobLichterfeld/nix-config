@@ -254,6 +254,8 @@ in
 
       owntracks-recorder.enable = true;
 
+      pairdrop.enable = true;
+
       paperless.enable = true;
 
       # professional
