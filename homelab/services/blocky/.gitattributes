@@ -1,3 +1,8 @@
 .gitattributes !filter !diff
+# old
 blacklist.txt filter=git-crypt diff=git-crypt
 whitelist.txt filter=git-crypt diff=git-crypt
+
+# actually used
+denylists.txt filter=git-crypt diff=git-crypt
+allowlists.txt filter=git-crypt diff=git-crypt
