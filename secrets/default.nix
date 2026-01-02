@@ -2,7 +2,7 @@
 {
   age.secrets.deadmanPingEnvMainServer = {
     file = ./deadmanPingEnvMainServer.age; # content is the deadman ping env file, with PING_URL= according to modules/deadman-ping
-    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e deadmanPingUrl.age
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e deadmanPingEnvMainServer.age
   };
 
   age.secrets.dnsApiCredentials = {
@@ -103,7 +103,7 @@
 
   age.secrets.teslamateEnvTelegramBot = {
     file = ./teslamateEnvTelegramBot.age; # content is the Teslamate Telegram Bot env file, so TELEGRAM_BOT_API_KEY= and TELEGRAM_BOT_CHAT_ID=
-    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e teslamateEnvABRP.age
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e teslamateEnvTelegramBot.age
   };
 
   age.secrets.umamiAppSecretFile = {
