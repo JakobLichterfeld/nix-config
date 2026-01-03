@@ -28,3 +28,5 @@ machines/darwin/MainDev/manualSensitive.nix filter=git-crypt diff=git-crypt
 machines/darwin/manualSensitive.nix filter=git-crypt diff=git-crypt
 **/manualSensitive.nix filter=git-crypt diff=git-crypt
 
+modules/data-indexer/sensitive.nix filter=git-crypt diff=git-crypt
+**/sensitive.nix filter=git-crypt diff=git-crypt
