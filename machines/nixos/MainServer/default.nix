@@ -173,6 +173,15 @@ in
     nvme-cli # Command line interface for NVMe devices
   ];
 
+  email = {
+    enable = true;
+    fromAddress = machinesSensitiveVars.Mail.fromAddress;
+    toAddress = machinesSensitiveVars.Mail.toAddress;
+    smtpServer = machinesSensitiveVars.Mail.smtpServer;
+    smtpUsername = machinesSensitiveVars.Mail.smtpUsername;
+    smtpPasswordPath = config.age.secrets.smtpPassword.path;
+  };
+
   services.nvme-thermal-management = {
     enable = true;
     thermalThresholdLower = 110; # Set TMT1 to 110°C, as this is the minimum allowed value for lower limit by this NVMe drive
