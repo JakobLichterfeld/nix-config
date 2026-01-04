@@ -72,6 +72,8 @@
 
     deploy-rs.url = "github:serokell/deploy-rs?shallow=1";
 
+    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
+
     teslamate = {
       url = "github:teslamate-org/teslamate?rev=904bf708358002130f4ea8ffa97d7e2c035b370d"; # v2.2.0
       inputs.nixpkgs.follows = "nixpkgs";
@@ -104,6 +106,7 @@
       agenix,
       nix-index-database,
       deploy-rs,
+      nixos-wsl,
       ...
     }@inputs:
     let
@@ -225,6 +228,30 @@
               }
             ];
           };
+
+          WslEnvDataIndexer = nixpkgs.lib.nixosSystem {
+            # build tarball via the app: `nix run .#buildWslTarballForWslEnvDataIndexer`
+            system = "x86_64-linux";
+            specialArgs = {
+              inherit inputs;
+              inherit self;
+              inherit machinesSensitiveVars;
+              pkgsUnstable = import inputs.nixpkgs-unstable {
+                inherit system;
+              };
+            };
+            modules = [
+              nixos-wsl.nixosModules.default
+
+              ./machines/nixos/_common
+              ./machines/nixos/WslEnvDataIndexer
+
+              ./modules/data-indexer
+              ./modules/deadman-ping
+
+              agenix.nixosModules.default
+            ];
+          };
         };
 
       # Applications for managing this Nix configuration.
@@ -318,6 +345,40 @@
               type = "app";
               program = "${app}/bin/deploy-main-server";
               meta.description = "Deploy the MainServer configuration remotely using deploy-rs.";
+            };
+
+          # Build WSL tarball
+          # Builds the WSL tarball for NixOS-WSL machine named WslEnvDataIndexer.
+          # Run on a x86_64-linux machine with: `nix run .#buildWslTarballForWslEnvDataIndexer"`
+          buildWslTarballForWslEnvDataIndexer =
+            let
+              app = pkgs.writeShellApplication {
+                name = "build-wsl-tarball-for-WslEnvDataIndexer";
+                text = ''
+                  #!/usr/bin/env bash
+                  set -e
+
+                  # Set a high limit for open files for this script's execution
+                  ulimit -n 1048576
+
+                  extra_files=$(mktemp -d)
+                  # Ensure temp files are cleaned up on exit
+                  trap 'sudo rm -rf "$extra_files"' EXIT
+
+                  sudo mkdir -p "$extra_files/persist/ssh"
+                  sudo cp "$HOME/.ssh/id_ed25519_wsl_env_data_indexer" "$extra_files/persist/ssh/id_ed25519_wsl_env_data_indexer"
+                  sudo cp "$HOME/.ssh/nix-config_local.key.asc" "$extra_files/persist/ssh/nix-config_local.key.asc"
+
+                  sudo nix run .#nixosConfigurations.WslEnvDataIndexer.config.system.build.tarballBuilder -- \
+                  --extra-files "$extra_files" \
+                  --chown /persist/ssh 1000:100
+                '';
+              };
+            in
+            {
+              type = "app";
+              program = "${app}/bin/build-wsl-tarball-for-WslEnvDataIndexer";
+              meta.description = "Builds the WSL tarball for NixOS-WSL.";
             };
         }
       );

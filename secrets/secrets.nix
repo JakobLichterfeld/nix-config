@@ -15,12 +15,25 @@ let
     christine
     MainServer
   ];
+
+  WslEnvDataIndexer = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAVF6cqDNzA7b9EgRQqC8/jZgqDDp+TmejvyccObARP8 20260102_wsl_env_data_indexer"; # private and pub key pair created with ssh-keygen -t ed25519 -a 32 -C "20260102_wsl_env_data_indexer" -f ~/.ssh/id_ed25519_wsl_env_data_indexer
+  WslEnvDataIndexerAndJakob = [
+    WslEnvDataIndexer
+    jakob
+  ];
+  serverAndWslEnvDataIndexerAndJakob = [
+    WslEnvDataIndexer
+    MainServer
+    jakob
+  ];
 in
 {
+  "dataIndexerJwt.age".publicKeys = WslEnvDataIndexerAndJakob;
   "deadmanPingEnvMainServer.age".publicKeys = allKeys;
+  "deadmanPingEnvWslEnvDataIndexer.age".publicKeys = WslEnvDataIndexerAndJakob;
   "dnsApiCredentials.age".publicKeys = allKeys;
   "fritzboxExporterEnv.age".publicKeys = allKeys;
-  "hashedUserPassword.age".publicKeys = serverAndJakob;
+  "hashedUserPassword.age".publicKeys = serverAndWslEnvDataIndexerAndJakob;
   "hashedUserPasswordChristine.age".publicKeys = serverAndChristine;
   "linkwardenEnv.age".publicKeys = allKeys;
   "matomoCloudflared.age".publicKeys = serverAndJakob;
