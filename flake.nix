@@ -209,7 +209,6 @@
               ./modules/nvme-thermal-management
               ./modules/mover
 
-              secrets/default.nix
               agenix.nixosModules.default
 
               ./users

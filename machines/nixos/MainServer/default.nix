@@ -130,6 +130,7 @@ in
     ./filesystems
     #./backup
     ./homelab
+    ./secrets
   ];
 
   virtualisation.docker.storageDriver = "overlay2";
