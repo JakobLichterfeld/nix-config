@@ -62,7 +62,8 @@ with pkgs;
   jq
   ripgrep
   tree
-  tmux
+  tmux # Terminal multiplexer
+  zellij # Terminal workspace and multiplexer
   zsh
   starship
 
