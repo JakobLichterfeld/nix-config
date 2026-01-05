@@ -116,7 +116,9 @@ in
           blackbox = import ../../../lib/blackbox.nix { inherit lib; };
         in
         [
-          (blackbox.mkHttpTarget "${service}" "http://127.0.0.1:${toString cfg.listenPort}" "internal")
+          (blackbox.mkHttpTarget "${
+            service
+          }" "http://${cfg.listenAddress}:${toString cfg.listenPort}" "internal")
           (blackbox.mkHttpTarget "${service}" "${cfg.url}" "external")
         ];
     };
