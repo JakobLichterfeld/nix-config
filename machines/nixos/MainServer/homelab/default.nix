@@ -248,6 +248,8 @@ in
 
       immich.enable = true;
 
+      languagetool.enable = true;
+
       linkwarden.enable = true;
 
       ntfy-sh.enable = true;

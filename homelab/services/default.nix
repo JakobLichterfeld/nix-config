@@ -119,6 +119,7 @@ in
     ./home-assistant
     ./homepage
     ./immich
+    ./languagetool
     ./linkwarden
     ./ntfy-sh
     ./owntracks-recorder
