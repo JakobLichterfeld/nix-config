@@ -97,7 +97,6 @@
     nmap
     jq
     ripgrep
-    sqlite
     inputs.agenix.packages."${pkgs.stdenv.hostPlatform.system}".default
     lm_sensors
     jc
