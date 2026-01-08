@@ -125,9 +125,11 @@
         };
         modules = [
           {
-            nixpkgs.overlays =
-              [
-              ];
+            nixpkgs.overlays = [
+              (final: prev: {
+                memmon = prev.callPackage ./pkgs/memmon { };
+              })
+            ];
           }
 
           # Base

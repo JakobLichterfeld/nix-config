@@ -68,5 +68,6 @@ with pkgs;
   starship
 
   # System tools
+  memmon # A simple daemon that restores your window positions on external monitors on macOS.
   mkalias # Create and manage aliases for files and directories
 ]
