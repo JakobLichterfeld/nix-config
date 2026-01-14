@@ -31,7 +31,7 @@ in
   "dataIndexerJwt.age".publicKeys = WslEnvDataIndexerAndJakob;
   "deadmanPingEnvMainServer.age".publicKeys = allKeys;
   "deadmanPingEnvWslEnvDataIndexer.age".publicKeys = WslEnvDataIndexerAndJakob;
-  "dnsApiCredentials.age".publicKeys = allKeys;
+  "dnsApiCredentials.age".publicKeys = serverAndJakob;
   "fritzboxExporterEnv.age".publicKeys = allKeys;
   "hashedUserPassword.age".publicKeys = serverAndWslEnvDataIndexerAndJakob;
   "hashedUserPasswordChristine.age".publicKeys = serverAndChristine;
