@@ -79,6 +79,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    teslamate-telegram-bot = {
+      url = "github:JakobLichterfeld/TeslaMate-Telegram-Bot?rev=559c0012bd609bec4bb11b0574d88a9bcb39c529"; # v1.0.0
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     spotblock = {
       url = "github:vincentkenny01/spotblock?shallow=1";
       flake = false;

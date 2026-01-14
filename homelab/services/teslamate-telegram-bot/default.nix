@@ -7,15 +7,20 @@
 let
   service = "teslamate-telegram-bot";
   cfg = config.homelab.services.teslamate-telegram-bot;
-  homelab = config.homelab;
-  teslamate-telegram-bot-version = "0.7.9";
 in
 {
   options.homelab.services.${service} = {
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
     };
+    secretsFile = lib.mkOption {
+      type = lib.types.path;
+      description = "File with the secrets for the teslamate telegram bot";
+      default = config.age.secrets.teslamateEnvTelegramBot.path;
+    };
   };
+
+  imports = [ inputs.teslamate-telegram-bot.nixosModules.default ];
 
   config = lib.mkIf cfg.enable {
     assertions = [
@@ -29,39 +34,17 @@ in
       }
     ];
 
-    virtualisation = {
-      podman.enable = true;
-      oci-containers = {
-        containers = {
-          "${service}" = {
-            image = "teslamatetelegrambot/teslamatetelegrambot:${teslamate-telegram-bot-version}";
-            autoStart = true;
-            environmentFiles = [ config.age.secrets.teslamateEnvTelegramBot.path ];
-            environment = {
-              # CAR_ID=1; # optional, defaults to 1
-              MQTT_BROKER_HOST = "host.containers.internal";
-              MQTT_BROKER_PORT = toString config.homelab.services.teslamate.listenPortMqtt;
-              # MQTT_NAMESPACE=namespace; # optional, only needed when you specified MQTT_NAMESPACE on your TeslaMate installation
-            };
-            log-driver = "journald";
-            extraOptions = lib.optional (
-              !config.virtualisation.podman.defaultNetwork.settings.dns_enabled
-            ) "--add-host=host.containers.internal:10.88.0.1";
-          };
-        };
+    services.teslamate-telegram-bot = {
+      enable = true;
+      secretsFile = cfg.secretsFile;
+      # carId=1; # optional, defaults to 1
+      mqtt = {
+        host = config.services.teslamate.mqtt.host;
+        port = config.services.teslamate.mqtt.port;
+        # user = "";
+        # namespace = ""; # optional, only needed when you specified MQTT_NAMESPACE on your TeslaMate installation
       };
-    };
-    systemd.services."podman-${service}" = {
-      after = [
-        "network-online.target"
-        "mosquitto.service"
-        "teslamate.service"
-      ];
-      requires = [
-        "mosquitto.service"
-        "teslamate.service"
-      ];
-      wants = [ "network-online.target" ];
+      autoStart = true;
     };
   };
 }
