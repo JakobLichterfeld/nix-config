@@ -1928,8 +1928,8 @@
     "list": [
       {
         "current": {
-          "text": "blocky.empower-tail.duckdns.org",
-          "value": "blocky.empower-tail.duckdns.org"
+          "text": "127.0.01:4001",
+          "value": "127.0.01:4001"
         },
         "hide": 2,
         "label": "blocky API URL",
