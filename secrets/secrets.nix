@@ -29,9 +29,11 @@ let
 in
 {
   "dataIndexerJwt.age".publicKeys = WslEnvDataIndexerAndJakob;
+  "ddnsToken.age".publicKeys = serverAndJakob;
   "deadmanPingEnvMainServer.age".publicKeys = allKeys;
   "deadmanPingEnvWslEnvDataIndexer.age".publicKeys = WslEnvDataIndexerAndJakob;
   "dnsApiCredentials.age".publicKeys = serverAndJakob;
+  "dnsApiCredentialsFallback.age".publicKeys = serverAndJakob;
   "fritzboxExporterEnv.age".publicKeys = allKeys;
   "hashedUserPassword.age".publicKeys = serverAndWslEnvDataIndexerAndJakob;
   "hashedUserPasswordChristine.age".publicKeys = serverAndChristine;

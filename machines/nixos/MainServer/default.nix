@@ -173,6 +173,15 @@ in
     nvme-cli # Command line interface for NVMe devices
   ];
 
+  services.dns-updater = {
+    enable = true;
+    updateUrl = machinesSensitiveVars.dns.updateUrl;
+    domain = "${config.homelab.baseDomain}";
+    ipv4Address = machinesSensitiveVars.MainServer.ipAddressTailscale;
+    # ipv6Address = machinesSensitiveVars.MainServer.ip6AddressTailscale; # currently disabled as we do not use IPv6
+    ddnsTokenFile = config.age.secrets.ddnsToken.path;
+  };
+
   email = {
     enable = true;
     fromAddress = machinesSensitiveVars.Mail.fromAddress;

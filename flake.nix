@@ -211,13 +211,15 @@
               ./machines/nixos/MainServer
 
               ./modules/zfs-root
-              ./modules/tailscale
-              ./modules/zerotier
-              ./modules/email
+
               ./modules/deadman-ping
-              ./modules/tg-notify
-              ./modules/nvme-thermal-management
+              ./modules/dns-updater
+              ./modules/email
               ./modules/mover
+              ./modules/nvme-thermal-management
+              ./modules/tailscale
+              ./modules/tg-notify
+              ./modules/zerotier
 
               agenix.nixosModules.default
 

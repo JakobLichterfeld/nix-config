@@ -3,6 +3,11 @@ let
   secretsBasePath = ./../../../../secrets;
 in
 {
+  age.secrets.ddnsToken = {
+    file = secretsBasePath + /ddnsToken.age; # content is the plain DDNS token
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e ddnsToken.age
+  };
+
   age.secrets.deadmanPingEnvMainServer = {
     file = secretsBasePath + /deadmanPingEnvMainServer.age; # content is the deadman ping env file, with PING_URL= according to modules/deadman-ping
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e deadmanPingEnvMainServer.age
@@ -11,6 +16,11 @@ in
   age.secrets.dnsApiCredentials = {
     file = secretsBasePath + /dnsApiCredentials.age; # content is according to the provider, see https://go-acme.github.io/lego/dns/
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e dnsApiCredentials.age
+  };
+
+  age.secrets.dnsApiCredentialsFallback = {
+    file = secretsBasePath + /dnsApiCredentialsFallback.age; # content is according to the provider, see https://go-acme.github.io/lego/dns/
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e dnsApiCredentialsFallback.age
   };
 
   age.secrets.fritzboxExporterEnv = {

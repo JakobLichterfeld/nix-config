@@ -8,10 +8,22 @@
 }:
 let
   acmeSharedGroup = "acme-shared";
+  cfg = config.homelab.services;
 in
 {
   options.homelab.services = {
     enable = lib.mkEnableOption "Settings and services for the homelab";
+
+    dnsApiCredentialsFile = lib.mkOption {
+      type = lib.types.path;
+      description = "File with the secrets for the DNS provider API used for ACME DNS challenges.";
+      default = config.age.secrets.dnsApiCredentials.path;
+    };
+    dnsApiCredentialsFallbackFile = lib.mkOption {
+      type = lib.types.path;
+      description = "File with the secrets for the DNS provider API used for ACME DNS challenges.";
+      default = config.age.secrets.dnsApiCredentialsFallback.path;
+    };
   };
 
   config = lib.mkIf config.homelab.services.enable {
@@ -29,33 +41,33 @@ in
 
     security.acme = {
       acceptTerms = true;
-      defaults.email = "${machinesSensitiveVars.MainServer.letsencryptEmail}";
-      defaults.postRun = ''
-        ${lib.optionalString config.services.blocky.enable "systemctl restart blocky.service"}
-      '';
+      defaults = {
+        email = "${machinesSensitiveVars.dns.letsencryptEmail}";
+        reloadServices = [
+          "caddy.service"
+        ] ++ lib.optional config.services.blocky.enable "blocky.service";
+
+      };
       certs = lib.mkMerge [
         {
           "${config.homelab.baseDomain}" = {
-            reloadServices = [ "caddy.service" ];
             domain = "${config.homelab.baseDomain}";
             extraDomainNames = [ "*.${config.homelab.baseDomain}" ];
-            dnsProvider = "${machinesSensitiveVars.MainServer.dnschallengeProvider}";
-            dnsResolver = "1.1.1.1:53";
+            dnsProvider = "${machinesSensitiveVars.dns.challengeProvider}";
             dnsPropagationCheck = true;
+            dnsResolver = "1.1.1.1:53";
             group = acmeSharedGroup;
-            environmentFile = config.age.secrets.dnsApiCredentials.path;
+            environmentFile = cfg.dnsApiCredentialsFile;
           };
         }
         (lib.optionalAttrs (config.homelab.baseDomainFallback != null) {
           "${config.homelab.baseDomainFallback}" = {
-            reloadServices = [ "caddy.service" ];
             domain = "${config.homelab.baseDomainFallback}";
             extraDomainNames = [ "*.${config.homelab.baseDomainFallback}" ];
-            dnsProvider = "${machinesSensitiveVars.MainServer.dnschallengeProvider}";
-            dnsResolver = "1.1.1.1:53";
+            dnsProvider = "${machinesSensitiveVars.dns.challengeProviderFallback}";
             dnsPropagationCheck = true;
-            group = acmeSharedGroup;
-            environmentFile = config.age.secrets.dnsApiCredentials.path;
+            dnsResolver = "1.1.1.1:53";
+            environmentFile = cfg.dnsApiCredentialsFallbackFile;
           };
         })
       ];

@@ -10,8 +10,8 @@ in
 {
   homelab = {
     enable = true;
-    baseDomain = machinesSensitiveVars.MainServer.baseDomain;
-    baseDomainFallback = machinesSensitiveVars.MainServer.baseDomainFallback;
+    baseDomain = machinesSensitiveVars.dns.baseDomain;
+    baseDomainFallback = machinesSensitiveVars.dns.baseDomainFallback;
 
     timeZone = "Europe/Berlin";
     mounts = {
@@ -213,11 +213,19 @@ in
           }
           {
             category = "External Services";
+            name = "deSEC";
+            description = "Dynamic DNS Service";
+            icon = "https://systemsecurity.com/icons/desec.svg";
+            href = "https://desec.io/domains";
+            siteMonitor = "https://desec.io";
+          }
+          {
+            category = "External Services";
             name = "DuckDNS";
-            description = "Dynamic DNS for fixed public IP";
+            description = "Dynamic DNS Service";
             icon = "duckdns";
             href = "https://www.duckdns.org/domains";
-            siteMonitor = "https://www.duckdns.org/domains";
+            siteMonitor = "https://www.duckdns.org";
           }
           {
             category = "External Services";
