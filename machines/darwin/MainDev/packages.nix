@@ -5,11 +5,9 @@ with pkgs;
   # General packages for development and system management
   act # Run your GitHub Actions locally
 
-  # Cloud-related tools and SDKs
+  # Development tools
   docker
   docker-compose
-
-  # Development tools
   # john # disabled because of Avast quarantine
   shellcheck
   shfmt
