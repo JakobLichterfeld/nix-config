@@ -196,7 +196,13 @@ in
           path = "/metrics";
         };
 
-        clientLookup.upstream = machinesSensitiveVars.MainServer.defaultGateway;
+        clientLookup = {
+          upstream = machinesSensitiveVars.MainServer.defaultGateway;
+          singleNameOrder = [
+            2
+            1
+          ];
+        };
       };
 
     };
