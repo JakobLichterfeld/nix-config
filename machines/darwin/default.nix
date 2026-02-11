@@ -12,8 +12,6 @@ let
   masApps = import ./masApps.nix;
   brews = import ./brews.nix;
   casks = import ./casks.nix;
-
-  mkGreedy = cask: cask // { greedy = true; }; # add greedy = true to all casks to enable greedy updates
 in
 {
   imports = [
@@ -61,11 +59,12 @@ in
     caskArgs = {
       no_quarantine = true;
     };
+    greedyCasks = true; # enable greedy updates
 
     taps = builtins.attrNames config.nix-homebrew.taps;
     masApps = masApps;
     brews = brews;
-    casks = map mkGreedy (casks);
+    casks = casks;
   };
 
   # Setup user, packages, programs
