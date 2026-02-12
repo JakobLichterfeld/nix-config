@@ -40,12 +40,6 @@
       url = "github:gromgit/homebrew-fuse?shallow=1";
       flake = false;
     };
-    # TabbyML
-    homebrew-tabbyml = {
-      url = "github:TabbyML/homebrew-tabby?shallow=1";
-      flake = false;
-    };
-
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11?shallow=1";
       # url = "https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz"; # if the above gets timeouts

@@ -9,7 +9,6 @@
   { name = "ruff"; } # Extremely fast Python linter, written in Rust
   { name = "gh"; } # GitHub CLI
   { name = "firebase-cli"; }
-  { name = "tabbyml/tabby/tabby"; } # TabbyML: Self-hosted AI coding assistant
   { name = "ollama"; } # Ollama: Local LLM inference
   { name = "gemini-cli"; }
   { name = "minify"; } # Go minifiers for web formats, tdewolff/minify
