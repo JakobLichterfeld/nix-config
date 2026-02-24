@@ -54,7 +54,7 @@ in
       cleanup = "zap"; # cleanup all formulae not in the flake
       upgrade = true; # upgrade all formulae on activation of the flake
     };
-    brewPrefix = "/opt/homebrew/bin";
+    prefix = "/opt/homebrew";
     caskArgs = {
       no_quarantine = true;
     };
