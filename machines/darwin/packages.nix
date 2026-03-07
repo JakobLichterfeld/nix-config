@@ -8,7 +8,7 @@ with pkgs;
   aspellDicts.de
   btop
   coreutils
-  neofetch
+  fastfetch
   openssh
   direnv
   curl

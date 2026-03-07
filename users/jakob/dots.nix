@@ -27,7 +27,7 @@ in
 
   imports = [
     ../../dots/direnv/default.nix
-    ../../dots/neofetch/default.nix
+    ../../dots/fastfetch/default.nix
     ../../dots/starship/default.nix
     ../../dots/zsh/default.nix
     ./packages.nix
