@@ -1,6 +1,7 @@
 [
   # Development
   { name = "visual-studio-code"; } # Code Editor
+  { name = "antigravity"; } # Google AI Coding Agent IDE
   { name = "claude-code"; }
   { name = "copilot-for-xcode"; }
   { name = "devtoys"; } # Swiss Army knife for developers, it’s a toolbox of over 30+ handy utilities bundled into a clean UI
