@@ -35,9 +35,8 @@ with pkgs;
   python313Packages.pillow # Friendly PIL fork (Python Imaging Library)
 
   # Node.js development tools
-  nodePackages.nodemon
-  nodePackages.prettier
-  nodePackages.npm # globally install npm
+  nodemon
+  prettier
   nodejs
   yarn
 
