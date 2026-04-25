@@ -89,8 +89,6 @@
     iperf3
     eza # A modern, maintained replacement for ls
     fastfetch
-    tmux # Terminal multiplexer
-    zellij # Terminal workspace and multiplexer
     rsync
     iotop
     ncdu
