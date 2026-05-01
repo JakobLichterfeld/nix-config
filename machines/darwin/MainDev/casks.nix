@@ -11,6 +11,7 @@
   { name = "android-platform-tools"; }
   # { name = "flutter"; } # we currently use Flutter Version Management (FVM) to manage the global flutter version
   { name = "iloader"; } # iOS Sideloading Companion
+  { name = "impactor"; } # iOS Sideloading Companion
   { name = "balenaetcher"; }
   { name = "orbstack"; } # Fast, light, powerful way to run containers
   { name = "wireshark-app"; } # Network protocol analyzer
