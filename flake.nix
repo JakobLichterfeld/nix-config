@@ -281,12 +281,11 @@
               fi
               echo "Keeping sudo session alive for the duration of the command..."
               sudo -v
-              while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-              SUDO_KEEPALIVE_PID=$!
-              trap 'kill "$SUDO_KEEPALIVE_PID"' EXIT
+              sudo sh -c 'echo "Defaults timestamp_timeout=-1" > /etc/sudoers.d/sudo-keepalive-temp'
+              trap 'sudo rm -f /etc/sudoers.d/sudo-keepalive-temp' EXIT
               sudo "$@"
               trap - EXIT
-              kill "$SUDO_KEEPALIVE_PID"
+              sudo rm -f /etc/sudoers.d/sudo-keepalive-temp
             '';
           };
         in
