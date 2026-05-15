@@ -163,6 +163,17 @@ in
       };
     };
 
+    # enable PostgreSQL extension that tracks planning and execution statistics for all SQL queries
+    services.postgresql = {
+      # Preload the extension
+      settings = {
+        shared_preload_libraries = "pg_stat_statements";
+      };
+      initialScript = lib.mkMerge pkgs.writeText "init-pg_stat_statements" ''
+        CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+      '';
+    };
+
     # Prometheus exporter for PostgreSQL
     services.prometheus.exporters.postgres.environmentFile = config.age.secrets.teslamateEnv.path;
     # the Environment file must contain the following with real values:
