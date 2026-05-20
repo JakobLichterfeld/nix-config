@@ -285,6 +285,8 @@ in
         appSecretFile = config.age.secrets.umamiAppSecretFile.path;
         trackerScriptName = "${machinesSensitiveVars.OperatingCompany.statsW.trackerScriptName}";
         collectApiEndpoint = "${machinesSensitiveVars.OperatingCompany.statsW.collectApiEndpoint}";
+        replayScriptName = "${machinesSensitiveVars.OperatingCompany.statsW.replayScriptName}";
+        recordApiEndpoint = "${machinesSensitiveVars.OperatingCompany.statsW.recordApiEndpoint}";
         homepage.category = "${machinesSensitiveVars.OperatingCompany.name}";
         cloudflared = {
           fqdn = "${machinesSensitiveVars.OperatingCompany.statsW.fqdn}";

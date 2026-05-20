@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 
@@ -8,6 +9,8 @@ let
   service = "umami";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
+  recorderCacheDir = "/var/cache/${service}";
+  defaultRecordApiEndpoint = "/api/record";
 in
 {
   options.homelab.services.${service} = {
@@ -42,6 +45,18 @@ in
       default = "/api/send";
       description = "Custom name for the Umami collect API endpoint.";
       example = "/api/alternate-send";
+    };
+    replayScriptName = lib.mkOption {
+      type = lib.types.str;
+      default = "recorder.js";
+      description = "Custom name for the Umami replay recorder script.";
+      example = [ "y.js" ];
+    };
+    recordApiEndpoint = lib.mkOption {
+      type = lib.types.str;
+      default = defaultRecordApiEndpoint;
+      description = "Custom name for the Umami record API endpoint.";
+      example = "/api/alternate-record";
     };
     apiHostName = lib.mkOption {
       type = lib.types.str;
@@ -114,6 +129,65 @@ in
       };
     };
 
+    # Patched recorder script to use custom record api endpoint if not using default endpoint name
+    systemd.services."umami".wants = lib.mkIf (cfg.recordApiEndpoint != defaultRecordApiEndpoint) [
+      "umami-patch-recorder.service"
+    ];
+    systemd.services."umami-patch-recorder" =
+      lib.mkIf (cfg.recordApiEndpoint != defaultRecordApiEndpoint)
+        {
+          description = "Patch Umami recorder script to use custom record api endpoint";
+          after = [ "umami.service" ];
+          bindsTo = [ "umami.service" ]; # Stops when umami stops
+          serviceConfig = {
+            Type = "oneshot";
+            RemainAfterExit = true;
+            DynamicUser = false;
+            User = "caddy";
+            Group = "caddy";
+            CacheDirectory = "umami";
+            NoNewPrivileges = true;
+            PrivateTmp = true;
+            ProtectHome = true;
+            ProtectClock = true;
+            ProtectProc = "noaccess";
+            ProcSubset = "pid";
+            ProtectKernelLogs = true;
+            ProtectKernelModules = true;
+            ProtectKernelTunables = true;
+            ProtectControlGroups = true;
+            ProtectHostname = true;
+            RestrictSUIDSGID = true;
+            RestrictRealtime = true;
+            RestrictNamespaces = true;
+            LockPersonality = true;
+            RemoveIPC = true;
+            RestrictAddressFamilies = [
+              "AF_INET"
+              "AF_INET6"
+            ];
+            CapabilityBoundingSet = "";
+            SystemCallFilter = [
+              "@system-service"
+              "~@privileged"
+            ];
+            ExecStart = pkgs.writeShellScript "patch-recorder" ''
+              for i in $(seq 1 10); do
+                if ${pkgs.curl}/bin/curl -sf \
+                  http://${cfg.listenAddress}:${toString cfg.listenPort}/recorder.js \
+                  | ${pkgs.gnused}/bin/sed 's|${defaultRecordApiEndpoint}|${cfg.recordApiEndpoint}|g' \
+                  > ${recorderCacheDir}/recorder-patched.js; then
+                  chmod 644 ${recorderCacheDir}/recorder-patched.js
+                  exit 0
+                fi
+                sleep 2
+              done
+              echo "Failed to fetch recorder.js after 10 attempts" >&2
+              exit 1
+            '';
+          };
+        };
+
     # Caddy VHost for the Umami Web UI
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
@@ -122,8 +196,8 @@ in
       '';
     };
 
-    # Internal Caddy VHost for the tracking API, exposed via Cloudflare Tunnel.
-    # This serves the tracker script with a cache header and proxies the collect endpoint.
+    # Internal Caddy VHost for the tracking API and recording API, exposed via Cloudflare Tunnel.
+    # This serves the tracker and recorder script with a cache header and proxies the collect and record endpoint.
     services.caddy.virtualHosts."http://${cfg.apiHostName}" = {
       extraConfig = ''
         # Health check endpoint
@@ -146,6 +220,40 @@ in
 
         # Handle the collection endpoint.
         handle ${cfg.collectApiEndpoint} {
+          reverse_proxy http://${cfg.listenAddress}:${toString cfg.listenPort} {
+            header_up Host {http.reverse_proxy.upstream.hostport}
+          }
+        }
+
+        # Handle the replay recorder script with a custom cache header and if using a custom record API endpoint with a patched record API endpoint
+        ${lib.optionalString (cfg.recordApiEndpoint != defaultRecordApiEndpoint) ''
+          handle /${cfg.replayScriptName} {
+            rewrite * /recorder-patched.js
+            header Cache-Control "public, max-age=86400, s-maxage=604800"
+            file_server {
+              root ${recorderCacheDir}
+            }
+          }
+        ''}
+
+        # Fallback: serve recorder script directly without patching
+        ${lib.optionalString (cfg.recordApiEndpoint == defaultRecordApiEndpoint) ''
+          handle /${cfg.replayScriptName} {
+            rewrite * /recorder.js
+            header Cache-Control "public, max-age=86400, s-maxage=604800"
+            reverse_proxy http://${cfg.listenAddress}:${toString cfg.listenPort} {
+              header_up Host {http.reverse_proxy.upstream.hostport}
+            }
+          }
+        ''}
+
+        # Handle the record endpoint
+        handle ${cfg.recordApiEndpoint} {
+          ${
+            lib.optionalString (cfg.recordApiEndpoint != defaultRecordApiEndpoint) ''
+              rewrite * ${defaultRecordApiEndpoint}
+            ''
+          }
           reverse_proxy http://${cfg.listenAddress}:${toString cfg.listenPort} {
             header_up Host {http.reverse_proxy.upstream.hostport}
           }
