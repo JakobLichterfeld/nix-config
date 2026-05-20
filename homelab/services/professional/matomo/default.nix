@@ -229,7 +229,14 @@ in
 
           # robots.txt rule
           @robots path /robots.txt
-          respond @robots "User-agent: *\nDisallow: /\n" 200
+          respond @robots 200 {
+            body <<TXT
+            User-agent: *
+            Disallow: /
+            TXT
+            header Content-Type text/plain
+          }
+
 
           # Cache JavaScript files
           @matomojs path /matomo.js /piwik.js
@@ -246,7 +253,13 @@ in
 
           # Disallow all crawlers
           @robots path /robots.txt
-          respond @robots "User-agent: *\nDisallow: /\n" 200
+          respond @robots 200 {
+            body <<TXT
+            User-agent: *
+            Disallow: /
+            TXT
+            header Content-Type text/plain
+          }
 
           # Set the web root for all other requests to the Matomo package directory so Caddy can find the files
           root * ${config.services.matomo.package}/share

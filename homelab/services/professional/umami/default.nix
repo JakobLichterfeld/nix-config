@@ -207,7 +207,13 @@ in
 
         # Disallow all crawlers
         handle /robots.txt {
-          respond "User-agent: *\nDisallow: /\n" 200
+          respond 200 {
+            body <<TXT
+            User-agent: *
+            Disallow: /
+            TXT
+            header Content-Type text/plain
+          }
         }
 
         # Handle the tracker script with a custom cache header.
