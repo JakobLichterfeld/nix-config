@@ -3,6 +3,8 @@
   { name = "visual-studio-code"; } # Code Editor
   { name = "antigravity"; } # Google AI Coding Agent IDE
   { name = "claude-code"; }
+  { name = "cursor"; }
+  { name = "cursor-cli"; }
   { name = "copilot-for-xcode"; }
   { name = "devtoys"; } # Swiss Army knife for developers, it’s a toolbox of over 30+ handy utilities bundled into a clean UI
   { name = "sourcetree"; } # Git GUI
