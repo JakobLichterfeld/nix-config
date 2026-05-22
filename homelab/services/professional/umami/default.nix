@@ -218,7 +218,6 @@ in
             User-agent: *
             Disallow: /
             TXT
-            header Content-Type text/plain
           }
         }
 

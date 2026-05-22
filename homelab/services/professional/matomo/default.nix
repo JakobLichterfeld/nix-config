@@ -234,7 +234,6 @@ in
             User-agent: *
             Disallow: /
             TXT
-            header Content-Type text/plain
           }
 
 
@@ -258,7 +257,6 @@ in
             User-agent: *
             Disallow: /
             TXT
-            header Content-Type text/plain
           }
 
           # Set the web root for all other requests to the Matomo package directory so Caddy can find the files
