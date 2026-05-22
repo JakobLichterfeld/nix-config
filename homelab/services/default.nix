@@ -102,6 +102,31 @@ in
 
       };
     };
+    services.logrotate = {
+      enable = true;
+
+      settings.caddy = {
+        files = "${config.services.caddy.logDir}/*.log"; # rotate all Caddy log files in the configured log directory
+
+        frequency = "weekly"; # run log rotation once per week
+        rotate = 12; # keep the last 12 rotated log files --> 12 weeks
+
+        compress = true; # compress rotated logs to save disk space
+        delaycompress = true; # delay compression until the next rotation cycle
+
+        missingok = true; # do not fail if log files are missing
+        notifempty = true; # skip rotation for empty log files
+
+        sharedscripts = true; # run postrotate only once even if multiple files match
+
+        create = "0640 ${config.services.caddy.user} ${config.services.caddy.group}"; # create new log files with correct permissions
+
+        postrotate = ''
+          systemctl reload caddy
+        ''; # reload Caddy so it reopens the log files
+      };
+
+    };
     # nixpkgs.config.permittedInsecurePackages = [
     # ];
     virtualisation.podman = {
