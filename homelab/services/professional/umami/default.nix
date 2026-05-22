@@ -63,6 +63,12 @@ in
       description = "Internal hostname for the Umami API endpoint, primarily used by the Cloudflare Tunnel.";
       default = "umami-api.internal";
     };
+    previewOriginToBlock = lib.mkOption {
+      type = with lib.types; nullOr str;
+      default = null;
+      description = "Preview origin to block from tracking.";
+      example = "https:/xyz.example.com";
+    };
     homepage.name = lib.mkOption {
       type = lib.types.str;
       default = "Umami";
@@ -226,6 +232,12 @@ in
 
         # Handle the collection endpoint.
         handle ${cfg.collectApiEndpoint} {
+          ${
+            lib.optionalString (cfg.previewOriginToBlock != null) ''
+              @previewOriginToBlock header Origin ${cfg.previewOriginToBlock}
+              respond @previewOriginToBlock 403
+            ''
+          }
           reverse_proxy http://${cfg.listenAddress}:${toString cfg.listenPort} {
             header_up Host {http.reverse_proxy.upstream.hostport}
           }
@@ -254,16 +266,22 @@ in
         ''}
 
         # Handle the record endpoint
-        handle ${cfg.recordApiEndpoint} {
-          ${
-            lib.optionalString (cfg.recordApiEndpoint != defaultRecordApiEndpoint) ''
-              rewrite * ${defaultRecordApiEndpoint}
-            ''
+          handle ${cfg.recordApiEndpoint} {
+            ${
+              lib.optionalString (cfg.previewOriginToBlock != null) ''
+                @previewOriginToBlock header Origin ${cfg.previewOriginToBlock}
+                respond @previewOriginToBlock 403
+              ''
+            }
+            ${
+              lib.optionalString (cfg.recordApiEndpoint != defaultRecordApiEndpoint) ''
+                rewrite * ${defaultRecordApiEndpoint}
+              ''
+            }
+            reverse_proxy http://${cfg.listenAddress}:${toString cfg.listenPort} {
+              header_up Host {http.reverse_proxy.upstream.hostport}
+            }
           }
-          reverse_proxy http://${cfg.listenAddress}:${toString cfg.listenPort} {
-            header_up Host {http.reverse_proxy.upstream.hostport}
-          }
-        }
 
         # Catch-all for all other requests
         handle {

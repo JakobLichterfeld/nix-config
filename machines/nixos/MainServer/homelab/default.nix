@@ -287,6 +287,7 @@ in
         collectApiEndpoint = "${machinesSensitiveVars.OperatingCompany.statsW.collectApiEndpoint}";
         replayScriptName = "${machinesSensitiveVars.OperatingCompany.statsW.replayScriptName}";
         recordApiEndpoint = "${machinesSensitiveVars.OperatingCompany.statsW.recordApiEndpoint}";
+        previewOriginToBlock = "${machinesSensitiveVars.OperatingCompany.statsW.previewOriginToBlock}";
         homepage.category = "${machinesSensitiveVars.OperatingCompany.name}";
         cloudflared = {
           fqdn = "${machinesSensitiveVars.OperatingCompany.statsW.fqdn}";
