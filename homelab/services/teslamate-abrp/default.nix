@@ -8,7 +8,7 @@ let
   service = "teslamate-abrp";
   cfg = config.homelab.services.teslamate-abrp;
   homelab = config.homelab;
-  teslamate-abrp-version = "3.4.1";
+  teslamate-abrp-version = "3.4.3";
 in
 {
   options.homelab.services.${service} = {
