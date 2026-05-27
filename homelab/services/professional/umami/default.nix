@@ -69,6 +69,12 @@ in
       description = "Preview origin to block from tracking.";
       example = "https:/xyz.example.com";
     };
+    previewRefererToBlock = lib.mkOption {
+      type = with lib.types; nullOr str;
+      default = null;
+      description = "Preview referer to block from tracking.";
+      example = "*example.com*";
+    };
     homepage.name = lib.mkOption {
       type = lib.types.str;
       default = "Umami";
@@ -237,6 +243,12 @@ in
               respond @previewOriginToBlock 403
             ''
           }
+          ${
+            lib.optionalString (cfg.previewRefererToBlock != null) ''
+              @previewRefererToBlock header Referer ${cfg.previewRefererToBlock}
+              respond @previewRefererToBlock 403
+            ''
+          }
           reverse_proxy http://${cfg.listenAddress}:${toString cfg.listenPort} {
             header_up Host {http.reverse_proxy.upstream.hostport}
           }
@@ -270,6 +282,12 @@ in
               lib.optionalString (cfg.previewOriginToBlock != null) ''
                 @previewOriginToBlock header Origin ${cfg.previewOriginToBlock}
                 respond @previewOriginToBlock 403
+              ''
+            }
+            ${
+              lib.optionalString (cfg.previewRefererToBlock != null) ''
+                @previewRefererToBlock header Referer ${cfg.previewRefererToBlock}
+                respond @previewRefererToBlock 403
               ''
             }
             ${
