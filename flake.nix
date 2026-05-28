@@ -69,7 +69,7 @@
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
 
     teslamate = {
-      url = "github:teslamate-org/teslamate?rev=c91473e33ac3dc8362b52e791a14e08778f4c57f"; # v3.0.0
+      url = "github:teslamate-org/teslamate?rev=2f1a2e0baaf13d0da24d0717b7204e577d6d8a4c"; # v3.0.0+NixOS 26.05
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
