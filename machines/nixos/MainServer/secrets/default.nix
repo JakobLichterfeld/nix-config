@@ -31,6 +31,7 @@ in
   age.secrets.grafanaSecretKeyFile = {
     file = secretsBasePath + /grafanaSecretKeyFile.age; # content is the Grafana secret_key for signing data source settings like secrets and passwords. generated for example by running openssl rand -hex 32
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e grafanaSecretKeyFile.age
+    owner = "grafana";
   };
 
   age.secrets.hashedUserPassword = {
