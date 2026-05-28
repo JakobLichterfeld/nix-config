@@ -2,12 +2,12 @@
   description = "Configuration for MacOS and NixOS";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11?shallow=1";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05?shallow=1";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable?shallow=1";
-    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-25.11-darwin?shallow=1";
+    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-26.05-darwin?shallow=1";
     nixpkgs-darwin-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable?shallow=1";
     nix-darwin = {
-      url = "github:LnL7/nix-darwin/nix-darwin-25.11?shallow=1";
+      url = "github:LnL7/nix-darwin/nix-darwin-26.05?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     nix-darwin-unstable = {
@@ -41,13 +41,13 @@
       flake = false;
     };
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11?shallow=1";
-      # url = "https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz"; # if the above gets timeouts
+      url = "github:nix-community/home-manager/release-26.05?shallow=1";
+      # url = "https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz"; # if the above gets timeouts
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager-darwin = {
-      url = "github:nix-community/home-manager/release-25.11?shallow=1";
-      # url = "https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz"; # if the above gets timeouts
+      url = "github:nix-community/home-manager/release-26.05?shallow=1";
+      # url = "https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz"; # if the above gets timeouts
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     home-manager-darwin-unstable = {

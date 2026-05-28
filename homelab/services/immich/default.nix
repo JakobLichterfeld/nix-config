@@ -106,8 +106,6 @@ in
       mediaLocation = "${cfg.mediaDir}";
       database = {
         port = config.services.postgresql.port;
-        enableVectors = false;
-        enableVectorChord = true;
       };
       accelerationDevices = [ "/dev/dri/renderD128" ];
       # settings = {};

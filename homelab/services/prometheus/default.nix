@@ -216,6 +216,11 @@ in
       default = false;
       description = "Enable test alert for Prometheus";
     };
+    grafanaSecretKeyFile = lib.mkOption {
+      type = lib.types.path;
+      description = "File with the Grafana secret_key for signing data source settings like secrets and passwords";
+      default = config.age.secrets.grafanaSecretKeyFile.path;
+    };
     homepage.name = lib.mkOption {
       type = lib.types.str;
       default = "Prometheus";
@@ -1192,6 +1197,9 @@ in
 
       # If Grafana is enabled, configure it to use Prometheus and Loki as a data source and add dashboards
       services.grafana = lib.mkIf config.services.grafana.enable {
+        settings = {
+          security.secret_key = lib.mkForce "$__file{${cfg.grafanaSecretKeyFile}}";
+        };
         provision = {
           enable = true;
           datasources.settings.datasources =
