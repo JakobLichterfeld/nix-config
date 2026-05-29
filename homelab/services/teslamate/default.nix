@@ -153,6 +153,7 @@ in
         listenAddress = "0.0.0.0"; # listen on all addresses
         port = cfg.listenPortGrafana;
         urlPath = "/";
+        secretKeyFile = config.age.secrets.grafanaSecretKeyFile.path;
       };
 
       mqtt = {
