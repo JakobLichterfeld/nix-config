@@ -12,6 +12,7 @@
   "Apple Developer" = 640199958;
   "Transporter" = 1450874784;
   "TestFlight" = 899247664;
+  "Apple Configurator" = 1037126344;
 
   # Writing
   "reMarkable desktop" = 1276493162;
