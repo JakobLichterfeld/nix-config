@@ -227,9 +227,9 @@ in
           }
         }
 
-        # Handle the tracker script with a custom cache header.
+        # Handle the tracker script with a custom cache header (cache for 30 days (2592000s) + immutable: browsers skip revalidation entirely).
         handle /${cfg.trackerScriptName} {
-          header Cache-Control "public, max-age=86400, s-maxage=604800"
+          header Cache-Control "public, max-age=2592000, immutable"
           reverse_proxy http://${cfg.listenAddress}:${toString cfg.listenPort} {
             header_up Host {http.reverse_proxy.upstream.hostport}
           }
@@ -254,11 +254,12 @@ in
           }
         }
 
-        # Handle the replay recorder script with a custom cache header and if using a custom record API endpoint with a patched record API endpoint
+        # Handle the replay recorder script with a custom cache header (cache for 30 days (2592000s) + immutable: browsers skip revalidation entirely)
+        # and if using a custom record API endpoint with a patched record API endpoint
         ${lib.optionalString (cfg.recordApiEndpoint != defaultRecordApiEndpoint) ''
           handle /${cfg.replayScriptName} {
             rewrite * /recorder-patched.js
-            header Cache-Control "public, max-age=86400, s-maxage=604800"
+            header Cache-Control "public, max-age=2592000, immutable"
             file_server {
               root ${recorderCacheDir}
             }
@@ -269,7 +270,7 @@ in
         ${lib.optionalString (cfg.recordApiEndpoint == defaultRecordApiEndpoint) ''
           handle /${cfg.replayScriptName} {
             rewrite * /recorder.js
-            header Cache-Control "public, max-age=86400, s-maxage=604800"
+            header Cache-Control "public, max-age=2592000, immutable"
             reverse_proxy http://${cfg.listenAddress}:${toString cfg.listenPort} {
               header_up Host {http.reverse_proxy.upstream.hostport}
             }
