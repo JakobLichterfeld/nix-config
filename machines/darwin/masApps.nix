@@ -25,4 +25,7 @@
   "Numbers" = 361304891;
   "Pages" = 361309726;
   "Keynote" = 361285480;
+
+  # Others
+  "AusweisApp Bund " = 948660805;
 }
