@@ -16,7 +16,13 @@
 
   # Video
   "DaVinci Resolve" = 571213070;
+  "iMovie" = 408981434;
 
   # Remote
   "Windows App" = 1295203466;
+
+  # Office
+  "Numbers" = 361304891;
+  "Pages" = 361309726;
+  "Keynote" = 361285480;
 }
