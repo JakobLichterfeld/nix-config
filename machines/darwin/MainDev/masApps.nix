@@ -16,6 +16,9 @@
   # Writing
   "reMarkable desktop" = 1276493162;
 
+  #Audio
+  "GarageBand" = 682658836;
+
   # social network
   # "X" = 333903271;
 }
