@@ -11,6 +11,7 @@
   { name = "firebase-cli"; }
   { name = "ollama"; } # Ollama: Local LLM inference
   { name = "gemini-cli"; }
+  { name = "opencode"; }
   { name = "minify"; } # Go minifiers for web formats, tdewolff/minify
 
   # Encryption and security tools
