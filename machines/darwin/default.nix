@@ -38,7 +38,6 @@ in
     taps = {
       "homebrew/homebrew-core" = inputs.homebrew-core;
       "homebrew/homebrew-cask" = inputs.homebrew-cask;
-      "domt4/homebrew-autoupdate" = inputs.homebrew-domt4-autoupdate;
       "krtirtho/homebrew-apps" = inputs.homebrew-spotube;
       "gromgit/homebrew-fuse" = inputs.homebrew-fuse;
     };

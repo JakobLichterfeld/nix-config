@@ -649,22 +649,6 @@
         "type": "github"
       }
     },
-    "homebrew-domt4-autoupdate": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1774787427,
-        "narHash": "sha256-oJ5BdTlz2AaJgSmPAdWmW3DEHs9CykiTO//47p7XSIY=",
-        "owner": "DomT4",
-        "repo": "homebrew-autoupdate",
-        "rev": "d1849bcbe3b9a531b6619f98baea419ed2ea37e7",
-        "type": "github"
-      },
-      "original": {
-        "owner": "DomT4",
-        "repo": "homebrew-autoupdate",
-        "type": "github"
-      }
-    },
     "homebrew-fuse": {
       "flake": false,
       "locked": {
@@ -1122,7 +1106,6 @@
         "home-manager-darwin-unstable": "home-manager-darwin-unstable",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
-        "homebrew-domt4-autoupdate": "homebrew-domt4-autoupdate",
         "homebrew-fuse": "homebrew-fuse",
         "homebrew-spotube": "homebrew-spotube",
         "nix-darwin": "nix-darwin",

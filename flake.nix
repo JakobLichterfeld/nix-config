@@ -25,11 +25,6 @@
       url = "github:homebrew/homebrew-cask?shallow=1";
       flake = false;
     };
-    # automatically update Homebrew, installed via declarative tap management of nix-homebrew
-    homebrew-domt4-autoupdate = {
-      url = "github:DomT4/homebrew-autoupdate?shallow=1";
-      flake = false;
-    };
     # Spotube
     homebrew-spotube = {
       url = "github:KRTirtho/homebrew-apps?shallow=1";
@@ -94,7 +89,6 @@
       nix-homebrew,
       homebrew-core,
       homebrew-cask,
-      homebrew-domt4-autoupdate,
       homebrew-spotube,
       homebrew-fuse,
       nix-darwin,
