@@ -2,6 +2,7 @@
   # Development
   { name = "visual-studio-code"; } # Code Editor
   { name = "antigravity"; } # Google AI Coding Agent IDE
+  { name = "claude"; } # Claude AI desktop app
   { name = "claude-code"; }
   { name = "cursor"; }
   { name = "cursor-cli"; }
@@ -14,7 +15,7 @@
   # { name = "flutter"; } # we currently use Flutter Version Management (FVM) to manage the global flutter version
   { name = "iloader"; } # iOS Sideloading Companion
   { name = "impactor"; } # iOS Sideloading Companion
-  { name = "balenaetcher"; }
+  { name = "balenaetcher"; } # Tool to flash OS images to SD cards & USB drives
   { name = "orbstack"; } # Fast, light, powerful way to run containers
   { name = "wireshark-app"; } # Network protocol analyzer
 
