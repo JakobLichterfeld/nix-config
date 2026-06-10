@@ -13,6 +13,7 @@
   { name = "gemini-cli"; }
   { name = "opencode"; }
   { name = "minify"; } # Go minifiers for web formats, tdewolff/minify
+  { name = "rtk"; } # CLI proxy to minimize LLM token consumption
 
   # Encryption and security tools
   { name = "ophcrack"; }
