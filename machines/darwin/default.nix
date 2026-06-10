@@ -153,6 +153,8 @@ in
       { path = "/Applications/DeepL.app/"; }
       # ChatGPT
       { path = "/Applications/ChatGPT.app/"; }
+      # Claude
+      { path = "/Applications/Claude.app/"; }
       # Telegram
       { path = "/Applications/Telegram.app/"; }
 
