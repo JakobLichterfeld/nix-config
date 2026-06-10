@@ -51,9 +51,13 @@ in
   homebrew = {
     enable = true;
     onActivation = {
-      autoUpdate = true; # update homebrew on activation of the flake
+      # Do not auto-update Homebrew or upgrade formulae on activation.
+      # Updates are controlled exclusively via `nix flake update`, which updates
+      # the tap inputs in flake.lock. This ensures reproducible, declarative state.
+      autoUpdate = false; # do not auto-update homebrew formulae on activation of the flake
+      upgrade = false; # do not upgrade all formulae on activation of the flake
       cleanup = "zap"; # cleanup all formulae not in the flake
-      upgrade = true; # upgrade all formulae on activation of the flake
+
     };
     prefix = "/opt/homebrew";
     caskArgs = {
