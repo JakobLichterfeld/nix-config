@@ -206,11 +206,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1780630679,
-        "narHash": "sha256-hhQyVAYmNKziZ0T+T4Gsk0PYmnz4vdzOzpkJAmDASKM=",
+        "lastModified": 1781195293,
+        "narHash": "sha256-C9OFghpvf3RzK2rGsZjjNNrTrHgFOecEkpDhFnU4QGs=",
         "owner": "cachix",
         "repo": "devenv",
-        "rev": "90ed6227ab389dd4e874a69a724f25dba312b754",
+        "rev": "5f5109c83854577191634f7b86fc6e0c8fd44964",
         "type": "github"
       },
       "original": {
@@ -1223,17 +1223,17 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1780835371,
-        "narHash": "sha256-7z9F62KYG4ZU3Ibe20+VgcvVP0bt2C9Uy/ZfXLPouCE=",
+        "lastModified": 1781351337,
+        "narHash": "sha256-QimKjPJJTvkCJmzX2TRpdP3LtePc1Jj/O/SQXFyHLS8=",
         "owner": "teslamate-org",
         "repo": "teslamate",
-        "rev": "2a1076f7aada1189af9b9c56d93960170262cf50",
+        "rev": "a8e7ffa2015119622be1668ad0438cace27db4d1",
         "type": "github"
       },
       "original": {
         "owner": "teslamate-org",
         "repo": "teslamate",
-        "rev": "2a1076f7aada1189af9b9c56d93960170262cf50",
+        "rev": "a8e7ffa2015119622be1668ad0438cace27db4d1",
         "type": "github"
       }
     },
