@@ -141,7 +141,7 @@ in
     backingArray = hl.mounts.slower;
     # user = config.homelab.user;
     # group = config.homelab.group;
-    percentageFree = 60;
+    maxUsedPercentage = 60; # move data off the cache only once it is >60% *used* (not 60% free); lower this to flush sooner onto the parity-protected array
     excludedPaths =
       [
         ".DS_Store"

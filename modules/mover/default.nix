@@ -29,8 +29,15 @@ in
       type = types.str;
       default = "${hl.mounts.slower}";
     };
-    percentageFree = mkOption {
-      description = "The target free percentage of the SSD cache array";
+    maxUsedPercentage = mkOption {
+      description = ''
+        Maximum cache usage in percent that the mover targets: least-recently-accessed
+        files are moved from the cache array to the backing array until used capacity
+        drops to this value. NOTE: this is *max used*, not free space — a LOWER value
+        evicts more aggressively onto the (parity-protected) backing array, a higher
+        value keeps more data on the cache. Passed verbatim as the mergerfs-uncache
+        `--target` argument.
+      '';
       type = types.int;
       apply = old: toString old;
       default = 50;
@@ -105,7 +112,7 @@ in
             ${lib.getExe mergerfs-uncache} \
             --source ${config.services.mover.cacheArray} \
             --destination ${config.services.mover.backingArray} \
-            --target ${config.services.mover.percentageFree} \
+            --target ${config.services.mover.maxUsedPercentage} \
             --exclude ${config.services.mover.excludedPaths}
           ''; # --uid ${config.services.mover.user} --gid ${config.services.mover.group}";
           # User = config.services.mover.user;
