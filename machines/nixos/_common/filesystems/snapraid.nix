@@ -34,7 +34,7 @@
 
           cat "$TMP_OUT"
 
-          if grep -q "The array appears to be empty" "$TMP_OUT"; then
+          if grep -qE "The array (is|appears to be) empty" "$TMP_OUT"; then
             echo "[INFO] SnapRAID reports empty array – scrub skipped." >&2
             exit 0
           fi
