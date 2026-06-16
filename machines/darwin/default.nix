@@ -73,6 +73,10 @@ in
       autoUpdate = false; # do not auto-update homebrew formulae on activation of the flake
       upgrade = false; # do not upgrade all formulae on activation of the flake
       cleanup = "zap"; # cleanup all formulae not in the flake
+      extraFlags = [
+        "--force-cleanup" # workaround till https://github.com/nix-darwin/nix-darwin/pull/1789 is merged
+
+      ];
 
     };
     prefix = "/opt/homebrew";
