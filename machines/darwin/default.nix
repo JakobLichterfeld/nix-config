@@ -46,6 +46,22 @@ in
     #
     # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
     mutableTaps = false;
+
+    # Declarative Homebrew tap trust entries.
+    #
+    # Note: The trust entries are _not_ removed if you remove them from those lists!
+    # Use the `brew untrust` command to remove a trust entry.
+    #
+    # To quote upstream documentation:
+    # > Trust a whole tap only when you are comfortable with all current and
+    # > future formulae, casks and external commands from that tap being loaded
+    # > by Homebrew.
+    trust = {
+      formulae = [ "gromgit/fuse/sshfs-mac" ];
+      casks = [ "krtirtho/homebrew-apps/spotube" ];
+      commands = [ ];
+      taps = [ ];
+    };
   };
 
   homebrew = {
@@ -64,7 +80,7 @@ in
       no_quarantine = true;
     };
 
-    taps = builtins.attrNames config.nix-homebrew.taps;
+    taps = builtins.attrNames config.nix-homebrew.taps; # Align homebrew taps config with nix-homebrew
     masApps = masApps;
     brews = brews;
     casks = map mkGreedy (casks);
