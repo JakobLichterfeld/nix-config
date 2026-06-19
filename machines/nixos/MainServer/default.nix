@@ -104,6 +104,16 @@ in
       ];
     };
   };
+
+  # The second onboard NIC (enp2s0) is present but unconfigured and has no link.
+  # The node_exporter ethtool collector probes it every scrape and logs
+  # "ethtool link info error ... no such device errno=19" because the link
+  # settings cannot be retrieved while the interface is down. Exclude it from
+  # the collector to silence the recurring error (host-specific, so kept here
+  # rather than in the shared prometheus module).
+  services.prometheus.exporters.node.extraFlags = lib.mkAfter [
+    "--collector.ethtool.device-exclude=^enp2s0$"
+  ];
   zfs-root = {
     boot = {
       partitionScheme = {
