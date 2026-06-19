@@ -13,6 +13,11 @@ let
   cfgSubService = config.homelab.services.${serviceSubService};
   cfgSubServiceTwo = config.homelab.services.${serviceSubServiceTwo};
 
+  # Stable UID for the Grafana dashboard folder so the direct dashboards URL never
+  # changes across rebuilds. Used as single source of truth for both the folder
+  # provisioning (folderUid) and the Caddy redirect below.
+  grafanaDashboardFolderUid = "prometheus_folder";
+
   # --- Restic Exporter Dynamic Configuration ---
   # Get all configured restic backup jobs
   resticBackups = config.services.restic.backups;
@@ -1224,7 +1229,10 @@ in
             {
               name = "Prometheus";
               folder = "Prometheus";
-              uid = "prometheus_folder";
+              # Pin the folder UID so the direct dashboards URL stays stable across
+              # rebuilds. Requires a clean Grafana state (no pre-existing folder of
+              # the same name), otherwise Grafana matches by name and ignores this.
+              folderUid = grafanaDashboardFolderUid;
               type = "file";
               # disableDeletion = false;
               # allowUiUpdates = true;
@@ -1255,7 +1263,7 @@ in
       services.caddy.virtualHosts."${cfgSubServiceTwo.url}" = lib.mkIf config.services.grafana.enable {
         useACMEHost = homelab.baseDomain;
         extraConfig = ''
-          redir / /dashboards/f/beui7s12o7400f 302
+          redir / /dashboards/f/${grafanaDashboardFolderUid} 302
           reverse_proxy http://${toString config.services.grafana.settings.server.http_addr}:${toString config.services.grafana.settings.server.http_port}
         '';
       };
