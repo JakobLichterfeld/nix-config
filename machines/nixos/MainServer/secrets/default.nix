@@ -93,6 +93,7 @@ in
   age.secrets.smtpPassword = {
     file = secretsBasePath + /smtpPassword.age; # content is the SMTP password, the file must end with a newline (\n), if you use gmail, you need an app specific password https://myaccount.google.com/apppasswords
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e smtpPassword.age
+    owner = "matomo"; # matomo-archive-processing runs scheduled tasks as the matomo user and invokes msmtp/sendmail, which reads this file via passwordeval; without this it fails with "Permission denied" and the oneshot exits non-zero
   };
 
   age.secrets.syncthingGuiPassword = {
