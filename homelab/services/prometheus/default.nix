@@ -226,6 +226,11 @@ in
       description = "File with the Grafana secret_key for signing data source settings like secrets and passwords";
       default = config.age.secrets.grafanaSecretKeyFile.path;
     };
+    grafanaAdminPasswordFile = lib.mkOption {
+      type = lib.types.path;
+      description = "File with the Grafana admin password, applied on first creation of the admin user (e.g. after a state reset) so it does not need to be set manually";
+      default = config.age.secrets.grafanaAdminPassword.path;
+    };
     homepage.name = lib.mkOption {
       type = lib.types.str;
       default = "Prometheus";
@@ -1204,6 +1209,9 @@ in
       services.grafana = lib.mkIf config.services.grafana.enable {
         settings = {
           security.secret_key = lib.mkForce "$__file{${cfg.grafanaSecretKeyFile}}";
+          # Admin password is read from a file so it survives a Grafana state reset
+          # (Grafana applies it when the admin user is first created).
+          security.admin_password = lib.mkForce "$__file{${cfg.grafanaAdminPasswordFile}}";
         };
         provision = {
           enable = true;

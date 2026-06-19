@@ -28,6 +28,12 @@ in
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e fritzboxExporterEnv.age
   };
 
+  age.secrets.grafanaAdminPassword = {
+    file = secretsBasePath + /grafanaAdminPassword.age; # content is the plaintext Grafana admin password, applied on first creation of the admin user (e.g. after a state reset)
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e grafanaAdminPassword.age
+    owner = "grafana";
+  };
+
   age.secrets.grafanaSecretKeyFile = {
     file = secretsBasePath + /grafanaSecretKeyFile.age; # content is the Grafana secret_key for signing data source settings like secrets and passwords. generated for example by running openssl rand -hex 32
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e grafanaSecretKeyFile.age

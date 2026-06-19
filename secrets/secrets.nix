@@ -35,6 +35,7 @@ in
   "dnsApiCredentials.age".publicKeys = serverAndJakob;
   "dnsApiCredentialsFallback.age".publicKeys = serverAndJakob;
   "fritzboxExporterEnv.age".publicKeys = allKeys;
+  "grafanaAdminPassword.age".publicKeys = allKeys;
   "grafanaSecretKeyFile.age".publicKeys = serverAndJakob;
   "hashedUserPassword.age".publicKeys = serverAndWslEnvDataIndexerAndJakob;
   "hashedUserPasswordChristine.age".publicKeys = serverAndChristine;
