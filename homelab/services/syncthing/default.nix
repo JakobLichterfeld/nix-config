@@ -40,6 +40,11 @@ in
       type = lib.types.int;
       default = 8384;
     };
+    guiUser = lib.mkOption {
+      description = "Username for Syncthing's GUI.";
+      type = lib.types.str;
+      default = "syncthing";
+    };
     guiPasswordFile = lib.mkOption {
       description = "Path to file containing the plaintext password for Syncthing's GUI.";
       type = with lib.types; nullOr path;
@@ -126,6 +131,7 @@ in
       guiPasswordFile = lib.mkIf (cfg.guiPasswordFile != null) cfg.guiPasswordFile;
       settings = {
         gui = {
+          user = cfg.guiUser;
           theme = "black";
         };
         options = {
