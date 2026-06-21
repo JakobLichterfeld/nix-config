@@ -215,7 +215,7 @@ in
             category = "External Services";
             name = "deSEC";
             description = "Dynamic DNS Service";
-            icon = "https://systemsecurity.com/icons/desec.svg";
+            icon = "https://talk.desec.io/uploads/default/original/1X/21bb400aa6eda4c68f9a6824d4c4b65ada9462d1.jpeg";
             href = "https://desec.io/domains";
             siteMonitor = "https://desec.io";
           }
