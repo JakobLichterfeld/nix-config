@@ -1,4 +1,4 @@
-{ ... }:
+{ config, ... }:
 let
   secretsBasePath = ./../../../../secrets;
 in
@@ -105,6 +105,8 @@ in
   age.secrets.syncthingGuiPassword = {
     file = secretsBasePath + /syncthingGuiPassword.age; # content is the plaintext password for Syncthing's GUI.
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e syncthingGuiPassword.age
+    owner = config.services.syncthing.user;
+    group = config.services.syncthing.group;
   };
 
   age.secrets.tailscaleAuthKey = {

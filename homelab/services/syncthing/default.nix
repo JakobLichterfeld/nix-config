@@ -36,6 +36,10 @@ in
       type = lib.types.str;
       default = "${service}.${homelab.baseDomain}";
     };
+    listenAddress = lib.mkOption {
+      type = lib.types.str;
+      default = "127.0.0.1";
+    };
     listenPort = lib.mkOption {
       type = lib.types.int;
       default = 8384;
@@ -105,12 +109,13 @@ in
       "Z ${cfg.dataDir} 0770 ${homelab.user} ${homelab.group} - -"
     ];
 
-    # Syncthing ports: 8384 for remote access to GUI
+    # Syncthing ports:
+    # 8384 for remote access to GUI = cfg.listenPort is disabled
     # 22000 TCP and/or UDP for sync traffic
     # 21027/UDP for discovery
     # source: https://docs.syncthing.net/users/firewall.html
     networking.firewall.allowedTCPPorts = [
-      cfg.listenPort
+      # cfg.listenPort # only access GUI via reverse proxy
       22000
     ];
     networking.firewall.allowedUDPPorts = [
@@ -125,7 +130,7 @@ in
       user = homelab.user; # User to run Syncthing as
       dataDir = cfg.dataDir; # Default folder for new synced folders
       configDir = cfg.stateDir; # Folder for Syncthing's settings and keys
-      guiAddress = "0.0.0.0:${toString cfg.listenPort}"; # Listen on all interfaces
+      guiAddress = "${toString cfg.listenAddress}:${toString cfg.listenPort}";
       overrideFolders = false;
       overrideDevices = false;
       guiPasswordFile = lib.mkIf (cfg.guiPasswordFile != null) cfg.guiPasswordFile;
@@ -149,10 +154,19 @@ in
       Environment = "HOME=${cfg.dataDir}";
     };
 
+    # Otherwise, syncthing-init will not be restarted during a switch (guiPasswordFile is
+    # a fixed path). Trigger the encrypted source file so that a password change is automatically
+    # applied during the next switch.
+    systemd.services.syncthing-init.restartTriggers = [
+      cfg.guiPasswordFile
+    ];
+
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
-        reverse_proxy http://127.0.0.1:${toString cfg.listenPort}
+        reverse_proxy http://127.0.0.1:${toString cfg.listenPort} {
+          header_up Host 127.0.0.1:${toString cfg.listenPort}
+        }
       '';
     };
   };
