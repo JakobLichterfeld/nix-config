@@ -603,11 +603,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782166451,
-        "narHash": "sha256-SA7LyrayyZBvtzZnesnSLV7haciFuVLeZaX2hd5v4j4=",
+        "lastModified": 1782522538,
+        "narHash": "sha256-CvOaUvJ+mXlxU3m2cPWKcOAhtKETsPUYhq+Xa5ewBp4=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "471a1d2f840eb7fcbdfd541d99c13a64096f46db",
+        "rev": "8d8a6cc50ddc60748791a14ee1163c865ec57635",
         "type": "github"
       },
       "original": {
@@ -620,11 +620,11 @@
     "homebrew-cask": {
       "flake": false,
       "locked": {
-        "lastModified": 1782201496,
-        "narHash": "sha256-kMBe6aGa/5kFzKJKdW0MdZBHiONh9cqxZzsSZ2hvnUM=",
+        "lastModified": 1782547067,
+        "narHash": "sha256-6kmsNe4ZxF+dhfUukZ2beHPFhEKSOrNIVNuJpS9ewIA=",
         "owner": "homebrew",
         "repo": "homebrew-cask",
-        "rev": "275134fe0c2e852d1d88d585515440c0291a70f6",
+        "rev": "44623b336cc19043ffcb4acc8586f304420711d6",
         "type": "github"
       },
       "original": {
@@ -636,11 +636,11 @@
     "homebrew-core": {
       "flake": false,
       "locked": {
-        "lastModified": 1782201521,
-        "narHash": "sha256-dSfdR4QH9YnGimm7lj9SEepY+zi+bhf+zM8GUv8pSCw=",
+        "lastModified": 1782546922,
+        "narHash": "sha256-e6imXXg/HjBnpsFDwCM74cAuKjpMjewIZuPCqL4YG/o=",
         "owner": "homebrew",
         "repo": "homebrew-core",
-        "rev": "9f4023e7dce609cec467ab3441abfc0be7ed0649",
+        "rev": "d8a66be4d3147495e0c6f11f4dfdb23445c87390",
         "type": "github"
       },
       "original": {
@@ -947,11 +947,11 @@
     },
     "nixpkgs-darwin": {
       "locked": {
-        "lastModified": 1782041437,
-        "narHash": "sha256-QxQvXkDqx7DrzQSGRzh7Lv08t2fCCnLICQvap3WVzQQ=",
+        "lastModified": 1782185013,
+        "narHash": "sha256-MMIaAyu3HWrWUBTWEGjhSw3CxfAOVfgqdWv4hcx/+Fs=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "ea68a74f45ad6311f4bff62b865932ac195d46a7",
+        "rev": "9a54db6898b38a6beded82ce6890b46a0a517d72",
         "type": "github"
       },
       "original": {
@@ -963,11 +963,11 @@
     },
     "nixpkgs-darwin-unstable": {
       "locked": {
-        "lastModified": 1781607440,
-        "narHash": "sha256-rxO+uc/KFbSJp+pgyXRuAX6QlG9hJdnt0BXpEQRXY+U=",
+        "lastModified": 1782175435,
+        "narHash": "sha256-EMzXKmnOtBQ2MnvpiNOm7E+kOMvdPrIKaeg52Tip2Uk=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "3e41b24abd260e8f71dbe2f5737d24122f972158",
+        "rev": "89570f24e97e614aa34aa9ab1c927b6578a43775",
         "type": "github"
       },
       "original": {
@@ -1013,11 +1013,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1781577229,
-        "narHash": "sha256-lrp67w8AulE9Ks53n27I45ADSzbOCn4H+CNW1Ck8B+8=",
+        "lastModified": 1782467914,
+        "narHash": "sha256-pGvFkM8N0xEkIIXDe5YYfbEAvHrk4IxBrjB/x8OomhE=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "567a49d1913ce81ac6e9582e3553dd90a955875f",
+        "rev": "e73de5be04e0eff4190a1432b946d469c794e7b4",
         "type": "github"
       },
       "original": {
@@ -1045,11 +1045,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1782116945,
-        "narHash": "sha256-G3tw/IXmaH6IQ2upZvhuN9sG8CkuX+BLuJDpE8hz0Ds=",
+        "lastModified": 1782375420,
+        "narHash": "sha256-wiPYmEuHbJvleW489n6+lamL7JSJg3pcKUYwURU9CkI=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "34268251cf5547d39063f2c5ea9a196246f7f3a6",
+        "rev": "4062d36ebeae843c750011eef6b61ec9a9dbc9a9",
         "type": "github"
       },
       "original": {
@@ -1169,11 +1169,11 @@
     "spotblock": {
       "flake": false,
       "locked": {
-        "lastModified": 1781949143,
-        "narHash": "sha256-LCiLvqddojqBktzeQyUlFeU8JXyo3vDxaYoUkacrT/o=",
+        "lastModified": 1782417277,
+        "narHash": "sha256-XYK4zxUF6nIEagnM3oNVyYKlpCeca2SDUMH+vpRqF24=",
         "owner": "vincentkenny01",
         "repo": "spotblock",
-        "rev": "5eadb628cd95f7b5a529112f1c538b68f7470df1",
+        "rev": "c0472f099cb807c9eb0324b494a9a4eaa33a4226",
         "type": "github"
       },
       "original": {
