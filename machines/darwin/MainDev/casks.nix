@@ -7,6 +7,7 @@
   { name = "cursor"; }
   { name = "cursor-cli"; }
   { name = "copilot-for-xcode"; }
+  { name = "ollama-app"; } # Ollama: Local LLM inference
   { name = "devtoys"; } # Swiss Army knife for developers, it’s a toolbox of over 30+ handy utilities bundled into a clean UI
   { name = "sourcetree"; } # Git GUI
   { name = "android-studio"; }
