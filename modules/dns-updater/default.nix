@@ -62,6 +62,7 @@ in
           "network-online.target"
         ]
         ++ lib.optional config.services.tailscale.enable "tailscaled.service"
+        ++ lib.optional config.services.tailscale.enable "tailscaled-autoconnect.service"
         ++ lib.optional config.services.blocky.enable "blocky.service";
       wants = [ "network-online.target" ];
       serviceConfig = {
