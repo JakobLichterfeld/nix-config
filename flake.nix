@@ -121,6 +121,7 @@
             nixpkgs.overlays = [
               (final: prev: {
                 memmon = prev.callPackage ./pkgs/memmon { };
+                codegraph = prev.callPackage ./pkgs/codegraph { };
               })
             ];
           }
