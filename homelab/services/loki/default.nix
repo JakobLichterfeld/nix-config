@@ -75,13 +75,14 @@ in
           # the directory managed by the NixOS module instead of relying on the
           # unit's WorkingDirectory for relative default paths
           path_prefix = config.services.loki.dataDir;
+          # address the internal components (query frontend, ring members) advertise
+          # to each other; must be loopback because the gRPC server only listens
+          # there -- otherwise the querier dials the LAN IP and every read hangs
+          instance_addr = "127.0.0.1";
           replication_factor = 1; # single instance: store every log line once, no replicas
           # the ring coordinates multiple Loki instances; with a single instance it
           # only ever contains the process itself
-          ring = {
-            instance_addr = "127.0.0.1"; # address this instance registers in the ring; nobody else needs to reach it
-            kvstore.store = "inmemory"; # keep the ring in process memory instead of consul/etcd or memberlist gossip
-          };
+          ring.kvstore.store = "inmemory"; # keep the ring in process memory instead of consul/etcd or memberlist gossip
           storage.filesystem = {
             chunks_directory = "${config.services.loki.dataDir}/chunks"; # the actual log data
             rules_directory = "${config.services.loki.dataDir}/rules"; # ruler storage (no alerting rules defined yet)
