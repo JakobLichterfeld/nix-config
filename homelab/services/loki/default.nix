@@ -153,7 +153,37 @@ in
         max_age       = "12h"
         relabel_rules = loki.relabel.journal.rules
         labels        = { job = "systemd-journal" }
-        forward_to    = [loki.write.local.receiver]
+        forward_to    = [loki.process.container_level.receiver]
+      }
+
+      // Podman's journald log driver flags every stderr line of a container as
+      // priority "err" no matter what the line actually says, so the level label
+      // is wrong for containers that write their logs to stderr. For lines from
+      // podman units that carry a level tag in the message (e.g. "[INFO]"),
+      // overwrite the level label with that tag; lines without a tag keep the
+      // stream-based level so real errors still surface.
+      loki.process "container_level" {
+        forward_to = [loki.write.local.receiver]
+
+        stage.match {
+          selector = "{unit=~\"podman-.+\"} |~ \"\\\\[(?i)(DEBUG|INFO|NOTICE|WARNING|WARN|ERROR|CRITICAL|FATAL)\\\\]\""
+
+          stage.regex {
+            expression = "\\[(?P<extracted_level>(?i)(DEBUG|INFO|NOTICE|WARNING|WARN|ERROR|CRITICAL|FATAL))\\]"
+          }
+          stage.template {
+            source   = "extracted_level"
+            template = "{{ lower .Value }}"
+          }
+          // normalize to the journald priority keywords used by all other units
+          stage.template {
+            source   = "extracted_level"
+            template = "{{ if eq .Value \"error\" }}err{{ else if eq .Value \"warn\" }}warning{{ else if eq .Value \"critical\" }}crit{{ else if eq .Value \"fatal\" }}crit{{ else }}{{ .Value }}{{ end }}"
+          }
+          stage.labels {
+            values = { level = "extracted_level" }
+          }
+        }
       }
 
       // Push to the local Loki instance
