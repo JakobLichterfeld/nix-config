@@ -1212,6 +1212,11 @@ in
           # Admin password is read from a file so it survives a Grafana state reset
           # (Grafana applies it when the admin user is first created).
           security.admin_password = lib.mkForce "$__file{${cfg.grafanaAdminPasswordFile}}";
+          # The NixOS module disables the Grafana and plugin update checks by
+          # default -- except the plugin check when declarativePlugins is unset.
+          # Plugins only ever change through nixpkgs here, so the 10-minute check
+          # is pure log noise and an unnecessary call to grafana.com.
+          analytics.check_for_plugin_updates = false;
         };
         provision = {
           enable = true;
