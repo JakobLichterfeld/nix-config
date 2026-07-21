@@ -74,6 +74,12 @@ in
       # webDriverSupport = true; # Enable WebDriver support for web scraping.
     };
 
+    # browserless logs without level tags; without this, every stderr line of
+    # the playwright container would show up as level "err" in Loki
+    homelab.services.loki.untaggedContainerLogUnits =
+      lib.mkIf config.services.changedetection-io.playwrightSupport
+        [ "podman-changedetection-io-playwright.service" ];
+
     # Playwright can currently leak memory. See https://github.com/dgtlmoon/changedetection.io/wiki/Playwright-content-fetcher#playwright-memory-leak
     # To mitigate this, we can limit the memory usage of the service.
     # This is a workaround until the issue is resolved upstream.

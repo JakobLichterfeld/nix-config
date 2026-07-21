@@ -2,6 +2,27 @@
 let
   service = "loki";
   cfg = config.homelab.services.${service};
+
+  # Alloy pipeline stages forcing level="info" for container units whose logs
+  # carry no level tag (declared by the owning service modules via
+  # untaggedContainerLogUnits). Rendered before the tag-parsing stage so a
+  # tagged line still wins.
+  untaggedLevelStages = lib.optionalString (cfg.untaggedContainerLogUnits != [ ]) (
+    ''
+      // These units log without level tags, so podman's stream priority would
+      // leave every stderr line at "err"; force "info" instead. Declared by the
+      // owning service modules via homelab.services.loki.untaggedContainerLogUnits.
+    ''
+    + lib.concatMapStrings (unit: ''
+      stage.match {
+        selector = "{unit=\"${unit}\"}"
+
+        stage.static_labels {
+          values = { level = "info" }
+        }
+      }
+    '') cfg.untaggedContainerLogUnits
+  );
 in
 {
   options.homelab.services.${service} = {
@@ -25,6 +46,12 @@ in
       type = lib.types.str;
       default = "90d";
       description = "How long Loki keeps log data before the compactor deletes it";
+    };
+    untaggedContainerLogUnits = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      example = [ "podman-changedetection-io-playwright.service" ];
+      description = "systemd units of podman containers whose logs carry no level tag. Podman flags all container stderr output as priority \"err\", so the level label of these units is forced to \"info\" instead. Meant to be set by the service module owning the container.";
     };
     prometheus.scrapeConfig = lib.mkOption {
       type = lib.types.attrs;
@@ -165,6 +192,7 @@ in
       loki.process "container_level" {
         forward_to = [loki.write.local.receiver]
 
+      ${untaggedLevelStages}
         stage.match {
           selector = "{unit=~\"podman-.+\"} |~ \"\\\\[(?i)(DEBUG|INFO|NOTICE|WARNING|WARN|ERROR|CRITICAL|FATAL)\\\\]\""
 
