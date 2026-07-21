@@ -1225,7 +1225,9 @@ in
                 url = "http://127.0.0.1:${toString config.services.prometheus.port}";
               }
             ]
-            ++ lib.optional config.services.loki.enable [
+            # lib.optionals (not lib.optional): the list is appended as-is,
+            # lib.optional would nest it as a single list-typed element
+            ++ lib.optionals config.services.loki.enable [
               {
                 name = "Loki";
                 type = "loki";

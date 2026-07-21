@@ -260,6 +260,8 @@ in
 
       linkwarden.enable = true;
 
+      loki.enable = true;
+
       ntfy-sh.enable = true;
 
       owntracks-recorder.enable = true;

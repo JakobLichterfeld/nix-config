@@ -156,6 +156,7 @@ in
     ./immich
     ./languagetool
     ./linkwarden
+    ./loki
     ./ntfy-sh
     ./owntracks-recorder
     ./pairdrop
