@@ -1,0 +1,147 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "datasource": { "type": "loki", "uid": "loki" },
+      "description": "Number of log lines per level over time, filtered by the selections above.",
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "lineWidth": 0,
+            "stacking": { "group": "A", "mode": "normal" }
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "err" },
+            "properties": [
+              {
+                "id": "color",
+                "value": { "fixedColor": "red", "mode": "fixed" }
+              }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "warning" },
+            "properties": [
+              {
+                "id": "color",
+                "value": { "fixedColor": "orange", "mode": "fixed" }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "expr": "sum by (level) (count_over_time({job=\"systemd-journal\", unit=~\"$unit\", level=~\"$level\", host=~\"$host\"} |= `$search` [$__auto]))",
+          "legendFormat": "{{level}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Log volume by level",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 20, "w": 24, "x": 0, "y": 6 },
+      "id": 2,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "expr": "{job=\"systemd-journal\", unit=~\"$unit\", level=~\"$level\", host=~\"$host\"} |= `$search`",
+          "refId": "A"
+        }
+      ],
+      "title": "Logs",
+      "type": "logs"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 41,
+  "tags": ["loki", "logs"],
+  "templating": {
+    "list": [
+      {
+        "allValue": ".*",
+        "current": { "selected": true, "text": ["All"], "value": ["$__all"] },
+        "datasource": { "type": "loki", "uid": "loki" },
+        "includeAll": true,
+        "label": "Unit",
+        "multi": true,
+        "name": "unit",
+        "query": "label_values(unit)",
+        "refresh": 2,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": { "selected": true, "text": ["All"], "value": ["$__all"] },
+        "datasource": { "type": "loki", "uid": "loki" },
+        "includeAll": true,
+        "label": "Level",
+        "multi": true,
+        "name": "level",
+        "query": "label_values(level)",
+        "refresh": 2,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": { "selected": true, "text": ["All"], "value": ["$__all"] },
+        "datasource": { "type": "loki", "uid": "loki" },
+        "includeAll": true,
+        "label": "Host",
+        "multi": true,
+        "name": "host",
+        "query": "label_values(host)",
+        "refresh": 2,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": { "text": "", "value": "" },
+        "label": "Search",
+        "name": "search",
+        "query": "",
+        "type": "textbox"
+      }
+    ]
+  },
+  "time": { "from": "now-6h", "to": "now" },
+  "timezone": "browser",
+  "title": "Loki Journal Logs",
+  "uid": "loki-journal-logs",
+  "version": 1
+}

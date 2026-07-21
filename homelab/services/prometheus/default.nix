@@ -1231,6 +1231,7 @@ in
               {
                 name = "Loki";
                 type = "loki";
+                uid = "loki"; # pinned so provisioned dashboards can reference it stably
                 access = "proxy";
                 url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}";
               }
