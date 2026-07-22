@@ -6,11 +6,11 @@
 
 stdenv.mkDerivation rec {
   pname = "codegraph";
-  version = "1.4.1";
+  version = "1.5.0";
 
   src = fetchurl {
     url = "https://github.com/colbymchenry/codegraph/releases/download/v${version}/codegraph-darwin-arm64.tar.gz";
-    hash = "sha256-Smea5aXLn/+QDdWbt4baalgbf2j0z3E73t0TfjR9NNw="; # obtain with: nix hash file --sri <(curl -sL https://github.com/colbymchenry/codegraph/releases/download/v${version}/codegraph-darwin-arm64.tar.gz)
+    hash = "sha256-z17kNabkTQl7L5jyt7i5QiuxCUhEQE7+2CUZxdoa8s8="; # obtain with: nix hash file --sri <(curl -sL https://github.com/colbymchenry/codegraph/releases/download/v${version}/codegraph-darwin-arm64.tar.gz)
   };
 
   # Standalone bundle with its own node runtime; the bin/codegraph launcher
