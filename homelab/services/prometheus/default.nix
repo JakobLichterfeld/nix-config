@@ -355,56 +355,25 @@ in
                       chat_id = cfg.telegramChatId; # setting in environment file is not supported as it must be a int64 and env is a string
                       send_resolved = true; # whether to send resolved alerts
                       parse_mode = "HTML"; # Parse mode for telegram message, supported values are MarkdownV2, Markdown, HTML and empty string for plain text
-                      # only this is working
-                      # message = ''
-                      #   {{ range .Alerts }}
-                      #   🔔 Alert: {{ .Labels.alertname }}
-                      #   {{ end }}
-                      # '';
-                      # not working
-                      # message = ''
-                      #   {{ .Status | toUpper }} {{ if eq .Status "firing" }}🔴{{ else }}🟢{{ end }}
-
-                      #   {{ range .Alerts }}
-                      #   {{ .Labels.alertname | default "Unnamed Alert" }}
-
-                      #   🧩 Service: {{ .Labels.service | default "unknown" }}
-                      #   🏷️ Scope: {{ .Labels.scope | default "unspecified" }}
-                      #   🏷️ Severity: {{ .Labels.severity | default "warning" }}
-                      #   🌍 Environment: {{ .Labels.environment | default "prod" }}
-                      #   📍 Instance: {{ .Labels.instance | default "n/a" }}
-                      #   🧪 Probe: {{ .Labels.probe | default "n/a" }}
-
-                      #   📝 Summary: {{ .Annotations.summary | default "n/a" }}
-                      #   📖 Description: {{ .Annotations.description | default "n/a" }}
-                      #   {{ end }}
-                      # '';
-                      # not working
-                      # message = ''
-                      #   {{ define "telegram.default.message" }}
-                      #   {{ if eq .Status "firing" }}
-                      #   {{ if eq .Labels.severity "critical" }}🔴 *Alert:* {{ .Labels.alertname }}
-                      #   {{ else if eq .Labels.severity "warning" }}🟠 *Alert:* {{ .Labels.alertname }}
-                      #   {{ else }}⚪️ *Alert:* {{ .Labels.alertname }}
-                      #   {{ end }}
-                      #   *Status:* 🔥 FIRING
-                      #   *Severity:* {{ if eq .Labels.severity "critical" }}🔴 **{{ .Labels.severity | title }}**{{ else if eq .Labels.severity "warning" }}🟠 **{{ .Labels.severity | title }}**{{ else }}⚪️ **{{ .Labels.severity | title }}**{{ end }}
-                      #   {{ else if eq .Status "resolved" }}
-                      #   {{ if eq .Labels.severity "critical" }}🟢 *🚌 TRANSPORT Alert:* {{ .Labels.alertname }}
-                      #   {{ else if eq .Labels.severity "warning" }}🟢 *🚌 TRANSPORT
-                      #   Alert:* {{ .Labels.alertname }}
-                      #   {{ else }}⚪️ *Alert:* {{ .Labels.alertname }}
-                      #   {{ end }}
-                      #   *Status:* ✅ RESOLVED
-                      #   *Severity:* {{ if eq .Labels.severity "critical" }}🟢 **{{ .Labels.severity | title }}**{{ else if eq .Labels.severity "warning" }}🟢 **{{ .Labels.severity | title }}**{{ else }}⚪️ **{{ .Labels.severity | title }}**{{ end }}
-                      #   {{ end }}
-                      #   {{ range .Alerts }}
-                      #   *Instance:* {{ .Labels.instance }}
-                      #     - *Title:* {{ .Annotations.summary }}
-                      #     - *Description:* {{ .Annotations.description }}
-                      #   {{ end }}
-                      #   {{ end }}
-                      # '';
+                      # Template constraints (earlier attempts silently sent nothing):
+                      # - only Alertmanager template functions plus Go text/template builtins exist;
+                      #   Sprig/Helm helpers like `default` are undefined and abort rendering
+                      #   (visible as "notify retry canceled" in journalctl -u alertmanager)
+                      # - label/annotation values must be escaped with `html`, otherwise Telegram
+                      #   rejects the message with "can't parse entities" when a value contains < or &
+                      # - missing keys in .Labels/.Annotations render as "" (KV map), so `if` guards
+                      #   replace `default`
+                      # - HTML mode allows only b/i/u/s/code/pre/a tags; newlines format the rest
+                      message = ''
+                        {{- if eq .Status "firing" }}🔥 <b>FIRING</b>{{ else }}✅ <b>RESOLVED</b>{{ end }} ({{ len .Alerts }})
+                        {{ range .Alerts }}
+                        {{ if eq .Labels.severity "critical" }}🔴{{ else if eq .Labels.severity "warning" }}🟠{{ else }}🔵{{ end }} <b>{{ .Labels.alertname | html }}</b>
+                        {{ if .Annotations.summary }}{{ .Annotations.summary | html }}
+                        {{ end }}{{ if .Annotations.description }}📖 {{ .Annotations.description | html }}
+                        {{ end }}{{ range .Labels.SortedPairs }}{{ if and (ne .Name "alertname") (ne .Name "severity") (ne .Name "instance") }}🏷 {{ .Name }}: <code>{{ .Value | html }}</code>
+                        {{ end }}{{ end }}{{ if .GeneratorURL }}🔗 <a href="{{ .GeneratorURL | html }}">Source</a>
+                        {{ end }}{{ end }}
+                      '';
                     }
                   ];
                 }
@@ -512,8 +481,7 @@ in
                             severity = "warning";
                           };
                           annotations = {
-                            summary = "Host systemd service crashed (instance {{ $labels.instance }})";
-                            description = "systemd service crashed\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "systemd unit {{ $labels.name }} failed (instance {{ $labels.instance }})";
                           };
                         }
                         {
@@ -526,8 +494,7 @@ in
                             severity = "warning";
                           };
                           annotations = {
-                            summary = "Host high CPU load (instance {{ $labels.instance }})";
-                            description = "CPU load is > 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "CPU load above 80 % (current {{ $value | humanizePercentage }}) (instance {{ $labels.instance }})";
                           };
 
                         }
@@ -539,8 +506,7 @@ in
                             severity = "warning";
                           };
                           annotations = {
-                            summary = "High memory usage";
-                            description = "Instance {{ $labels.instance }} is using more than 90% of memory.";
+                            summary = "memory usage above 90 % ({{ $value | humanizePercentage }}) (instance {{ $labels.instance }})";
                           };
                         }
                         {
@@ -553,8 +519,7 @@ in
                             severity = "warning";
                           };
                           annotations = {
-                            summary = "Host out of memory (instance {{ $labels.instance }})";
-                            description = "Node memory is filling up (< 10% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "less than 10 % memory available ({{ $value | humanizePercentage }} free) (instance {{ $labels.instance }})";
                           };
 
                         }
@@ -568,8 +533,7 @@ in
                             severity = "warning";
                           };
                           annotations = {
-                            summary = "Host memory under memory pressure (instance {{ $labels.instance }})";
-                            description = "The node is under heavy memory pressure. High rate of loading memory pages from disk.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "memory pressure: {{ $value | humanize }} major page faults/s (instance {{ $labels.instance }})";
                           };
                         }
                         {
@@ -582,8 +546,8 @@ in
                             severity = "warning";
                           };
                           annotations = {
-                            summary = "Host clock skew (instance {{ $labels.instance }})";
-                            description = "Clock skew detected. Clock is out of sync. Ensure NTP is configured correctly on this host.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "clock skew of {{ $value | humanize }}s detected (instance {{ $labels.instance }})";
+                            description = "Clock is out of sync. Ensure NTP is configured correctly on this host.";
                           };
                         }
                         {
@@ -596,8 +560,8 @@ in
                             severity = "warning";
                           };
                           annotations = {
-                            summary = "Host clock not synchronising (instance {{ $labels.instance }})";
-                            description = "Clock not synchronising. Ensure NTP is configured on this host.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "clock not synchronising (instance {{ $labels.instance }})";
+                            description = "Ensure NTP is configured on this host.";
                           };
                         }
                         {
@@ -610,8 +574,7 @@ in
                             severity = "warning";
                           };
                           annotations = {
-                            summary = "Host physical component too hot (instance {{ $labels.instance }})";
-                            description = "Physical hardware component too hot\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "{{ $labels.chip }} {{ $labels.sensor }} too hot ({{ $value | humanize }} °C) (instance {{ $labels.instance }})";
                           };
                         }
                         {
@@ -624,8 +587,7 @@ in
                             severity = "critical";
                           };
                           annotations = {
-                            summary = "Host node overtemperature alarm (instance {{ $labels.instance }})";
-                            description = "Physical node temperature alarm triggered\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "hardware overtemperature alarm ({{ $labels.chip }} {{ $labels.sensor }}) (instance {{ $labels.instance }})";
                           };
                         }
                       ];
@@ -649,8 +611,7 @@ in
                             severity = "warning";
                           };
                           annotations = {
-                            summary = "Host unusual disk read rate (instance {{ $labels.instance }})";
-                            description = "Disk is too busy (IO wait > 80%)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "disk {{ $labels.device }} busy: IO time at {{ $value | humanizePercentage }} (instance {{ $labels.instance }})";
                           };
                         }
                         {
@@ -665,8 +626,7 @@ in
                             severity = "critical";
                           };
                           annotations = {
-                            summary = "Host out of disk space (instance {{ $labels.instance }})";
-                            description = "Disk is almost full (< 10% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "disk {{ $labels.mountpoint }} almost full ({{ $value | humanizePercentage }} left) (instance {{ $labels.instance }})";
                           };
                         }
                         {
@@ -679,8 +639,7 @@ in
                             severity = "warning";
                           };
                           annotations = {
-                            summary = "Host swap is filling up (instance {{ $labels.instance }})";
-                            description = "Swap is filling up (>80%)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "swap above 80 % ({{ $value | humanize }} %) (instance {{ $labels.instance }})";
                           };
 
                         }
@@ -692,8 +651,7 @@ in
                             severity = "warning";
                           };
                           annotations = {
-                            summary = "ZFS pool status degraded (instance {{ $labels.instance }})";
-                            description = "ZFS pool status is degraded. Check the ZFS pool status on the host.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "ZFS pool {{ $labels.pool }} degraded (instance {{ $labels.instance }})";
                           };
                         }
                       ];
@@ -717,8 +675,7 @@ in
                             severity = "warning";
                           };
                           annotations = {
-                            summary = "SMART device temperature warning (instance {{ $labels.instance }})";
-                            description = "Device temperature warning on {{ $labels.instance }} drive {{ $labels.device }} over 60°C\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "drive {{ $labels.device }} at {{ $value | humanize }} °C (warning threshold 60 °C) (instance {{ $labels.instance }})";
                           };
                         }
                         {
@@ -731,8 +688,7 @@ in
                             severity = "critical";
                           };
                           annotations = {
-                            summary = "SMART device temperature critical (instance {{ $labels.instance }})";
-                            description = "Device temperature critical on {{ $labels.instance }} drive {{ $labels.device }} over 70°C\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "drive {{ $labels.device }} at {{ $value | humanize }} °C (critical threshold 70 °C) (instance {{ $labels.instance }})";
                           };
                         }
                         {
@@ -745,8 +701,7 @@ in
                             severity = "critical";
                           };
                           annotations = {
-                            summary = "SMART status (instance {{ $labels.instance }})";
-                            description = "Device has a SMART status failure on {{ $labels.instance }} drive {{ $labels.device }})\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "drive {{ $labels.device }} reports SMART status failure (instance {{ $labels.instance }})";
                           };
                         }
                         {
@@ -759,8 +714,7 @@ in
                             severity = "critical";
                           };
                           annotations = {
-                            summary = "SMART critical warning (instance {{ $labels.instance }})";
-                            description = "Disk controller has critical warning on {{ $labels.instance }} drive {{ $labels.device }})\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "drive {{ $labels.device }} reports controller critical warning (instance {{ $labels.instance }})";
                           };
                         }
                         {
@@ -773,8 +727,7 @@ in
                             severity = "critical";
                           };
                           annotations = {
-                            summary = "SMART Wearout Indicator (instance {{ $labels.instance }})";
-                            description = "Device is wearing out on {{ $labels.instance }} drive {{ $labels.device }})\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "drive {{ $labels.device }} wearing out ({{ $value | humanize }} % spare left) (instance {{ $labels.instance }})";
                           };
                         }
                         {
@@ -785,8 +738,7 @@ in
                             severity = "critical";
                           };
                           annotations = {
-                            summary = "SMART failing (instance {{ $labels.instance }})";
-                            description = "SMART failure on disk {{ $labels.device }} ({{ $labels.instance }})";
+                            summary = "drive {{ $labels.device }} reports SMART failing (instance {{ $labels.instance }})";
                           };
                         }
                       ];
@@ -808,8 +760,7 @@ in
                             severity = "warning";
                           };
                           annotations = {
-                            summary = "Network receive errors";
-                            description = "Instance {{ $labels.instance }} has network receive errors.";
+                            summary = "{{ $labels.device }}: {{ $value | humanize }} network receive errors/s (instance {{ $labels.instance }})";
                           };
                         }
                         {
@@ -820,8 +771,7 @@ in
                             severity = "warning";
                           };
                           annotations = {
-                            summary = "Network transmit errors";
-                            description = "Instance {{ $labels.instance }} has network transmit errors.";
+                            summary = "{{ $labels.device }}: {{ $value | humanize }} network transmit errors/s (instance {{ $labels.instance }})";
                           };
                         }
                       ];
@@ -849,7 +799,6 @@ in
                           };
                           annotations = {
                             summary = "${t.labels.service}: ${t.labels.scope} Blackbox probe failed for ${t.target}";
-                            description = "Blackbox module `${t.module}` reported failure on `${t.target}`.";
                           };
                         }) blackboxTargets;
                       }
@@ -875,8 +824,7 @@ in
                             severity = "critical";
                           };
                           annotations = {
-                            summary = "Postgresql down (instance {{ $labels.instance }})";
-                            description = "Postgresql instance is down\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "PostgreSQL is down (instance {{ $labels.instance }})";
                           };
                         }
                         {
@@ -889,8 +837,8 @@ in
                             severity = "critical";
                           };
                           annotations = {
-                            summary = "Postgresql exporter error (instance {{ $labels.instance }})";
-                            description = "Postgresql exporter is showing errors. A query may be buggy in query.yaml\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "PostgreSQL exporter scrape error (instance {{ $labels.instance }})";
+                            description = "A query in query.yaml may be buggy.";
                           };
                         }
                         {
@@ -904,8 +852,8 @@ in
                             severity = "warning";
                           };
                           annotations = {
-                            summary = "Postgresql bloat index high (> 80%) (instance {{ $labels.instance }})";
-                            description = "The index {{ $labels.idxname }} is bloated. You should execute `REINDEX INDEX CONCURRENTLY {{ $labels.idxname }};`\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "index {{ $labels.idxname }} bloated ({{ $value | humanize }} %) (instance {{ $labels.instance }})";
+                            description = "Execute `REINDEX INDEX CONCURRENTLY {{ $labels.idxname }};`";
                           };
                         }
                         {
@@ -919,8 +867,8 @@ in
                             severity = "warning";
                           };
                           annotations = {
-                            summary = "Postgresql bloat table high (> 80%) (instance {{ $labels.instance }})";
-                            description = "The table {{ $labels.relname }} is bloated. You should execute `VACUUM {{ $labels.relname }};`\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                            summary = "table {{ $labels.relname }} bloated ({{ $value | humanize }} %) (instance {{ $labels.instance }})";
+                            description = "Execute `VACUUM {{ $labels.relname }};`";
                           };
                         }
                         {
@@ -934,8 +882,8 @@ in
                             severity = "warning";
                           };
                           annotations = {
-                            summary = "Postgresql invalid index (instance {{ $labels.instance }})";
-                            description = "Postgresql invalid index (instance {{ $labels.instance }})";
+                            summary = "invalid index {{ $labels.indexrelname }} (instance {{ $labels.instance }})";
+                            description = "Leftover ccnew index from an interrupted REINDEX CONCURRENTLY.";
                           };
                         }
                       ];
@@ -960,7 +908,7 @@ in
                           };
                           annotations = {
                             summary = "Test alert";
-                            description = "Triggered manually for testing (instance {{ $labels.instance }})";
+                            description = "Triggered manually for testing.";
                           };
                         }
                       ];

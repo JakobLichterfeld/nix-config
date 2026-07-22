@@ -103,8 +103,7 @@
                       severity = "critical";
                     };
                     annotations = {
-                      summary = "Caddy Reverse Proxy Down (instance {{ $labels.instance }})";
-                      description = "All Caddy reverse proxies are down\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                      summary = "reverse proxy upstream {{ $labels.upstream }} down (instance {{ $labels.instance }})";
                     };
                   }
                   {
@@ -117,8 +116,7 @@
                       severity = "critical";
                     };
                     annotations = {
-                      summary = "Caddy high HTTP 4xx error rate service (instance {{ $labels.instance }})";
-                      description = "Caddy service 4xx error rate is above 5%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                      summary = "HTTP 4xx rate above 5 % ({{ $value | humanize }} %) (instance {{ $labels.instance }})";
                     };
                   }
                   {
@@ -131,8 +129,7 @@
                       severity = "critical";
                     };
                     annotations = {
-                      summary = "Caddy high HTTP 5xx error rate service (instance {{ $labels.instance }})";
-                      description = "Caddy service 5xx error rate is above 5%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                      summary = "HTTP 5xx rate above 5 % ({{ $value | humanize }} %) (instance {{ $labels.instance }})";
                     };
                   }
                 ];

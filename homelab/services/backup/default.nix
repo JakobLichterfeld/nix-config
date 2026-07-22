@@ -320,8 +320,7 @@ in
                         severity = "critical";
                       };
                       annotations = {
-                        summary = "Restic backup check failed for {{ $labels.job }}";
-                        description = "The restic backup check for job {{ $labels.job }} on instance {{ $labels.instance }} has failed.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        summary = "Restic backup check failed for {{ $labels.job }} (instance {{ $labels.instance }})";
                       };
                     }
                     {
@@ -332,8 +331,7 @@ in
                         severity = "critical";
                       };
                       annotations = {
-                        summary = "Restic backup failed for {{ $labels.job }}";
-                        description = "The restic backup job {{ $labels.job }} on instance {{ $labels.instance }} has failed.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                        summary = "Restic backup failed for {{ $labels.job }} (instance {{ $labels.instance }})";
                       };
                     }
                   ];
