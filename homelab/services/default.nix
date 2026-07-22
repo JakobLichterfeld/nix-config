@@ -76,6 +76,7 @@ in
       enable = true;
       globalConfig = ''
         auto_https off
+        metrics # HTTP metrics are opt-in since Caddy 2.9; exposed via the admin endpoint at localhost:2019/metrics
       '';
       virtualHosts = {
         "http://${config.homelab.baseDomain}" = {
@@ -102,6 +103,18 @@ in
 
       };
     };
+    # append the Caddy scrape job to the Prometheus scrape configuration via NixOS module merge;
+    # Caddy is baseline infrastructure without its own homelab.services entry
+    services.prometheus.scrapeConfigs = lib.mkIf config.services.prometheus.enable [
+      {
+        job_name = "caddy";
+        static_configs = [
+          {
+            targets = [ "localhost:2019" ]; # Caddy admin endpoint exposes /metrics
+          }
+        ];
+      }
+    ];
     services.logrotate = {
       enable = true;
 
