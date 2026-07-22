@@ -138,6 +138,14 @@ in
         gui = {
           user = cfg.guiUser;
           theme = "black";
+          # With GUI auth enabled, /metrics requires credentials too and Prometheus got 403.
+          # Considered alternative: basic_auth in the scrape config with the GUI credentials. Rejected because
+          # Syncthing has no dedicated metrics token — the scraper would hold the admin GUI password (violates
+          # least privilege) and need read access to the agenix secret owned by the syncthing user.
+          # Decision: serve metrics without auth and restrict by network instead — the GUI binds to loopback
+          # only, and the Caddy vhost below blocks /metrics externally. Accepted risk: any local process can
+          # read the (read-only) metrics, which merely expose folder/device IDs.
+          metricsWithoutAuth = true;
         };
         options = {
           urAccepted = -1; # do not submit anonymous usage data
@@ -164,6 +172,9 @@ in
     services.caddy.virtualHosts."${cfg.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
+        @metrics path /metrics
+        respond @metrics 403 # metrics are served without auth (metricsWithoutAuth), only Prometheus on localhost may read them
+
         reverse_proxy http://127.0.0.1:${toString cfg.listenPort} {
           header_up Host 127.0.0.1:${toString cfg.listenPort}
         }
