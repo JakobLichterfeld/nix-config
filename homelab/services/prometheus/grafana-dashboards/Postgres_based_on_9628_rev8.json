@@ -84,9 +84,7 @@
         "orientation": "horizontal",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "mean"
-          ],
+          "calcs": ["mean"],
           "fields": "",
           "values": false
         },
@@ -161,9 +159,7 @@
         "orientation": "horizontal",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -237,9 +233,7 @@
         "orientation": "horizontal",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -313,9 +307,7 @@
         "orientation": "horizontal",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -389,9 +381,7 @@
         "orientation": "horizontal",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "mean"
-          ],
+          "calcs": ["mean"],
           "fields": "",
           "values": false
         },
@@ -486,12 +476,7 @@
       "options": {
         "dataLinks": [],
         "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "max",
-            "min"
-          ],
+          "calcs": ["mean", "lastNotNull", "max", "min"],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true
@@ -590,12 +575,7 @@
       "options": {
         "dataLinks": [],
         "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "max",
-            "min"
-          ],
+          "calcs": ["mean", "lastNotNull", "max", "min"],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true
@@ -705,12 +685,7 @@
       "options": {
         "dataLinks": [],
         "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "max",
-            "min"
-          ],
+          "calcs": ["mean", "lastNotNull", "max", "min"],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true
@@ -800,9 +775,7 @@
         "orientation": "horizontal",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -875,9 +848,7 @@
         "orientation": "horizontal",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -950,9 +921,7 @@
         "orientation": "horizontal",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -1025,9 +994,7 @@
         "orientation": "horizontal",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -1102,9 +1069,7 @@
         "orientation": "horizontal",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -1177,9 +1142,7 @@
         "orientation": "horizontal",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -1252,9 +1215,7 @@
         "orientation": "horizontal",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -1327,9 +1288,7 @@
         "orientation": "horizontal",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "mean"
-          ],
+          "calcs": ["mean"],
           "fields": "",
           "values": false
         },
@@ -1402,9 +1361,7 @@
         "orientation": "horizontal",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -1512,11 +1469,7 @@
       "options": {
         "dataLinks": [],
         "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "max"
-          ],
+          "calcs": ["mean", "lastNotNull", "max"],
           "displayMode": "table",
           "placement": "right",
           "showLegend": true
@@ -1616,11 +1569,7 @@
       "options": {
         "dataLinks": [],
         "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "sum"
-          ],
+          "calcs": ["mean", "lastNotNull", "sum"],
           "displayMode": "table",
           "placement": "right",
           "showLegend": true
@@ -1729,11 +1678,7 @@
       "options": {
         "dataLinks": [],
         "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "sum"
-          ],
+          "calcs": ["mean", "lastNotNull", "sum"],
           "displayMode": "table",
           "placement": "right",
           "showLegend": true
@@ -1832,11 +1777,7 @@
       "options": {
         "dataLinks": [],
         "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "sum"
-          ],
+          "calcs": ["mean", "lastNotNull", "sum"],
           "displayMode": "table",
           "placement": "right",
           "showLegend": true
@@ -1935,11 +1876,7 @@
       "options": {
         "dataLinks": [],
         "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "sum"
-          ],
+          "calcs": ["mean", "lastNotNull", "sum"],
           "displayMode": "table",
           "placement": "right",
           "showLegend": true
@@ -2040,11 +1977,7 @@
       "options": {
         "dataLinks": [],
         "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "sum"
-          ],
+          "calcs": ["mean", "lastNotNull", "sum"],
           "displayMode": "table",
           "placement": "right",
           "showLegend": true
@@ -2417,12 +2350,7 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 41,
-  "tags": [
-    "postgres",
-    "db",
-    "stats",
-    "prometheus"
-  ],
+  "tags": ["postgres", "db", "stats", "prometheus"],
   "templating": {
     "list": [
       {
@@ -2494,7 +2422,10 @@
           "text": "localhost:9187",
           "value": "localhost:9187"
         },
-        "datasource": "prometheus_12121212123",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus_12121212123"
+        },
         "definition": "label_values(pg_up, instance)",
         "includeAll": false,
         "label": "Instance",
@@ -2507,14 +2438,13 @@
       },
       {
         "current": {
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "text": ["All"],
+          "value": ["$__all"]
         },
-        "datasource": "prometheus_12121212123",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus_12121212123"
+        },
         "definition": "",
         "includeAll": true,
         "label": "Database",
@@ -2529,14 +2459,13 @@
       },
       {
         "current": {
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "text": ["All"],
+          "value": ["$__all"]
         },
-        "datasource": "prometheus_12121212123",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus_12121212123"
+        },
         "definition": "",
         "includeAll": true,
         "label": "Lock table",

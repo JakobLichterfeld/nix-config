@@ -2822,7 +2822,10 @@
           "text": "localhost:9100",
           "value": "localhost:9100"
         },
-        "datasource": "$Prometheus_server",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "$Prometheus_server"
+        },
         "includeAll": false,
         "label": "Host",
         "name": "Host",

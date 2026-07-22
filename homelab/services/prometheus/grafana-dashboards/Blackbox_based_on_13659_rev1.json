@@ -786,7 +786,10 @@
           "text": "All",
           "value": "$__all"
         },
-        "datasource": "prometheus_12121212123",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus_12121212123"
+        },
         "definition": "label_values(probe_success, job)",
         "includeAll": true,
         "label": "Job",
@@ -804,7 +807,10 @@
           "text": "All",
           "value": "$__all"
         },
-        "datasource": "prometheus_12121212123",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus_12121212123"
+        },
         "definition": "label_values(probe_success{job=~\"$job\"}, instance)",
         "includeAll": true,
         "label": "Instance",
