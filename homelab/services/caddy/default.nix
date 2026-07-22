@@ -113,7 +113,9 @@
                     expr = ''sum(rate(caddy_http_request_duration_seconds_count{code=~"4.."}[3m])) by (instance) / sum(rate(caddy_http_request_duration_seconds_count[3m])) by (instance) * 100 > 5'';
                     for = "1m";
                     labels = {
-                      severity = "critical";
+                      # warning, not critical: 4xx is client behavior (scanners probing public
+                      # domains trip this without anything being broken); 5xx is the failure signal
+                      severity = "warning";
                     };
                     annotations = {
                       summary = "HTTP 4xx rate above 5 % ({{ $value | humanize }} %) (instance {{ $labels.instance }})";

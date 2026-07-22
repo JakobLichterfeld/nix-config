@@ -496,17 +496,18 @@ in
                           annotations = {
                             summary = "CPU load above 80 % (current {{ $value | humanizePercentage }}) (instance {{ $labels.instance }})";
                           };
-
                         }
                         {
-                          alert = "NodeMemoryUsageHigh";
-                          expr = ''(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes > 0.9'';
-                          for = "2m";
+                          # scrape target disappeared: a dead exporter or endpoint makes its
+                          # metrics (and their alerts) silently blind, which nothing else catches
+                          alert = "TargetDown";
+                          expr = ''up == 0'';
+                          for = "5m";
                           labels = {
                             severity = "warning";
                           };
                           annotations = {
-                            summary = "memory usage above 90 % ({{ $value | humanizePercentage }}) (instance {{ $labels.instance }})";
+                            summary = "scrape target {{ $labels.job }} down (instance {{ $labels.instance }})";
                           };
                         }
                         {
@@ -645,13 +646,29 @@ in
                         }
                         {
                           alert = "ZfsPoolStatusDegraded";
-                          expr = ''zfs_pool_status != 0'';
+                          # the exporter exposes zfs_pool_health (0 = ONLINE); the previously used
+                          # zfs_pool_status never existed, so this alert had never been able to fire
+                          expr = ''zfs_pool_health != 0'';
                           for = "1m";
                           labels = {
                             severity = "warning";
                           };
                           annotations = {
                             summary = "ZFS pool {{ $labels.pool }} degraded (instance {{ $labels.instance }})";
+                          };
+                        }
+                        {
+                          # HostOutOfDiskSpace excludes zfs filesystems, so pool fullness needs
+                          # its own alert; CoW performance degrades on full pools, 85 % leaves
+                          # room to act
+                          alert = "ZfsPoolCapacityHigh";
+                          expr = ''zfs_pool_allocated_bytes / (zfs_pool_allocated_bytes + zfs_pool_free_bytes) > 0.85'';
+                          for = "15m";
+                          labels = {
+                            severity = "warning";
+                          };
+                          annotations = {
+                            summary = "ZFS pool {{ $labels.pool }} at {{ $value | humanizePercentage }} capacity (instance {{ $labels.instance }})";
                           };
                         }
                       ];
@@ -786,21 +803,39 @@ in
                     groups = [
                       {
                         name = "blackbox";
-                        rules = lib.map (t: {
-                          alert = "BlackboxProbeFailed";
-                          expr = ''probe_success{instance="${t.target}", module="${t.module}"} == 0'';
-                          for = "5m";
-                          labels = {
-                            severity = t.labels.severityLevel or "warning";
-                            service = t.labels.service or "unknown";
-                            probe = t.module;
-                            environment = t.labels.environment or "prod";
-                            scope = t.labels.scope or "unspecified";
-                          };
-                          annotations = {
-                            summary = "${t.labels.service}: ${t.labels.scope} Blackbox probe failed for ${t.target}";
-                          };
-                        }) blackboxTargets;
+                        rules =
+                          lib.map (t: {
+                            alert = "BlackboxProbeFailed";
+                            expr = ''probe_success{instance="${t.target}", module="${t.module}"} == 0'';
+                            for = "5m";
+                            labels = {
+                              severity = t.labels.severityLevel or "warning";
+                              service = t.labels.service or "unknown";
+                              probe = t.module;
+                              environment = t.labels.environment or "prod";
+                              scope = t.labels.scope or "unspecified";
+                            };
+                            annotations = {
+                              summary = "${t.labels.service}: ${t.labels.scope} Blackbox probe failed for ${t.target}";
+                            };
+                          }) blackboxTargets
+                          ++ [
+                            {
+                              # the ACME renewal starts 30 days before expiry and retries daily;
+                              # still being below 14 days means it has been failing for over two
+                              # weeks and needs intervention (the renewal unit itself only alerts
+                              # when a run fails, not when runs stop happening)
+                              alert = "TlsCertificateExpiringSoon";
+                              expr = ''probe_ssl_earliest_cert_expiry - time() < 14 * 24 * 3600'';
+                              for = "1h";
+                              labels = {
+                                severity = "critical";
+                              };
+                              annotations = {
+                                summary = "TLS certificate expires in {{ $value | humanizeDuration }} (instance {{ $labels.instance }})";
+                              };
+                            }
+                          ];
                       }
                     ];
                   }
