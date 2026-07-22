@@ -82,6 +82,11 @@ in
         ];
       };
     };
+    listenPortResticExporterBase = lib.mkOption {
+      type = lib.types.int;
+      description = "Define a starting port for the dynamically created restic exporters. Each defined restic.backup will increment by 1.";
+      default = 9753;
+    };
   };
   config =
     let
@@ -140,6 +145,124 @@ in
 
       allStateDirsAndBackupPathsList = stateDirsList ++ additionalStateDirs ++ additionalPathsToBackup;
       allStateDirsAndBackupPaths = lib.concatStringsSep " " allStateDirsAndBackupPathsList;
+
+      # --- Restic Exporter Dynamic Configuration ---
+      # One Prometheus exporter per restic backup job; declared here so the backup
+      # service owns its monitoring endpoints and Prometheus only aggregates them.
+      resticBackups = config.services.restic.backups;
+
+      # Generate an attribute set for each restic exporter
+      resticExporters = builtins.listToAttrs (
+        builtins.genList (
+          i:
+          let
+            name = builtins.elemAt (builtins.attrNames resticBackups) i;
+            backup = builtins.getAttr name resticBackups;
+          in
+          {
+            name = "${name}";
+            value = {
+              port = cfg.listenPortResticExporterBase + i;
+              repository = backup.repository;
+              passwordFile = backup.passwordFile;
+              environmentFile =
+                if builtins.hasAttr "environmentFile" backup then backup.environmentFile else null;
+              repositoryFile = if builtins.hasAttr "repositoryFile" backup then backup.repositoryFile else null;
+            };
+          }
+        ) (builtins.length (builtins.attrNames resticBackups))
+      );
+
+      # Generate the systemd services for each exporter
+      resticExporterServices = lib.mapAttrs' (
+        name: exporterConfig:
+        let
+          serviceName = "restic-exporter-${name}";
+        in
+        lib.nameValuePair serviceName {
+          # based on https://github.com/NixOS/nixpkgs/blob/0d00f23f023b7215b3f1035adb5247c8ec180dbc/nixos/modules/services/monitoring/prometheus/exporters.nix
+          # and https://github.com/NixOS/nixpkgs/blob/0d00f23f023b7215b3f1035adb5247c8ec180dbc/nixos/modules/services/monitoring/prometheus/exporters/restic.nix
+          description = "Restic Exporter for ${name} repository";
+          wantedBy = [ "multi-user.target" ];
+          after = [ "network.target" ];
+          environment =
+            let
+              isS3 = lib.strings.hasPrefix "s3:" exporterConfig.repository;
+              refreshInterval = if isS3 then 43200 else 600; # 12h for S3 to reduce the number of S3 API transaction, 10min for others
+            in
+            {
+              LISTEN_ADDRESS = "0.0.0.0";
+              LISTEN_PORT = toString exporterConfig.port;
+              REFRESH_INTERVAL = toString refreshInterval;
+              RESTIC_CACHE_DIR = "$CACHE_DIRECTORY";
+            };
+          script = ''
+            export RESTIC_REPOSITORY=${
+              if exporterConfig.repositoryFile != null then
+                "$(cat $CREDENTIALS_DIRECTORY/RESTIC_REPOSITORY)"
+              else
+                "${exporterConfig.repository}"
+            }
+            export RESTIC_PASSWORD_FILE=$CREDENTIALS_DIRECTORY/RESTIC_PASSWORD_FILE
+            ${pkgs.prometheus-restic-exporter}/bin/restic-exporter.py'';
+          serviceConfig =
+            {
+              User = "restic-exporter";
+              Group = "restic-exporter";
+              Restart = "on-failure";
+              RestartSec = 10;
+              WorkingDirectory = lib.mkDefault /tmp;
+              CacheDirectory = "restic-exporter-${name}";
+              PrivateTmp = true;
+              # Hardening
+              CapabilityBoundingSet = lib.mkDefault [ "" ];
+              DeviceAllow = [ "" ];
+              LockPersonality = true;
+              MemoryDenyWriteExecute = true;
+              NoNewPrivileges = true;
+              PrivateDevices = lib.mkDefault true;
+              ProtectClock = lib.mkDefault true;
+              ProtectControlGroups = true;
+              ProtectHome = true;
+              ProtectHostname = true;
+              ProtectKernelLogs = true;
+              ProtectKernelModules = true;
+              ProtectKernelTunables = true;
+              ProtectSystem = lib.mkDefault "strict";
+              RemoveIPC = true;
+              RestrictAddressFamilies = [
+                "AF_INET"
+                "AF_INET6"
+              ];
+              RestrictNamespaces = true;
+              RestrictRealtime = true;
+              RestrictSUIDSGID = true;
+              SystemCallArchitectures = "native";
+              UMask = "0077";
+            }
+            // lib.optionalAttrs (exporterConfig.environmentFile != null) {
+              # Load environment variables (e.g., for S3 credentials) from the specified file.
+              EnvironmentFile = exporterConfig.environmentFile;
+            }
+            // {
+              LoadCredential =
+                [ "RESTIC_PASSWORD_FILE:${exporterConfig.passwordFile}" ]
+                ++ lib.optional (exporterConfig.repositoryFile != null) [
+                  "RESTIC_REPOSITORY:${exporterConfig.repositoryFile}"
+                ];
+            };
+        }
+      ) resticExporters;
+
+      # Generate the restic scrape configs for prometheus
+      resticScrapeConfigs = lib.mapAttrsToList (name: exporterConfig: {
+        job_name = "restic-exporter-${name}";
+        static_configs = [
+          {
+            targets = [ "localhost:${toString exporterConfig.port}" ];
+          }
+        ];
+      }) resticExporters;
     in
     lib.mkIf (cfg.enable && enabledServicesWithStateDir != { }) {
       # Create target directories and enforce the correct permissions and ownership recursively.
@@ -151,10 +274,74 @@ in
       ];
       users.users.restic.createHome = lib.mkForce false;
 
-      # ensure the restic http server is started unprivileged
-      systemd.services.restic-rest-server.serviceConfig = lib.attrsets.optionalAttrs cfg.local.enable {
-        User = lib.mkForce hl.user;
-        Group = lib.mkForce hl.group;
+      users.groups = lib.optionalAttrs (lib.length (lib.attrNames resticBackups) > 0) {
+        "restic-exporter" = { };
+      };
+      users.users."restic-exporter" = lib.mkIf (lib.length (lib.attrNames resticBackups) > 0) {
+        isSystemUser = true;
+        createHome = lib.mkForce false;
+        description = "Runs the restic-exporters";
+        group = "restic-exporter";
+      };
+      environment.systemPackages = lib.optional (
+        lib.length (lib.attrNames resticBackups) > 0
+      ) pkgs.prometheus-restic-exporter;
+
+      systemd.services = lib.mkMerge [
+        {
+          # ensure the restic http server is started unprivileged
+          restic-rest-server.serviceConfig = lib.attrsets.optionalAttrs cfg.local.enable {
+            User = lib.mkForce hl.user;
+            Group = lib.mkForce hl.group;
+          };
+        }
+        # the generated exporter services, one per restic backup job
+        resticExporterServices
+      ];
+
+      # Restic monitoring is appended to the Prometheus configuration via NixOS
+      # module merge: the homelab.services.<name>.prometheus.scrapeConfig collector
+      # carries exactly one job per service (used for the rest server above), while
+      # the exporters are one dynamic job per backup repository.
+      services.prometheus = lib.mkIf config.services.prometheus.enable {
+        scrapeConfigs = resticScrapeConfigs;
+        ruleFiles = [
+          (pkgs.writeText "restic.rules.yml" (
+            builtins.toJSON {
+              groups = [
+                {
+                  name = "restic";
+                  rules = [
+                    {
+                      alert = "ResticBackupCheckFailed";
+                      expr = ''restic_check_status{job=~"restic-exporter-.*"} == 0'';
+                      for = "10m";
+                      labels = {
+                        severity = "critical";
+                      };
+                      annotations = {
+                        summary = "Restic backup check failed for {{ $labels.job }}";
+                        description = "The restic backup check for job {{ $labels.job }} on instance {{ $labels.instance }} has failed.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                      };
+                    }
+                    {
+                      alert = "ResticBackupFailed";
+                      expr = ''restic_backup_last_status{job=~"restic-exporter-.*", result="failed"} == 1'';
+                      for = "10m";
+                      labels = {
+                        severity = "critical";
+                      };
+                      annotations = {
+                        summary = "Restic backup failed for {{ $labels.job }}";
+                        description = "The restic backup job {{ $labels.job }} on instance {{ $labels.instance }} has failed.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                      };
+                    }
+                  ];
+                }
+              ];
+            }
+          ))
+        ];
       };
 
       services.postgresqlBackup = {

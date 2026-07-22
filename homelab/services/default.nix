@@ -77,74 +77,9 @@ in
         })
       ];
     };
-    services.caddy = {
-      enable = true;
-      globalConfig = ''
-        auto_https off
-        metrics # HTTP metrics are opt-in since Caddy 2.9; exposed via the admin endpoint at localhost:2019/metrics
-      '';
-      virtualHosts = {
-        "http://${config.homelab.baseDomain}" = {
-          extraConfig = ''
-            redir https://{host}{uri}
-          '';
-        };
-        "http://*.${config.homelab.baseDomain}" = {
-          extraConfig = ''
-            redir https://{host}{uri}
-          '';
-        };
-
-        "http://${config.homelab.baseDomainFallback}" = {
-          extraConfig = ''
-            redir https://{host}{uri}
-          '';
-        };
-        "http://*.${config.homelab.baseDomainFallback}" = {
-          extraConfig = ''
-            redir https://{host}{uri}
-          '';
-        };
-
-      };
-    };
-    # append the Caddy scrape job to the Prometheus scrape configuration via NixOS module merge;
-    # Caddy is baseline infrastructure without its own homelab.services entry
-    services.prometheus.scrapeConfigs = lib.mkIf config.services.prometheus.enable [
-      {
-        job_name = "caddy";
-        static_configs = [
-          {
-            targets = [ "localhost:2019" ]; # Caddy admin endpoint exposes /metrics
-          }
-        ];
-      }
-    ];
-    services.logrotate = {
-      enable = true;
-
-      settings.caddy = {
-        files = "${config.services.caddy.logDir}/*.log"; # rotate all Caddy log files in the configured log directory
-
-        frequency = "weekly"; # run log rotation once per week
-        rotate = 12; # keep the last 12 rotated log files --> 12 weeks
-
-        compress = true; # compress rotated logs to save disk space
-        delaycompress = true; # delay compression until the next rotation cycle
-
-        missingok = true; # do not fail if log files are missing
-        notifempty = true; # skip rotation for empty log files
-
-        sharedscripts = true; # run postrotate only once even if multiple files match
-
-        create = "0640 ${config.services.caddy.user} ${config.services.caddy.group}"; # create new log files with correct permissions
-
-        postrotate = ''
-          systemctl reload caddy
-        ''; # reload Caddy so it reopens the log files
-      };
-
-    };
+    # services.caddy itself lives in ./caddy (baseline infrastructure, always
+    # active); the ACME certificates, firewall openings and the caddy user with
+    # the shared ACME group stay here as cross-cutting concerns.
     # nixpkgs.config.permittedInsecurePackages = [
     # ];
     virtualisation.podman = {
@@ -168,6 +103,7 @@ in
     ./audiobookshelf
     ./backup
     ./blocky
+    ./caddy
     ./changedetection-io
     ./home-assistant
     ./homepage
