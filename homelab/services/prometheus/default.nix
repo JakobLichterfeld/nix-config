@@ -1228,6 +1228,9 @@ in
                 uid = "prometheus_12121212123";
                 access = "proxy";
                 url = "http://127.0.0.1:${toString config.services.prometheus.port}";
+                # actual scrape interval (Prometheus default 1m); without it Grafana assumes 15s and
+                # $__rate_interval may pick windows with fewer than two samples, yielding empty panels
+                jsonData.timeInterval = "1m";
               }
             ]
             # lib.optionals (not lib.optional): the list is appended as-is,
