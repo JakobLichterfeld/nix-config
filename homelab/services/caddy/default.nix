@@ -106,21 +106,10 @@
                       summary = "reverse proxy upstream {{ $labels.upstream }} down (instance {{ $labels.instance }})";
                     };
                   }
-                  {
-                    # Caddy service 4xx error rate is above 5%
-                    # from https://samber.github.io/awesome-prometheus-alerts/rules
-                    alert = "CaddyHighHttp4xxErrorRateService";
-                    expr = ''sum(rate(caddy_http_request_duration_seconds_count{code=~"4.."}[3m])) by (instance) / sum(rate(caddy_http_request_duration_seconds_count[3m])) by (instance) * 100 > 5'';
-                    for = "1m";
-                    labels = {
-                      # warning, not critical: 4xx is client behavior (scanners probing public
-                      # domains trip this without anything being broken); 5xx is the failure signal
-                      severity = "warning";
-                    };
-                    annotations = {
-                      summary = "HTTP 4xx rate above 5 % ({{ $value | humanize }} %) (instance {{ $labels.instance }})";
-                    };
-                  }
+                  # deliberately no 4xx-rate alert: 4xx is client behavior (scanners probing
+                  # the public domains), and at homelab traffic levels a percentage threshold
+                  # without a volume floor flaps on a handful of requests; 5xx below is the
+                  # actual server failure signal
                   {
                     # Caddy service 5xx error rate is above 5%
                     # from https://samber.github.io/awesome-prometheus-alerts/rules
