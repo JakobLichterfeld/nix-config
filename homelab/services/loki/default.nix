@@ -193,6 +193,19 @@ in
         forward_to = [loki.write.local.receiver]
 
       ${untaggedLevelStages}
+        // dbus-daemon logs at error level when several packages in the system
+        // path ship the same org.freedesktop.* activation file (recurs on every
+        // switch/dbus reload); cosmetic, so downgrade to info. Message-based
+        // match because the lines come from dbus of both the system and user
+        // sessions (different units).
+        stage.match {
+          selector = "{job=\"systemd-journal\"} |= \"Ignoring duplicate name 'org.freedesktop.\""
+
+          stage.static_labels {
+            values = { level = "info" }
+          }
+        }
+
         stage.match {
           selector = "{unit=~\"podman-.+\"} |~ \"\\\\[(?i)(DEBUG|INFO|NOTICE|WARNING|WARN|ERROR|CRITICAL|FATAL)\\\\]\""
 
