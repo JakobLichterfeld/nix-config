@@ -115,7 +115,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "flower_worker_online{cluster=~\"$cluster\"}",
+          "expr": "flower_worker_online",
           "interval": "",
           "legendFormat": "{{ worker }}",
           "range": true,
@@ -216,7 +216,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "flower_worker_number_of_currently_executing_tasks{cluster=~\"$cluster\"}",
+          "expr": "flower_worker_number_of_currently_executing_tasks",
           "interval": "",
           "legendFormat": "{{worker}}",
           "range": true,
@@ -317,7 +317,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "rate(flower_task_runtime_seconds_sum{cluster=~\"$cluster\"}[5m]) / rate(flower_task_runtime_seconds_count{cluster=~\"$cluster\"}[5m])",
+          "expr": "rate(flower_task_runtime_seconds_sum[5m]) / rate(flower_task_runtime_seconds_count[5m])",
           "hide": false,
           "interval": "",
           "legendFormat": "{{task}}, {{worker}}",
@@ -419,7 +419,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "flower_task_prefetch_time_seconds{cluster=~\"$cluster\"}",
+          "expr": "flower_task_prefetch_time_seconds",
           "interval": "",
           "legendFormat": "{{task}}, {{worker}}",
           "range": true,
@@ -520,7 +520,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "flower_worker_prefetched_tasks{cluster=~\"$cluster\"}",
+          "expr": "flower_worker_prefetched_tasks",
           "interval": "",
           "legendFormat": "{{task}}, {{worker}}",
           "range": true,
@@ -621,7 +621,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "(sum(avg_over_time(flower_events_total{type=\"task-succeeded\", cluster=~\"$cluster\"}[15m])) by (task)  / sum(avg_over_time(flower_events_total{type=~\"task-failed|task-succeeded\", cluster=~\"$cluster\"}[15m])) by (task)) * 100",
+          "expr": "(sum(avg_over_time(flower_events_total{type=\"task-succeeded\"}[15m])) by (task)  / sum(avg_over_time(flower_events_total{type=~\"task-failed|task-succeeded\"}[15m])) by (task)) * 100",
           "interval": "",
           "legendFormat": "{{ task }}",
           "range": true,
@@ -722,7 +722,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "(sum(avg_over_time(flower_events_total{type=\"task-failed\", cluster=~\"$cluster\"}[15m])) by (task) / sum(avg_over_time(flower_events_total{type=~\"task-failed|task-succeeded\", cluster=~\"$cluster\"}[15m])) by (task)) * 100",
+          "expr": "(sum(avg_over_time(flower_events_total{type=\"task-failed\"}[15m])) by (task) / sum(avg_over_time(flower_events_total{type=~\"task-failed|task-succeeded\"}[15m])) by (task)) * 100",
           "interval": "",
           "legendFormat": "{{ task }}",
           "range": true,
@@ -739,28 +739,6 @@
   "tags": ["celery", "monitoring", "flower", "prometheus"],
   "templating": {
     "list": [
-      {
-        "current": {
-          "text": "",
-          "value": ""
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus_12121212123"
-        },
-        "definition": "label_values(flower_worker_online,cluster)",
-        "includeAll": false,
-        "name": "cluster",
-        "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(flower_worker_online,cluster)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
-        "refresh": 1,
-        "regex": "",
-        "type": "query"
-      },
       {
         "current": {
           "text": "Prometheus",
