@@ -58,6 +58,11 @@ in
             dnsResolver = "1.1.1.1:53";
             group = acmeSharedGroup;
             environmentFile = cfg.dnsApiCredentialsFile;
+            # deSEC's anycast frontends can lag a few seconds behind the API, so Let's Encrypt
+            # intermittently fails the wildcard challenge with "No TXT record found" even though
+            # lego's propagation check already passed. Skip the check and give the record a fixed
+            # head start before validation instead.
+            extraLegoFlags = [ "--dns.propagation-wait=120s" ];
           };
         }
         (lib.optionalAttrs (config.homelab.baseDomainFallback != null) {
