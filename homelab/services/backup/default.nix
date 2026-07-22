@@ -192,6 +192,7 @@ in
               inhibitsSleep = true; # Prevents the system from sleeping during backup
               user = "root"; # User to run the backup as, default is root, this ensures the backup has access to all files
               pruneOpts = [
+                "--group-by host" # default host,paths would keep snapshots with outdated path sets forever
                 "--keep-daily 7"
                 "--keep-weekly 4"
                 "--keep-monthly 6"
@@ -231,6 +232,7 @@ in
                 inhibitsSleep = true; # Prevents the system from sleeping during backup
                 user = "root"; # User to run the backup as, default is root, this ensures the backup has access to all files
                 pruneOpts = [
+                  "--group-by host" # default host,paths would keep snapshots with outdated path sets forever
                   "--keep-daily 7"
                   "--keep-weekly 4"
                   "--keep-monthly 3"
