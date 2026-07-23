@@ -28,6 +28,11 @@ in
         '''
       '';
     };
+    fiberMetrics = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Collect fiber SFP metrics (gateway_fiber_*) via the Lua interface. Enable once the FRITZ!Box uplink is fiber; on DSL the fiber Lua page returns no SFP data and every scrape logs collect errors.";
+    };
     metricsFile = lib.mkOption {
       description = "JSON file with the UPnP/TR-064 metric definitions, adapted to the FRITZ!Box model in use";
       type = lib.types.path;
@@ -89,6 +94,14 @@ in
           install -Dm644 metrics-lua.json $out/metrics-lua.json
         '';
       };
+      luaMetricsFile =
+        if cfg.fiberMetrics then
+          cfg.luaMetricsFile
+        else
+          pkgs.runCommand "metrics-lua-nofiber.json" { nativeBuildInputs = [ pkgs.jq ]; } ''
+            jq '.metrics |= map(select(.promDesc.fqName | startswith("gateway_fiber_") | not))' \
+              ${cfg.luaMetricsFile} > $out
+          '';
     in
     lib.mkIf cfg.enable {
 
@@ -156,7 +169,7 @@ in
           ExecStart = ''
             ${fritzbox_exporter}/bin/fritzbox_exporter \
               -metrics-file ${cfg.metricsFile} \
-              -lua-metrics-file ${cfg.luaMetricsFile}
+              -lua-metrics-file ${luaMetricsFile}
           '';
           StandardOutput = "journal";
           StandardError = "journal";
