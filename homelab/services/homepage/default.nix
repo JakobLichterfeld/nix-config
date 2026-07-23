@@ -21,7 +21,7 @@ in
       default = "${homelab.baseDomain}";
     };
 
-    homepageCategories = lib.mkOption {
+    categories = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [
         # "Arr"
@@ -278,7 +278,7 @@ in
       };
       services =
         let
-          homepageCategories = cfg.homepageCategories;
+          homepageCategories = cfg.categories;
           hl = config.homelab.services;
           homepageServices =
             x:

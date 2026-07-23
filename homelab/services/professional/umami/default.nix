@@ -63,13 +63,13 @@ in
       description = "Internal hostname for the Umami API endpoint, primarily used by the Cloudflare Tunnel.";
       default = "umami-api.internal";
     };
-    previewOriginToBlock = lib.mkOption {
+    preview.originToBlock = lib.mkOption {
       type = with lib.types; nullOr str;
       default = null;
       description = "Preview origin to block from tracking.";
       example = "https:/xyz.example.com";
     };
-    previewRefererToBlock = lib.mkOption {
+    preview.refererToBlock = lib.mkOption {
       type = with lib.types; nullOr str;
       default = null;
       description = "Preview referer to block from tracking.";
@@ -238,14 +238,14 @@ in
         # Handle the collection endpoint.
         handle ${cfg.collectApiEndpoint} {
           ${
-            lib.optionalString (cfg.previewOriginToBlock != null) ''
-              @previewOriginToBlock header Origin ${cfg.previewOriginToBlock}
+            lib.optionalString (cfg.preview.originToBlock != null) ''
+              @previewOriginToBlock header Origin ${cfg.preview.originToBlock}
               respond @previewOriginToBlock 403
             ''
           }
           ${
-            lib.optionalString (cfg.previewRefererToBlock != null) ''
-              @previewRefererToBlock header Referer ${cfg.previewRefererToBlock}
+            lib.optionalString (cfg.preview.refererToBlock != null) ''
+              @previewRefererToBlock header Referer ${cfg.preview.refererToBlock}
               respond @previewRefererToBlock 403
             ''
           }
@@ -280,14 +280,14 @@ in
         # Handle the record endpoint
           handle ${cfg.recordApiEndpoint} {
             ${
-              lib.optionalString (cfg.previewOriginToBlock != null) ''
-                @previewOriginToBlock header Origin ${cfg.previewOriginToBlock}
+              lib.optionalString (cfg.preview.originToBlock != null) ''
+                @previewOriginToBlock header Origin ${cfg.preview.originToBlock}
                 respond @previewOriginToBlock 403
               ''
             }
             ${
-              lib.optionalString (cfg.previewRefererToBlock != null) ''
-                @previewRefererToBlock header Referer ${cfg.previewRefererToBlock}
+              lib.optionalString (cfg.preview.refererToBlock != null) ''
+                @previewRefererToBlock header Referer ${cfg.preview.refererToBlock}
                 respond @previewRefererToBlock 403
               ''
             }

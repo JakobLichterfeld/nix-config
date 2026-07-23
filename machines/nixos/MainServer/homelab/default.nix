@@ -303,8 +303,8 @@ in
         collectApiEndpoint = "${machinesSensitiveVars.OperatingCompany.statsW.collectApiEndpoint}";
         replayScriptName = "${machinesSensitiveVars.OperatingCompany.statsW.replayScriptName}";
         recordApiEndpoint = "${machinesSensitiveVars.OperatingCompany.statsW.recordApiEndpoint}";
-        previewOriginToBlock = "${machinesSensitiveVars.OperatingCompany.statsW.previewOriginToBlock}";
-        previewRefererToBlock = "${machinesSensitiveVars.OperatingCompany.statsW.previewRefererToBlock}";
+        preview.originToBlock = "${machinesSensitiveVars.OperatingCompany.statsW.previewOriginToBlock}";
+        preview.refererToBlock = "${machinesSensitiveVars.OperatingCompany.statsW.previewRefererToBlock}";
         homepage.category = "${machinesSensitiveVars.OperatingCompany.name}";
         cloudflared = {
           fqdn = "${machinesSensitiveVars.OperatingCompany.statsW.fqdn}";
