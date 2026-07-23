@@ -104,6 +104,8 @@
     git-crypt
     gnupg
     bfg-repo-cleaner
+    nix-diff # compare two derivations recursively; used to verify refactors are behavior-neutral before switching
+    nvd # package-level diff between system generations (nvd diff /run/current-system ./result)
   ];
 
 }
