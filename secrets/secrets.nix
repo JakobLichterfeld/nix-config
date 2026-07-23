@@ -43,6 +43,7 @@ in
   "matomoCloudflared.age".publicKeys = serverAndJakob;
   "paperlessEnv.age".publicKeys = allKeys;
   "paperlessPassword.age".publicKeys = allKeys;
+  "postizEnv.age".publicKeys = serverAndJakob;
   "resticPassword.age".publicKeys = allKeys;
   "s3StorageEnv.age".publicKeys = allKeys;
   "sambaPassword.age".publicKeys = serverAndJakob;

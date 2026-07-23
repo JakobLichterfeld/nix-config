@@ -122,6 +122,15 @@ in
             "force group" = "media";
           };
         };
+        "Postiz-Upload" = {
+          path = hl.services.postiz.uploadDir;
+          filesystemOwner = hl.services.postiz.user;
+          filesystemGroup = "media";
+          validUsers = "@media";
+          extraOptions = {
+            "force group" = "media";
+          };
+        };
       };
     };
     services = {
@@ -280,6 +289,11 @@ in
           tunnelId = "${machinesSensitiveVars.OperatingCompany.statsA.tunnelId}";
           credentialsFile = config.age.secrets.matomoCloudflared.path;
         };
+      };
+
+      postiz = {
+        enable = true;
+        homepage.category = "${machinesSensitiveVars.OperatingCompany.name}";
       };
 
       umami = {

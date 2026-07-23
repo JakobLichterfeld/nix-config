@@ -76,6 +76,13 @@ in
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e paperlessPassword.age
   };
 
+  age.secrets.postizEnv = {
+    file = secretsBasePath + /postizEnv.age; # content are the sensitive env vars, like JWT_SECRET= and Social Media API Settings
+    # to generate a JWT secret, run for example: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+    # for all options see https://docs.postiz.com/configuration/reference
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e postizEnv.age
+  };
+
   age.secrets.resticPassword = {
     file = secretsBasePath + /resticPassword.age; # content is the restic password
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e resticPassword.age

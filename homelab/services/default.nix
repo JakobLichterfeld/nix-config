@@ -116,6 +116,7 @@ in
     ./pairdrop
     ./paperless-ngx
     ./professional/matomo
+    ./professional/postiz
     ./professional/umami
     ./prometheus
     ./stirling-pdf
