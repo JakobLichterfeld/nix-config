@@ -28,6 +28,16 @@ in
         '''
       '';
     };
+    metricsFile = lib.mkOption {
+      description = "JSON file with the UPnP/TR-064 metric definitions, adapted to the FRITZ!Box model in use";
+      type = lib.types.path;
+      default = ./metrics.json;
+    };
+    luaMetricsFile = lib.mkOption {
+      description = "JSON file with the Lua metric definitions, adapted to the FRITZ!Box model in use";
+      type = lib.types.path;
+      default = ./metrics-lua.json;
+    };
     prometheus = {
       listenPort = lib.mkOption {
         type = lib.types.int;
@@ -145,8 +155,8 @@ in
 
           ExecStart = ''
             ${fritzbox_exporter}/bin/fritzbox_exporter \
-              -metrics-file ${fritzbox_exporter}/metrics.json \
-              -lua-metrics-file ${fritzbox_exporter}/metrics-lua.json
+              -metrics-file ${cfg.metricsFile} \
+              -lua-metrics-file ${cfg.luaMetricsFile}
           '';
           StandardOutput = "journal";
           StandardError = "journal";
