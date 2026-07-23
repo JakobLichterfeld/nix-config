@@ -9,8 +9,7 @@ let
   service = "teslamate";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
-  serviceSubService = "teslamate-grafana";
-  cfgSubService = config.homelab.services.${serviceSubService};
+  cfgGrafana = config.homelab.services.teslamate-grafana;
 in
 {
   options.homelab.services.${service} = {
@@ -53,11 +52,11 @@ in
       type = lib.types.str;
       default = "teslamate";
     };
-    listenPortPostgres = lib.mkOption {
+    postgres.listenPort = lib.mkOption {
       type = lib.types.int;
       default = 5432;
     };
-    listenPortMqtt = lib.mkOption {
+    mqtt.listenPort = lib.mkOption {
       type = lib.types.int;
       default = 1883;
     };
@@ -78,14 +77,14 @@ in
     };
   };
 
-  options.homelab.services.${serviceSubService} = {
+  options.homelab.services.teslamate-grafana = {
     # used for automatic generation of the service entry in the homepage
     enable = lib.mkEnableOption {
-      description = "Enable ${serviceSubService}";
+      description = "Enable teslamate-grafana";
     };
     url = lib.mkOption {
       type = lib.types.str;
-      default = "${serviceSubService}.${homelab.baseDomain}";
+      default = "teslamate-grafana.${homelab.baseDomain}";
     };
     listenPort = lib.mkOption {
       type = lib.types.int;
@@ -115,10 +114,10 @@ in
           blackbox = import ../../../lib/blackbox.nix { inherit lib; };
         in
         [
-          (blackbox.mkHttpTarget "${
-            serviceSubService
-          }" "http://127.0.0.1:${toString cfgSubService.listenPort}" "internal")
-          (blackbox.mkHttpTarget "${serviceSubService}" "${cfgSubService.url}" "external")
+          (blackbox.mkHttpTarget "teslamate-grafana" "http://127.0.0.1:${toString cfgGrafana.listenPort}"
+            "internal"
+          )
+          (blackbox.mkHttpTarget "teslamate-grafana" "${cfgGrafana.url}" "external")
         ];
     };
   };
@@ -141,13 +140,13 @@ in
         user = cfg.postgres.user;
         database = cfg.postgres.database;
         host = "127.0.0.1";
-        port = cfg.listenPortPostgres;
+        port = cfg.postgres.listenPort;
       };
 
       grafana = {
         enable = true;
         listenAddress = "0.0.0.0"; # listen on all addresses
-        port = cfgSubService.listenPort;
+        port = cfgGrafana.listenPort;
         urlPath = "/";
         secretKeyFile = config.age.secrets.grafanaSecretKeyFile.path;
       };
@@ -155,17 +154,17 @@ in
       mqtt = {
         enable = true;
         host = "127.0.0.1";
-        port = cfg.listenPortMqtt;
+        port = cfg.mqtt.listenPort;
       };
     };
 
     # Prometheus exporter for PostgreSQL
     services.prometheus.exporters.postgres.environmentFile = config.age.secrets.teslamateEnv.path;
     # the Environment file must contain the following with real values:
-    # DATA_SOURCE_NAME=postgres://${cfg.postgres.user}:${DATABASE_PASS}@${cfg.postgres.host}:${cfg.listenPortPostgres}/${cfg.postgres.database}?sslmode=disable
+    # DATA_SOURCE_NAME=postgres://${cfg.postgres.user}:${DATABASE_PASS}@${cfg.postgres.host}:${cfg.postgres.listenPort}/${cfg.postgres.database}?sslmode=disable
     services.prometheus.exporters.postgres.dataSourceName = "$DATA_SOURCE_NAME"; # as the eventsub is not implemented for this exporter, we must use the complete data source name
 
-    homelab.services.${serviceSubService} = {
+    homelab.services.teslamate-grafana = {
       enable = true;
     };
 
@@ -182,7 +181,7 @@ in
       ];
     };
 
-    networking.firewall.allowedTCPPorts = [ cfg.listenPortMqtt ];
+    networking.firewall.allowedTCPPorts = [ cfg.mqtt.listenPort ];
 
     # TeslaMate
     services.caddy.virtualHosts."${cfg.url}" = {
@@ -193,10 +192,10 @@ in
     };
 
     # Grafana
-    services.caddy.virtualHosts."${cfgSubService.url}" = {
+    services.caddy.virtualHosts."${cfgGrafana.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
-        reverse_proxy http://127.0.0.1:${toString cfgSubService.listenPort}
+        reverse_proxy http://127.0.0.1:${toString cfgGrafana.listenPort}
       '';
     };
   };

@@ -26,7 +26,7 @@ in
       default = "${service}.${homelab.baseDomain}";
       description = "URL for the Blocky service, used for Prometheus metrics scraping.";
     };
-    urlDoH = lib.mkOption {
+    doh.url = lib.mkOption {
       type = lib.types.str;
       default = "dns.${homelab.baseDomain}";
       description = "URL for the Blocky service, used for DNS-over-HTTPS (DoH) requests.";
@@ -36,7 +36,7 @@ in
       default = 4001;
       description = "HTTP Port on which Blocky will provide Prometheus metrics, pprof, REST API, DoH...";
     };
-    listenPortDoT = lib.mkOption {
+    dot.listenPort = lib.mkOption {
       type = lib.types.int;
       default = 853;
       description = "Port on which Blocky will listen for DNS-over-TLS (DoT) requests.";
@@ -70,7 +70,7 @@ in
   config = lib.mkIf cfg.enable {
     networking.firewall.allowedTCPPorts = [
       53
-      cfg.listenPortDoT
+      cfg.dot.listenPort
     ];
     networking.firewall.allowedUDPPorts = [ 53 ];
 
@@ -92,7 +92,7 @@ in
         ports = {
           dns = "0.0.0.0:53"; # Port for incoming DNS Queries.
           http = "127.0.0.1:${toString cfg.listenPort}"; # Port(s) and optional bind ip address(es) to serve HTTP used for prometheus metrics, pprof, REST API, DNS-over-HTTPS (DoH) requests via: https://host:port/dns-query
-          tls = "0.0.0.0:${toString cfg.listenPortDoT}"; # Port(s) and optional bind ip address(es) to serve DNS-over-TLS (DoT) requests via: host:port
+          tls = "0.0.0.0:${toString cfg.dot.listenPort}"; # Port(s) and optional bind ip address(es) to serve DNS-over-TLS (DoT) requests via: host:port
         };
         # Path to the ACME certificate and key files for DNS-over-TLS (DoT) and DNS-over-HTTPS (DoH).
         # These files are automatically managed by the ACME service.
@@ -208,7 +208,7 @@ in
     };
 
     # Enable reverse proxy DoH
-    services.caddy.virtualHosts."${cfg.urlDoH}" = {
+    services.caddy.virtualHosts."${cfg.doh.url}" = {
       useACMEHost = homelab.baseDomain;
       extraConfig = ''
         reverse_proxy /dns-query http://127.0.0.1:${toString cfg.listenPort}

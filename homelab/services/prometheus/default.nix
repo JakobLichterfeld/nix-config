@@ -8,10 +8,8 @@ let
   service = "prometheus";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
-  serviceSubService = "alertmanager";
-  serviceSubServiceTwo = "prometheus-grafana";
-  cfgSubService = config.homelab.services.${serviceSubService};
-  cfgSubServiceTwo = config.homelab.services.${serviceSubServiceTwo};
+  cfgAlertmanager = config.homelab.services.alertmanager;
+  cfgGrafana = config.homelab.services.prometheus-grafana;
 
   # Stable UID for the Grafana dashboard folder so the direct dashboards URL never
   # changes across rebuilds. Used as single source of truth for both the folder
@@ -41,27 +39,27 @@ in
       type = lib.types.int;
       default = 9090;
     };
-    listenPortNodeExporter = lib.mkOption {
+    nodeExporter.listenPort = lib.mkOption {
       type = lib.types.int;
       default = 9100;
     };
-    listenPortMQTTExporter = lib.mkOption {
+    mqttExporter.listenPort = lib.mkOption {
       type = lib.types.int;
       default = 9000;
     };
-    listenPortPostgreSQLExporter = lib.mkOption {
+    postgresqlExporter.listenPort = lib.mkOption {
       type = lib.types.int;
       default = 9187;
     };
-    listenPortZfsExporter = lib.mkOption {
+    zfsExporter.listenPort = lib.mkOption {
       type = lib.types.int;
       default = 9134;
     };
-    listenPortSmartctlExporter = lib.mkOption {
+    smartctlExporter.listenPort = lib.mkOption {
       type = lib.types.int;
       default = 9633;
     };
-    listenPortBlackboxExporter = lib.mkOption {
+    blackboxExporter.listenPort = lib.mkOption {
       type = lib.types.int;
       default = 9115;
     };
@@ -75,7 +73,7 @@ in
         default = 9042;
       };
     };
-    telegramCredentialsFile = lib.mkOption {
+    telegram.credentialsFile = lib.mkOption {
       type = lib.types.path;
       description = "Path to a file with the Telegram Bot token";
       example = lib.literalExpression ''
@@ -84,7 +82,7 @@ in
         '''
       '';
     };
-    telegramChatId = lib.mkOption {
+    telegram.chatId = lib.mkOption {
       type = lib.types.int;
       description = "Telegram Bot chat ID to send alerts to";
       example = lib.literalExpression ''
@@ -96,12 +94,12 @@ in
       default = false;
       description = "Enable test alert for Prometheus";
     };
-    grafanaSecretKeyFile = lib.mkOption {
+    grafana.secretKeyFile = lib.mkOption {
       type = lib.types.path;
       description = "File with the Grafana secret_key for signing data source settings like secrets and passwords";
       default = config.age.secrets.grafanaSecretKeyFile.path;
     };
-    grafanaAdminPasswordFile = lib.mkOption {
+    grafana.adminPasswordFile = lib.mkOption {
       type = lib.types.path;
       description = "File with the Grafana admin password, applied on first creation of the admin user (e.g. after a state reset) so it does not need to be set manually";
       default = config.age.secrets.grafanaAdminPassword.path;
@@ -130,26 +128,28 @@ in
         in
         [
           (blackbox.mkHttpTarget "prometheus" "localhost:${toString cfg.listenPort}" "internal")
-          (blackbox.mkHttpTargetCritical "alertmanager" "localhost:${toString cfgSubService.listenPort}"
+          (blackbox.mkHttpTargetCritical "alertmanager" "localhost:${toString cfgAlertmanager.listenPort}"
             "internal"
           )
-          (blackbox.mkHttpTarget "node_exporter" "localhost:${toString cfg.listenPortNodeExporter}"
+          (blackbox.mkHttpTarget "node_exporter" "localhost:${toString cfg.nodeExporter.listenPort}"
             "internal"
           )
-          (blackbox.mkHttpTarget "zfs_exporter" "localhost:${toString cfg.listenPortZfsExporter}" "internal")
-          (blackbox.mkHttpTarget "smartctl_exporter" "localhost:${toString cfg.listenPortSmartctlExporter}"
+          (blackbox.mkHttpTarget "zfs_exporter" "localhost:${toString cfg.zfsExporter.listenPort}" "internal")
+          (blackbox.mkHttpTarget "smartctl_exporter" "localhost:${toString cfg.smartctlExporter.listenPort}"
             "internal"
           )
           (blackbox.mkHttpTargetCritical "blackbox_exporter"
-            "localhost:${toString cfg.listenPortBlackboxExporter}"
+            "localhost:${toString cfg.blackboxExporter.listenPort}"
             "internal"
           )
         ]
         ++ lib.optional config.services.mosquitto.enable (
-          blackbox.mkHttpTarget "mqtt_exporter" "127.0.0.1:${toString cfg.listenPortMQTTExporter}" "internal" # as the MQTT exporter does only resolve localhost on ipv6 we enforce ipv4 here
+          blackbox.mkHttpTarget "mqtt_exporter" "127.0.0.1:${toString cfg.mqttExporter.listenPort}"
+            "internal" # as the MQTT exporter does only resolve localhost on ipv6 we enforce ipv4 here
         )
         ++ lib.optional config.services.postgresql.enable (
-          blackbox.mkHttpTarget "postgresql_exporter" "localhost:${toString cfg.listenPortPostgreSQLExporter}"
+          blackbox.mkHttpTarget "postgresql_exporter"
+            "localhost:${toString cfg.postgresqlExporter.listenPort}"
             "internal"
         );
     };
@@ -161,14 +161,14 @@ in
   };
 
   # Alertmanager
-  options.homelab.services.${serviceSubService} = {
+  options.homelab.services.alertmanager = {
     # used for automatic generation of the service entry in the homepage
     enable = lib.mkEnableOption {
-      description = "Enable ${serviceSubService}";
+      description = "Enable alertmanager";
     };
     url = lib.mkOption {
       type = lib.types.str;
-      default = "${serviceSubService}.${homelab.baseDomain}";
+      default = "alertmanager.${homelab.baseDomain}";
     };
     listenPort = lib.mkOption {
       type = lib.types.int;
@@ -193,14 +193,14 @@ in
   };
 
   # Grafana
-  options.homelab.services.${serviceSubServiceTwo} = {
+  options.homelab.services.prometheus-grafana = {
     # used for automatic generation of the service entry in the homepage
     enable = lib.mkEnableOption {
-      description = "Enable ${serviceSubServiceTwo}";
+      description = "Enable prometheus-grafana";
     };
     url = lib.mkOption {
       type = lib.types.str;
-      default = "${serviceSubServiceTwo}.${homelab.baseDomain}";
+      default = "prometheus-grafana.${homelab.baseDomain}";
     };
     listenPort = lib.mkOption {
       type = lib.types.int;
@@ -274,33 +274,33 @@ in
               {
                 job_name = "node";
                 static_configs = [
-                  { targets = [ "localhost:${toString cfg.listenPortNodeExporter}" ]; }
+                  { targets = [ "localhost:${toString cfg.nodeExporter.listenPort}" ]; }
                 ];
               }
               {
                 job_name = "mqtt";
                 static_configs = [
-                  { targets = [ "localhost:${toString cfg.listenPortMQTTExporter}" ]; }
+                  { targets = [ "localhost:${toString cfg.mqttExporter.listenPort}" ]; }
                 ];
               }
               {
                 job_name = "postgresql";
                 static_configs = [
-                  { targets = [ "localhost:${toString cfg.listenPortPostgreSQLExporter}" ]; }
+                  { targets = [ "localhost:${toString cfg.postgresqlExporter.listenPort}" ]; }
                 ];
               }
               {
                 job_name = "zfs";
                 static_configs = [
                   {
-                    targets = [ "localhost:${toString cfg.listenPortZfsExporter}" ];
+                    targets = [ "localhost:${toString cfg.zfsExporter.listenPort}" ];
                   }
                 ];
               }
               {
                 job_name = "smartctl";
                 static_configs = [
-                  { targets = [ "localhost:${toString cfg.listenPortSmartctlExporter}" ]; }
+                  { targets = [ "localhost:${toString cfg.smartctlExporter.listenPort}" ]; }
                 ];
               }
               {
@@ -327,7 +327,7 @@ in
                   }
                   {
                     target_label = "__address__";
-                    replacement = "localhost:${toString cfg.listenPortBlackboxExporter}"; # Address of the Blackbox Exporter
+                    replacement = "localhost:${toString cfg.blackboxExporter.listenPort}"; # Address of the Blackbox Exporter
                   }
                 ];
               }
@@ -336,9 +336,9 @@ in
           # Alertmanager
           alertmanager = {
             enable = true;
-            webExternalUrl = "https://${cfgSubService.url}";
-            port = cfgSubService.listenPort;
-            environmentFile = cfg.telegramCredentialsFile; # includes bot_token and chat_id
+            webExternalUrl = "https://${cfgAlertmanager.url}";
+            port = cfgAlertmanager.listenPort;
+            environmentFile = cfg.telegram.credentialsFile; # includes bot_token and chat_id
             configuration = {
               route = {
                 receiver = "telegram";
@@ -350,7 +350,7 @@ in
                     {
                       # see https://prometheus.io/docs/alerting/latest/configuration/#telegram_config
                       bot_token = "\${BOT_TOKEN}"; # set in the environment file
-                      chat_id = cfg.telegramChatId; # setting in environment file is not supported as it must be a int64 and env is a string
+                      chat_id = cfg.telegram.chatId; # setting in environment file is not supported as it must be a int64 and env is a string
                       send_resolved = true; # whether to send resolved alerts
                       parse_mode = "HTML"; # Parse mode for telegram message, supported values are MarkdownV2, Markdown, HTML and empty string for plain text
                       # Template constraints (earlier attempts silently sent nothing):
@@ -382,7 +382,7 @@ in
           alertmanagers = [
             {
               static_configs = [
-                { targets = [ "localhost:${toString cfgSubService.listenPort}" ]; }
+                { targets = [ "localhost:${toString cfgAlertmanager.listenPort}" ]; }
               ];
             }
           ];
@@ -392,7 +392,7 @@ in
             node = {
               enable = true;
               openFirewall = true;
-              port = cfg.listenPortNodeExporter;
+              port = cfg.nodeExporter.listenPort;
               enabledCollectors = [
                 "cpu" # Collect CPU statistics
                 "diskstats" # Collect disk statistics
@@ -413,20 +413,20 @@ in
             mqtt = {
               enable = config.services.mosquitto.enable;
               listenAddress = "0.0.0.0";
-              port = cfg.listenPortMQTTExporter;
+              port = cfg.mqttExporter.listenPort;
             };
 
             postgres = {
               enable = config.services.postgresql.enable;
               listenAddress = "0.0.0.0";
-              port = cfg.listenPortPostgreSQLExporter;
+              port = cfg.postgresqlExporter.listenPort;
               telemetryPath = "/metrics";
             };
 
             zfs = {
               enable = true;
               listenAddress = "0.0.0.0";
-              port = cfg.listenPortZfsExporter;
+              port = cfg.zfsExporter.listenPort;
             };
 
             # smartmontools
@@ -435,14 +435,14 @@ in
               # devices = []; # Paths to the disks that will be monitored. Will autodiscover all disks if none given
               maxInterval = "30m"; # Interval that limits how often a disk can be queried.
               listenAddress = "0.0.0.0";
-              port = cfg.listenPortSmartctlExporter;
+              port = cfg.smartctlExporter.listenPort;
             };
 
             # Blackbox
             blackbox = {
               enable = true;
               listenAddress = "0.0.0.0";
-              port = cfg.listenPortBlackboxExporter;
+              port = cfg.blackboxExporter.listenPort;
               configFile = pkgs.writeText "blackbox.yml" ''
                 modules:
                   http_2xx:
@@ -955,10 +955,10 @@ in
       # If Grafana is enabled, configure it to use Prometheus and Loki as a data source and add dashboards
       services.grafana = lib.mkIf config.services.grafana.enable {
         settings = {
-          security.secret_key = lib.mkForce "$__file{${cfg.grafanaSecretKeyFile}}";
+          security.secret_key = lib.mkForce "$__file{${cfg.grafana.secretKeyFile}}";
           # Admin password is read from a file so it survives a Grafana state reset
           # (Grafana applies it when the admin user is first created).
-          security.admin_password = lib.mkForce "$__file{${cfg.grafanaAdminPasswordFile}}";
+          security.admin_password = lib.mkForce "$__file{${cfg.grafana.adminPasswordFile}}";
           # The NixOS module disables the Grafana and plugin update checks by
           # default -- except the plugin check when declarativePlugins is unset.
           # Plugins only ever change through nixpkgs here, so the 10-minute check
@@ -1018,15 +1018,15 @@ in
       };
 
       # Alertmanager
-      services.caddy.virtualHosts."${cfgSubService.url}" = {
+      services.caddy.virtualHosts."${cfgAlertmanager.url}" = {
         useACMEHost = homelab.baseDomain;
         extraConfig = ''
-          reverse_proxy http://127.0.0.1:${toString cfgSubService.listenPort}
+          reverse_proxy http://127.0.0.1:${toString cfgAlertmanager.listenPort}
         '';
       };
 
       # Grafana
-      services.caddy.virtualHosts."${cfgSubServiceTwo.url}" = lib.mkIf config.services.grafana.enable {
+      services.caddy.virtualHosts."${cfgGrafana.url}" = lib.mkIf config.services.grafana.enable {
         useACMEHost = homelab.baseDomain;
         extraConfig = ''
           redir / /dashboards/f/${grafanaDashboardFolderUid} 302

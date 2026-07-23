@@ -39,7 +39,7 @@ in
             environmentFiles = [ config.age.secrets.teslamateEnvABRP.path ];
             environment = {
               MQTT_SERVER = "host.containers.internal";
-              MQTT_PORT = "${toString config.homelab.services.teslamate.listenPortMqtt}";
+              MQTT_PORT = "${toString config.homelab.services.teslamate.mqtt.listenPort}";
             };
             extraOptions = lib.optional (
               !config.virtualisation.podman.defaultNetwork.settings.dns_enabled

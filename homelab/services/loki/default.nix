@@ -37,7 +37,7 @@ in
       default = 3100;
       description = "HTTP port of Loki (API, metrics and readiness probe)";
     };
-    listenPortAlloy = lib.mkOption {
+    alloy.listenPort = lib.mkOption {
       type = lib.types.int;
       default = 12345;
       description = "HTTP port of Grafana Alloy (UI, metrics and readiness probe)";
@@ -72,7 +72,7 @@ in
         in
         [
           (blackbox.mkHttpTarget "${service}" "http://127.0.0.1:${toString cfg.listenPort}/ready" "internal")
-          (blackbox.mkHttpTarget "alloy" "http://127.0.0.1:${toString cfg.listenPortAlloy}/-/ready"
+          (blackbox.mkHttpTarget "alloy" "http://127.0.0.1:${toString cfg.alloy.listenPort}/-/ready"
             "internal"
           )
         ];
@@ -150,7 +150,7 @@ in
     services.alloy = {
       enable = true;
       extraFlags = [
-        "--server.http.listen-addr=127.0.0.1:${toString cfg.listenPortAlloy}" # Alloy UI and metrics, loopback only
+        "--server.http.listen-addr=127.0.0.1:${toString cfg.alloy.listenPort}" # Alloy UI and metrics, loopback only
         "--disable-reporting" # no usage telemetry to Grafana Labs
       ];
     };
@@ -242,7 +242,7 @@ in
         job_name = "alloy";
         static_configs = [
           {
-            targets = [ "localhost:${toString cfg.listenPortAlloy}" ];
+            targets = [ "localhost:${toString cfg.alloy.listenPort}" ];
           }
         ];
       }

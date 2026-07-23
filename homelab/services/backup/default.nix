@@ -82,7 +82,7 @@ in
         ];
       };
     };
-    listenPortResticExporterBase = lib.mkOption {
+    resticExporter.listenPortBase = lib.mkOption {
       type = lib.types.int;
       description = "Define a starting port for the dynamically created restic exporters. Each defined restic.backup will increment by 1.";
       default = 9753;
@@ -162,7 +162,7 @@ in
           {
             name = "${name}";
             value = {
-              port = cfg.listenPortResticExporterBase + i;
+              port = cfg.resticExporter.listenPortBase + i;
               repository = backup.repository;
               passwordFile = backup.passwordFile;
               environmentFile =

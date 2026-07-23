@@ -316,8 +316,8 @@ in
       prometheus = {
         enable = true;
         fritzboxExporter.enable = true;
-        telegramCredentialsFile = config.age.secrets.telegramCredentials.path;
-        telegramChatId = machinesSensitiveVars.MainServer.telegramChatId;
+        telegram.credentialsFile = config.age.secrets.telegramCredentials.path;
+        telegram.chatId = machinesSensitiveVars.MainServer.telegramChatId;
         blackbox.hostSpecificTargets =
           let
             blackbox = import ../../../../lib/blackbox.nix { inherit lib; };
