@@ -57,10 +57,6 @@ in
       type = lib.types.int;
       default = 5432;
     };
-    listenPortGrafana = lib.mkOption {
-      type = lib.types.int;
-      default = 3000;
-    };
     listenPortMqtt = lib.mkOption {
       type = lib.types.int;
       default = 1883;
@@ -93,7 +89,7 @@ in
     };
     listenPort = lib.mkOption {
       type = lib.types.int;
-      default = cfg.listenPortGrafana;
+      default = 3000;
     };
     homepage.name = lib.mkOption {
       type = lib.types.str;
@@ -151,7 +147,7 @@ in
       grafana = {
         enable = true;
         listenAddress = "0.0.0.0"; # listen on all addresses
-        port = cfg.listenPortGrafana;
+        port = cfgSubService.listenPort;
         urlPath = "/";
         secretKeyFile = config.age.secrets.grafanaSecretKeyFile.path;
       };
@@ -171,7 +167,6 @@ in
 
     homelab.services.${serviceSubService} = {
       enable = true;
-      listenPort = homelab.services.teslamate.listenPortGrafana;
     };
 
     # Mosquitto MQTT broker

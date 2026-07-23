@@ -41,10 +41,6 @@ in
       type = lib.types.int;
       default = 9090;
     };
-    listenPortAlertmanager = lib.mkOption {
-      type = lib.types.int;
-      default = 9093;
-    };
     listenPortNodeExporter = lib.mkOption {
       type = lib.types.int;
       default = 9100;
@@ -134,7 +130,9 @@ in
         in
         [
           (blackbox.mkHttpTarget "prometheus" "localhost:${toString cfg.listenPort}" "internal")
-          (blackbox.mkHttpTargetCritical "alertmanager" "localhost:${toString cfgSubService.listenPort}" "internal")
+          (blackbox.mkHttpTargetCritical "alertmanager" "localhost:${toString cfgSubService.listenPort}"
+            "internal"
+          )
           (blackbox.mkHttpTarget "node_exporter" "localhost:${toString cfg.listenPortNodeExporter}"
             "internal"
           )
@@ -174,7 +172,7 @@ in
     };
     listenPort = lib.mkOption {
       type = lib.types.int;
-      default = cfg.listenPortAlertmanager;
+      default = 9093;
     };
     homepage.name = lib.mkOption {
       type = lib.types.str;
@@ -339,7 +337,7 @@ in
           alertmanager = {
             enable = true;
             webExternalUrl = "https://${cfgSubService.url}";
-            port = cfg.listenPortAlertmanager;
+            port = cfgSubService.listenPort;
             environmentFile = cfg.telegramCredentialsFile; # includes bot_token and chat_id
             configuration = {
               route = {
