@@ -134,7 +134,7 @@ in
         in
         [
           (blackbox.mkHttpTarget "prometheus" "localhost:${toString cfg.listenPort}" "internal")
-          (blackbox.mkHttpTargetCritical "alertmanager" "localhost:${toString cfg.listenPort}" "internal")
+          (blackbox.mkHttpTargetCritical "alertmanager" "localhost:${toString cfgSubService.listenPort}" "internal")
           (blackbox.mkHttpTarget "node_exporter" "localhost:${toString cfg.listenPortNodeExporter}"
             "internal"
           )
