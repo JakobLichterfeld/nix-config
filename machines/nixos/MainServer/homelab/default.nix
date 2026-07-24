@@ -340,6 +340,7 @@ in
       };
 
       stirling-pdf.enable = true;
+      bentopdf.enable = true;
 
       syncthing = {
         enable = true;

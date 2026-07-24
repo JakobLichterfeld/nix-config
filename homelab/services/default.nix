@@ -102,6 +102,7 @@ in
   imports = [
     ./audiobookshelf
     ./backup
+    ./bentopdf
     ./blocky
     ./caddy
     ./changedetection-io
