@@ -77,9 +77,40 @@ in
           owner = "sberk42";
           repo = "fritzbox_exporter";
           rev = "5547846785cf0c2d311ac65ff698f031520ecbab";
+          /*
+            On Dev machine from the repository root, determine this hash without
+            building MainServer. The command reads `rev` from this file:
+
+              export FRITZBOX_EXPORTER_REV="$(sed -n 's/^[[:space:]]*rev = "\([^"]*\)";/\1/p' homelab/services/prometheus/fritzbox-exporter/default.nix)"
+              nix run nixpkgs#nix-prefetch-github -- sberk42 fritzbox_exporter --rev "$FRITZBOX_EXPORTER_REV"
+
+            Copy the reported hash to `sha256` and commit it.
+          */
           sha256 = "sha256-If0qNpm9Wpl2/WBNC4p4tGUfYFRomr9jpwxM5Cg0oK0=";
         };
 
+        /*
+          After fixing `sha256`, run this separately on Dev machine from the
+          repository root. It reads the same `rev` from this file and builds
+          only the Go module dependency derivation:
+
+            export FRITZBOX_EXPORTER_REV="$(sed -n 's/^[[:space:]]*rev = "\([^"]*\)";/\1/p' homelab/services/prometheus/fritzbox-exporter/default.nix)"
+            nix build --no-link --impure --expr '
+              let
+                flake = builtins.getFlake (toString ./.);
+                pkgs = import flake.inputs.nixpkgs { system = builtins.currentSystem; };
+              in pkgs.buildGoModule {
+                pname = "fritzbox_exporter";
+                version = "latest";
+                src = builtins.fetchGit {
+                  url = "https://github.com/sberk42/fritzbox_exporter.git";
+                  rev = builtins.getEnv "FRITZBOX_EXPORTER_REV";
+                };
+                vendorHash = pkgs.lib.fakeHash;
+              }'
+
+          Copy the reported `got:` hash to `vendorHash` and commit it.
+        */
         vendorHash = "sha256-+B7GfSWV6F1b88l4hfeEJM73CUG2niQSud5F3NGi394=";
 
         meta = with lib; {
