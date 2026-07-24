@@ -9,6 +9,22 @@ let
   service = "matomo";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
+
+  # CustomAlerts is a free Marketplace plugin, NOT bundled with Matomo core.
+  # Matomo's in-app Marketplace installer cannot install it here because the
+  # package lives in the read-only Nix store, so we bake the ready-to-run
+  # Marketplace release into the package instead (see services.matomo.package).
+  #
+  # watch for new releases https://github.com/matomo-org/plugin-CustomAlerts
+  #
+  # Hash obtained via:
+  #   nix-prefetch-url --unpack https://plugins.matomo.org/api/2.0/plugins/CustomAlerts/download/5.3.2
+  customAlertsPlugin = pkgs.fetchzip {
+    name = "matomo-plugin-CustomAlerts-5.3.2";
+    url = "https://plugins.matomo.org/api/2.0/plugins/CustomAlerts/download/5.3.2";
+    extension = "zip"; # download URL has no file extension, so tell fetchzip how to unpack
+    hash = "sha256-OdcCJVKwWKug5+2K04q5UkdDBFt+sveR8gEg5UCMfC8=";
+  };
 in
 {
   options.homelab.services.${service} = {
@@ -87,6 +103,16 @@ in
     (lib.mkIf cfg.enable {
       services.matomo = {
         enable = true;
+        # Bake the CustomAlerts Marketplace plugin into the read-only package.
+        # Activate it afterwards in the UI (Administration > System > Plugins)
+        # or via: matomo-console plugin:activate CustomAlerts
+        package = pkgs.matomo.overrideAttrs (old: {
+          postInstall =
+            (old.postInstall or "")
+            + ''
+              cp -r ${customAlertsPlugin} $out/share/plugins/CustomAlerts
+            '';
+        });
         hostname = cfg.url;
         webServerUser = "caddy";
         periodicArchiveProcessing = true; # Enable periodic archive processing, which generates aggregated reports from the visits.
