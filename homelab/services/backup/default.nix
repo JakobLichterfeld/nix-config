@@ -328,7 +328,12 @@ in
                       # stops running nothing fails, so alert on the age of the newest snapshot.
                       # 3 days tolerates the daily schedule plus the 12h S3 exporter refresh lag.
                       alert = "ResticBackupTooOld";
-                      expr = ''time() - restic_backup_timestamp{job=~"restic-exporter-.*"} > 3 * 24 * 3600'';
+                      # max over the snapshot groups: the exporter reports one series per
+                      # host/paths/tags combination, so every change to the backup path set
+                      # (e.g. adding a service) freezes the previous group's timestamp
+                      # forever. Without the aggregation those retired groups age past the
+                      # threshold and fire an alert that can never resolve.
+                      expr = ''time() - max by (instance, job, client_hostname) (restic_backup_timestamp{job=~"restic-exporter-.*"}) > 3 * 24 * 3600'';
                       for = "1h";
                       labels = {
                         severity = "critical";
