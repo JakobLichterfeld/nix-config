@@ -9,6 +9,7 @@ let
   service = "matomo";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
+  customAlertsVersion = "5.3.3";
 
   # CustomAlerts is a free Marketplace plugin, NOT bundled with Matomo core.
   # Matomo's in-app Marketplace installer cannot install it here because the
@@ -17,13 +18,13 @@ let
   #
   # watch for new releases https://github.com/matomo-org/plugin-CustomAlerts
   #
-  # Hash obtained via:
-  #   nix-prefetch-url --unpack https://plugins.matomo.org/api/2.0/plugins/CustomAlerts/download/5.3.2
+  # To obtain the SRI hash for a new release, replace <version> and run:
+  #   nix hash convert --hash-algo sha256 --to sri "$(nix-prefetch-url --unpack https://plugins.matomo.org/api/2.0/plugins/CustomAlerts/download/<version>)"
   customAlertsPlugin = pkgs.fetchzip {
-    name = "matomo-plugin-CustomAlerts-5.3.2";
-    url = "https://plugins.matomo.org/api/2.0/plugins/CustomAlerts/download/5.3.2";
+    name = "matomo-plugin-CustomAlerts-${customAlertsVersion}";
+    url = "https://plugins.matomo.org/api/2.0/plugins/CustomAlerts/download/${customAlertsVersion}";
     extension = "zip"; # download URL has no file extension, so tell fetchzip how to unpack
-    hash = "sha256-OdcCJVKwWKug5+2K04q5UkdDBFt+sveR8gEg5UCMfC8=";
+    hash = "sha256-ZStdw57p3TikPL1r1OTCHVwkXS2xnI9kF65kbtMItc0=";
   };
 in
 {
