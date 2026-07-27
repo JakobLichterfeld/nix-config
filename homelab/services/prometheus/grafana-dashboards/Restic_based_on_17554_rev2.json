@@ -308,7 +308,7 @@
             "uid": "prometheus_12121212123"
           },
           "exemplar": true,
-          "expr": "restic_backup_timestamp * 1000",
+          "expr": "topk by(job) (1, restic_backup_timestamp) * 1000",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -323,7 +323,7 @@
             "uid": "prometheus_12121212123"
           },
           "exemplar": true,
-          "expr": "time() - restic_backup_timestamp",
+          "expr": "time() - topk by(job) (1, restic_backup_timestamp)",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -367,14 +367,15 @@
           }
         }
       ],
-      "type": "table"
+      "type": "table",
+      "description": "Shows only the snapshot group currently being written to. The exporter reports one series per group (host plus backed-up paths), so a change to the path set freezes the previous group and would leave it here as a second row."
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus_12121212123"
       },
-      "description": "",
+      "description": "Summed over all snapshot groups of the repository: after a change to the backed-up paths the snapshots are spread across several groups but belong to the same repository.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -435,7 +436,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "restic_backup_snapshots_total",
+          "expr": "sum by(job) (restic_backup_snapshots_total)",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -478,7 +479,7 @@
         "type": "prometheus",
         "uid": "prometheus_12121212123"
       },
-      "description": "",
+      "description": "Shows only the snapshot group currently being written to. The exporter reports one series per group (host plus backed-up paths); summing across groups would count the same deduplicated data twice.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -551,7 +552,7 @@
             "uid": "prometheus_12121212123"
           },
           "exemplar": true,
-          "expr": "restic_backup_size_total",
+          "expr": "max by(job) (restic_backup_size_total and on(job, snapshot_hash) topk by(job) (1, restic_backup_timestamp))",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -566,7 +567,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "restic_backup_files_total",
+          "expr": "max by(job) (restic_backup_files_total and on(job, snapshot_hash) topk by(job) (1, restic_backup_timestamp))",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -633,7 +634,7 @@
         "type": "prometheus",
         "uid": "prometheus_12121212123"
       },
-      "description": "",
+      "description": "Shows only the snapshot group currently being written to. The exporter reports one series per group (host plus backed-up paths); summing across groups would count the same deduplicated data twice.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -687,7 +688,7 @@
             "uid": "prometheus_12121212123"
           },
           "exemplar": true,
-          "expr": "restic_backup_size_total",
+          "expr": "max by(job) (restic_backup_size_total and on(job, snapshot_hash) topk by(job) (1, restic_backup_timestamp))",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -811,7 +812,7 @@
             "uid": "prometheus_12121212123"
           },
           "exemplar": true,
-          "expr": "sum by(job,client_username) (restic_backup_size_total)",
+          "expr": "max by(job) (restic_backup_size_total and on(job, snapshot_hash) topk by(job) (1, restic_backup_timestamp))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -820,7 +821,8 @@
         }
       ],
       "title": "Total backup size",
-      "type": "timeseries"
+      "type": "timeseries",
+      "description": "Shows only the snapshot group currently being written to. The exporter reports one series per group (host plus backed-up paths); summing across groups would count the same deduplicated data twice."
     },
     {
       "datasource": {
@@ -912,7 +914,7 @@
             "uid": "prometheus_12121212123"
           },
           "exemplar": true,
-          "expr": "sum by(job,client_username) (restic_backup_files_total)",
+          "expr": "max by(job) (restic_backup_files_total and on(job, snapshot_hash) topk by(job) (1, restic_backup_timestamp))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -921,7 +923,8 @@
         }
       ],
       "title": "Total backup files",
-      "type": "timeseries"
+      "type": "timeseries",
+      "description": "Shows only the snapshot group currently being written to. The exporter reports one series per group (host plus backed-up paths); summing across groups would count the same deduplicated data twice."
     },
     {
       "datasource": {
@@ -1013,7 +1016,7 @@
             "uid": "prometheus_12121212123"
           },
           "exemplar": true,
-          "expr": "sum by(job,client_username) (restic_backup_snapshots_total)",
+          "expr": "sum by(job) (restic_backup_snapshots_total)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1022,7 +1025,8 @@
         }
       ],
       "title": "Total snapshot count",
-      "type": "timeseries"
+      "type": "timeseries",
+      "description": "Summed over all snapshot groups of the repository: after a change to the backed-up paths the snapshots are spread across several groups but belong to the same repository."
     }
   ],
   "preload": false,
