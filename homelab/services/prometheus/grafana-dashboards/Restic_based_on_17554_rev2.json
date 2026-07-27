@@ -77,10 +77,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
-        "w": 18,
         "x": 0,
-        "y": 0
+        "y": 0,
+        "w": 12,
+        "h": 4
       },
       "id": 40,
       "options": {
@@ -107,9 +107,9 @@
             "uid": "prometheus_12121212123"
           },
           "exemplar": true,
-          "expr": "restic_check_success",
+          "expr": "label_replace(restic_check_success, \"repository\", \"$1\", \"job\", \"restic-exporter-(.*)\")",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "{{repository}}",
           "refId": "A"
         }
       ],
@@ -143,10 +143,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
-        "w": 6,
-        "x": 18,
-        "y": 0
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 4
       },
       "id": 42,
       "options": {
@@ -174,9 +174,9 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "restic_locks_total",
+          "expr": "label_replace(restic_locks_total, \"repository\", \"$1\", \"job\", \"restic-exporter-(.*)\")",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "{{repository}}",
           "range": true,
           "refId": "A"
         }
@@ -276,10 +276,10 @@
         ]
       },
       "gridPos": {
-        "h": 9,
-        "w": 18,
         "x": 0,
-        "y": 3
+        "y": 4,
+        "w": 16,
+        "h": 5
       },
       "id": 27,
       "maxDataPoints": 100,
@@ -403,10 +403,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 6,
-        "x": 18,
-        "y": 3
+        "x": 16,
+        "y": 4,
+        "w": 8,
+        "h": 5
       },
       "id": 32,
       "maxDataPoints": 100,
@@ -520,10 +520,10 @@
         ]
       },
       "gridPos": {
-        "h": 9,
-        "w": 18,
         "x": 0,
-        "y": 12
+        "y": 9,
+        "w": 24,
+        "h": 5
       },
       "id": 34,
       "maxDataPoints": 100,
@@ -634,99 +634,6 @@
         "type": "prometheus",
         "uid": "prometheus_12121212123"
       },
-      "description": "Shows only the snapshot group currently being written to. The exporter reports one series per group (host plus backed-up paths); summing across groups would count the same deduplicated data twice.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            }
-          },
-          "mappings": [],
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 6,
-        "x": 18,
-        "y": 12
-      },
-      "id": 35,
-      "maxDataPoints": 100,
-      "options": {
-        "displayLabels": ["percent"],
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false,
-          "values": []
-        },
-        "pieType": "donut",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "/^Value$/",
-          "values": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.0.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus_12121212123"
-          },
-          "exemplar": true,
-          "expr": "max by(job) (restic_backup_size_total and on(job, snapshot_hash) topk by(job) (1, restic_backup_timestamp))",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "{{job}}",
-          "refId": "A"
-        }
-      ],
-      "title": "Total backup size",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": false,
-              "__name__": true,
-              "backup_id": true,
-              "client_hostname": false,
-              "client_username": true,
-              "instance": true,
-              "job": true,
-              "snapshot_id": true
-            },
-            "indexByName": {},
-            "renameByName": {
-              "Value": "",
-              "snapshot_id": ""
-            }
-          }
-        }
-      ],
-      "type": "piechart"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus_12121212123"
-      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -780,15 +687,15 @@
               }
             ]
           },
-          "unit": "decbytes"
+          "unit": "bytes"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 24,
         "x": 0,
-        "y": 21
+        "y": 14,
+        "w": 24,
+        "h": 8
       },
       "id": 8,
       "options": {
@@ -887,10 +794,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 15,
         "x": 0,
-        "y": 30
+        "y": 22,
+        "w": 12,
+        "h": 8
       },
       "id": 41,
       "options": {
@@ -989,10 +896,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 9,
-        "x": 15,
-        "y": 30
+        "x": 12,
+        "y": 22,
+        "w": 12,
+        "h": 8
       },
       "id": 30,
       "options": {
