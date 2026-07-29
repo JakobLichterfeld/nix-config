@@ -6,10 +6,6 @@
   ...
 }:
 {
-  # nixpkgs is configured system-wide; with `useGlobalPkgs` home-manager inherits it.
-  # Username and home directory are derived from the system user by home-manager.
-  home.stateVersion = "25.11";
-
   imports = [
     ../../dots/direnv/default.nix
     ../../dots/fastfetch/default.nix
