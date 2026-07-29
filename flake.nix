@@ -344,32 +344,37 @@
               program = "${app}/bin/deploy-main-server";
               meta.description = "Deploy the MainServer configuration remotely using deploy-rs.";
             };
+        }
+        # The tarball builder is a x86_64-linux derivation and has to run on that platform,
+        # so the app is only exposed there.
+        // nixpkgs.lib.optionalAttrs (system == "x86_64-linux") {
 
           # Build WSL tarball
           # Builds the WSL tarball for NixOS-WSL machine named WslEnvDataIndexer.
-          # Run on a x86_64-linux machine with: `nix run .#buildWslTarballForWslEnvDataIndexer"`
+          # Run on a x86_64-linux machine with: `nix run .#buildWslTarballForWslEnvDataIndexer`
           buildWslTarballForWslEnvDataIndexer =
             let
               app = pkgs.writeShellApplication {
                 name = "build-wsl-tarball-for-WslEnvDataIndexer";
                 text = ''
-                  #!/usr/bin/env bash
-                  set -e
-
                   # Set a high limit for open files for this script's execution
                   ulimit -n 1048576
 
                   extra_files=$(mktemp -d)
                   # Ensure temp files are cleaned up on exit
-                  trap 'sudo rm -rf "$extra_files"' EXIT
+                  trap 'rm -rf "$extra_files"' EXIT
 
-                  sudo mkdir -p "$extra_files/persist/ssh"
-                  sudo cp "$HOME/.ssh/id_ed25519_wsl_env_data_indexer" "$extra_files/persist/ssh/id_ed25519_wsl_env_data_indexer"
-                  sudo cp "$HOME/.ssh/nix-config_local.key.asc" "$extra_files/persist/ssh/nix-config_local.key.asc"
+                  mkdir -p "$extra_files/persist/ssh"
+                  cp "$HOME/.ssh/id_ed25519_wsl_env_data_indexer" "$extra_files/persist/ssh/id_ed25519_wsl_env_data_indexer"
+                  cp "$HOME/.ssh/nix-config_local.key.asc" "$extra_files/persist/ssh/nix-config_local.key.asc"
 
-                  sudo nix run .#nixosConfigurations.WslEnvDataIndexer.config.system.build.tarballBuilder -- \
-                  --extra-files "$extra_files" \
-                  --chown /persist/ssh 1000:100
+                  # Evaluate and build as the invoking user, only the tarball builder itself needs root.
+                  tarball_builder=$(nix build --no-link --print-out-paths \
+                    "${self}#nixosConfigurations.WslEnvDataIndexer.config.system.build.tarballBuilder")
+
+                  sudo "$tarball_builder/bin/nixos-wsl-tarball-builder" \
+                    --extra-files "$extra_files" \
+                    --chown /persist/ssh 1000:100
                 '';
               };
             in
