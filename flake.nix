@@ -379,6 +379,9 @@
       );
 
       # deploy-rs checks
-      checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
+      # Only for x86_64-linux: the deploy-activate check depends on the activation path of the
+      # MainServer profile, so generating it for aarch64-darwin as well would force building the
+      # whole x86_64-linux closure locally on every deploy, defeating `remoteBuild = true`.
+      checks.x86_64-linux = deploy-rs.lib.x86_64-linux.deployChecks self.deploy;
     };
 }
