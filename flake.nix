@@ -161,7 +161,7 @@
       deploy.nodes = {
         MainServer = {
           hostname = machinesSensitiveVars.MainServer.ipAddress;
-          sshUser = machinesSensitiveVars.MainServer.sshUsername; # The user on the local machine to use for SSH connection to the deploy node.
+          sshUser = machinesSensitiveVars.MainServer.sshUsername; # The user on the remote machine to log in as via SSH.
           profiles.system = {
             user = machinesSensitiveVars.MainServer.adminUsername; # The user on the remote machine to deploy the configuration as.
             sshOpts = [
@@ -332,9 +332,7 @@
                 name = "deploy-main-server";
                 runtimeInputs = [ pkgs.deploy-rs ];
                 text = ''
-                  #!/usr/bin/env bash
-                  set -e
-                  ${pkgs.deploy-rs}/bin/deploy .#MainServer
+                  deploy "${self}#MainServer" "$@"
                 '';
               };
             in
@@ -380,7 +378,7 @@
         }
       );
 
-      # depoly-rs checks
+      # deploy-rs checks
       checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
     };
 }
