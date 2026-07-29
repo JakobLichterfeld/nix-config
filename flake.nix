@@ -61,7 +61,10 @@
 
     deploy-rs.url = "github:serokell/deploy-rs?shallow=1";
 
-    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/main?shallow=1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     teslamate = {
       url = "github:teslamate-org/teslamate?rev=9a58556399ecb1c825054f247634391e5f859523"; # v4.0.1 with unix socket connection
