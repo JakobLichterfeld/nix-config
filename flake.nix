@@ -232,7 +232,7 @@
 
           WslEnvDataIndexer = nixpkgs.lib.nixosSystem {
             # build tarball via the app: `nix run .#buildWslTarballForWslEnvDataIndexer`
-            system = "x86_64-linux";
+            inherit system;
             specialArgs = {
               inherit inputs;
               inherit self;
