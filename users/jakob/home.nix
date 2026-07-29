@@ -2,7 +2,6 @@
 
 {
   imports = [
-    inputs.agenix.homeManagerModules.default
     inputs.nix-index-database.homeModules.nix-index
     ./dots.nix
   ];
