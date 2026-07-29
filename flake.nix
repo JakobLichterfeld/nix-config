@@ -144,7 +144,6 @@
           # ./modules/zerotier
 
           # Users
-          { system.primaryUser = "jakob"; }
           inputs.home-manager-darwin-unstable.darwinModules.home-manager
           {
             home-manager = {
@@ -152,10 +151,7 @@
               useUserPackages = true;
               extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
               backupFileExtension = "bak";
-              users.jakob = {
-                imports = [ ./users/jakob/home.nix ];
-                home.homeDirectory = inputs.nixpkgs-darwin-unstable.lib.mkForce "/Users/jakob";
-              };
+              users.jakob.imports = [ ./users/jakob/home.nix ];
             };
           }
         ];

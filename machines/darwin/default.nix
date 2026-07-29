@@ -86,6 +86,14 @@ in
   };
 
   # Setup user, packages, programs
+  # Declaring the user here is what lets home-manager derive `home.username` and
+  # `home.homeDirectory` from the machine instead of hardcoding a platform path.
+  system.primaryUser = user;
+  users.users.${user} = {
+    name = user;
+    home = "/Users/${user}";
+  };
+
   nix = {
     gc = {
       #user = "root"; # default since 25.05

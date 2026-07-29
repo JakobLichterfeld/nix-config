@@ -5,13 +5,6 @@
   pkgs,
   ...
 }:
-let
-  home = {
-    username = "jakob";
-    homeDirectory = "/home/jakob";
-    stateVersion = "25.11";
-  };
-in
 {
   nixpkgs = {
     overlays =
@@ -23,7 +16,8 @@ in
     };
   };
 
-  home = home;
+  # Username and home directory are derived from the system user by home-manager.
+  home.stateVersion = "25.11";
 
   imports = [
     ../../dots/direnv/default.nix
