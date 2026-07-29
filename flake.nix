@@ -145,15 +145,8 @@
 
           # Users
           inputs.home-manager-darwin-unstable.darwinModules.home-manager
-          {
-            home-manager = {
-              useGlobalPkgs = true; # makes hm use the system's pkgs value, including its overlays
-              useUserPackages = true; # installs hm packages into the system generation instead of ~/.nix-profile
-              extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
-              backupFileExtension = "bak";
-              users.jakob.imports = [ ./users/jakob/home.nix ];
-            };
-          }
+          ./modules/home-manager.nix
+          { home-manager.users.jakob.imports = [ ./users/jakob/home.nix ]; }
         ];
       };
 
@@ -215,15 +208,8 @@
               ./users/jakob
               ./users/christine
               home-manager.nixosModules.home-manager
-              {
-                home-manager = {
-                  useGlobalPkgs = true; # makes hm use the system's pkgs value, including its overlays
-                  useUserPackages = true; # installs hm packages into the system generation instead of ~/.nix-profile
-                  extraSpecialArgs = { inherit inputs; }; # allows access to flake inputs in hm modules
-                  backupFileExtension = "bak";
-                  users.jakob.imports = [ ./users/jakob/home.nix ];
-                };
-              }
+              ./modules/home-manager.nix
+              { home-manager.users.jakob.imports = [ ./users/jakob/home.nix ]; }
             ];
           };
 
