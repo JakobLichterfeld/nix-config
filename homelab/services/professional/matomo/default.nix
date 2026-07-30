@@ -26,6 +26,13 @@ let
     extension = "zip"; # download URL has no file extension, so tell fetchzip how to unpack
     hash = "sha256-ZStdw57p3TikPL1r1OTCHVwkXS2xnI9kF65kbtMItc0=";
   };
+
+  # Matomo sends mail through PHP mail() -> msmtp (see modules/email). msmtp
+  # authenticates against the provider as config.email.fromAddress, so Matomo's
+  # default sender (noreply@<hostname>) would not match the authenticated
+  # identity: the provider rewrites the From header and the mismatch gets the
+  # mail flagged as spam. Use the transport's identity as the sender instead.
+  noreplyEmailAddress = lib.optionalString config.email.enable config.email.fromAddress;
 in
 {
   options.homelab.services.${service} = {
@@ -120,6 +127,12 @@ in
       };
 
       # Update Matomo Config
+      # NOTE: a changed script does NOT take effect on `nixos-rebuild switch`.
+      # switch-to-configuration only diffs unit files of units that are currently
+      # active, and this is a Type=oneshot without RemainAfterExit, so it is already
+      # dead by then. It runs on boot and whenever phpfpm-matomo restarts (upstream
+      # declares it requiredBy/before that unit). After editing the script, apply it:
+      #   systemctl start matomo-setup-update.service
       systemd.services.matomo-setup-update.postStart =
         (pkgs.writeShellScript "matomo-config-update" ''
           set -e
@@ -151,12 +164,14 @@ in
           \
           | grep -vE '^\s*proxy_client_headers\[\]\s*=' \
           | grep -vE '^\s*trusted_hosts\[\]\s*=' \
+          | grep -vE '^\s*noreply_email_address\s*=' \
           > "$CLEAN_CONFIG"
 
           FINAL_CONFIG=$(mktemp)
 
           # Use awk to build the correct final config
           ${pkgs.gawk}/bin/awk -v fqdn="${cfg.cloudflared.fqdn}" -v url="${cfg.url}" \
+                -v noreply_email="${noreplyEmailAddress}" \
                 -v db_host="localhost" \
                 -v db_username="matomo" \
                 -v db_name="matomo" \
@@ -183,6 +198,9 @@ in
               print "trusted_hosts[] = \"" url "\""
               print "proxy_client_headers[] = \"HTTP_CF_CONNECTING_IP\""
               print "proxy_client_headers[] = \"HTTP_X_FORWARDED_FOR\""
+              if (noreply_email != "") {
+                print "noreply_email_address = \"" noreply_email "\""
+              }
             }
           ' "$CLEAN_CONFIG" > "$FINAL_CONFIG"
 
