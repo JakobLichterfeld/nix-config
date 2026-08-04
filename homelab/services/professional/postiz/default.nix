@@ -9,7 +9,7 @@ let
   service = "postiz";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
-  postiz-version = "v2.22.1";
+  postiz-version = "v2.23.0";
   podmanBridgeIp = "10.88.0.1"; # gateway of podman's default network, reachable from containers
 in
 {
