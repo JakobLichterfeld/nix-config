@@ -363,9 +363,9 @@ in
                       #   replace `default`
                       # - HTML mode allows only b/i/u/s/code/pre/a tags; newlines format the rest
                       message = ''
-                        {{- if eq .Status "firing" }}🔥 <b>FIRING</b>{{ else }}✅ <b>RESOLVED</b>{{ end }} ({{ len .Alerts }})
+                        {{- if .Alerts.Firing }}🔥 <b>FIRING</b> ({{ len .Alerts.Firing }}){{ end }}{{ if and .Alerts.Firing .Alerts.Resolved }} · {{ end }}{{ if .Alerts.Resolved }}✅ <b>RESOLVED</b> ({{ len .Alerts.Resolved }}){{ end }}
                         {{ range .Alerts }}
-                        {{ if eq .Labels.severity "critical" }}🔴{{ else if eq .Labels.severity "warning" }}🟠{{ else }}🔵{{ end }} <b>{{ .Labels.alertname | html }}</b>
+                        {{ if eq .Status "resolved" }}✅ {{ end }}{{ if eq .Labels.severity "critical" }}🔴{{ else if eq .Labels.severity "warning" }}🟠{{ else }}🔵{{ end }} <b>{{ .Labels.alertname | html }}</b>
                         {{ if .Annotations.summary }}{{ .Annotations.summary | html }}
                         {{ end }}{{ if .Annotations.description }}📖 {{ .Annotations.description | html }}
                         {{ end }}{{ range .Labels.SortedPairs }}{{ if and (ne .Name "alertname") (ne .Name "severity") (ne .Name "instance") }}🏷 {{ .Name }}: <code>{{ .Value | html }}</code>
