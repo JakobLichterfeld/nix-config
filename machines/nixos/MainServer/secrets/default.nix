@@ -13,6 +13,13 @@ in
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e deadmanPingEnvMainServer.age
   };
 
+  age.secrets.dmarcImapPassword = {
+    file = secretsBasePath + /dmarcImapPassword.age; # content is the plain IMAP password of the mailbox the DMARC aggregate reports are delivered to
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e dmarcImapPassword.age
+    group = "dmarc-secret"; # the monitor and mailbox check units run with DynamicUser and join this group, see homelab/services/professional/dmarc-monitor
+    mode = "0440";
+  };
+
   age.secrets.dnsApiCredentials = {
     file = secretsBasePath + /dnsApiCredentials.age; # content is according to the provider, see https://go-acme.github.io/lego/dns/
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e dnsApiCredentials.age

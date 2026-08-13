@@ -32,6 +32,7 @@ in
   "ddnsToken.age".publicKeys = serverAndJakob;
   "deadmanPingEnvMainServer.age".publicKeys = allKeys;
   "deadmanPingEnvWslEnvDataIndexer.age".publicKeys = WslEnvDataIndexerAndJakob;
+  "dmarcImapPassword.age".publicKeys = serverAndJakob;
   "dnsApiCredentials.age".publicKeys = serverAndJakob;
   "dnsApiCredentialsFallback.age".publicKeys = serverAndJakob;
   "fritzboxExporterEnv.age".publicKeys = allKeys;

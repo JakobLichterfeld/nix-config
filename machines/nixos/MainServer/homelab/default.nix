@@ -280,6 +280,14 @@ in
       paperless.enable = true;
 
       # professional
+      dmarc-monitor = {
+        enable = true;
+        imap = {
+          host = "${machinesSensitiveVars.OperatingCompany.dmarc.imapHost}";
+          username = "${machinesSensitiveVars.OperatingCompany.dmarc.imapUsername}";
+        };
+      };
+
       matomo = {
         enable = true;
         enableConsole = true;

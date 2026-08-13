@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feedback>
+  <report_metadata>
+    <org_name>selftest.example</org_name>
+    <email>noreply@selftest.example</email>
+    <report_id>selftest-empty-001</report_id>
+    <date_range>
+      <begin>1700000000</begin>
+      <end>1700086400</end>
+    </date_range>
+  </report_metadata>
+  <policy_published>
+    <domain>example.com</domain>
+    <adkim>r</adkim>
+    <aspf>r</aspf>
+    <p>reject</p>
+    <sp>reject</sp>
+    <pct>100</pct>
+  </policy_published>
+</feedback>

@@ -116,6 +116,7 @@ in
     ./owntracks-recorder
     ./pairdrop
     ./paperless-ngx
+    ./professional/dmarc-monitor
     ./professional/matomo
     ./professional/postiz
     ./professional/umami
