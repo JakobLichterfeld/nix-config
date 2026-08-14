@@ -67,7 +67,7 @@
     };
 
     teslamate = {
-      url = "github:teslamate-org/teslamate?rev=9a58556399ecb1c825054f247634391e5f859523"; # v4.0.1 with unix socket connection
+      url = "github:teslamate-org/teslamate?rev=12f61a2bd6551fd7f44365d01694123b6f2d820c"; # v4.1.0
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
