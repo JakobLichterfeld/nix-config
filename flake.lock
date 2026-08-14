@@ -1185,17 +1185,17 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1786720358,
-        "narHash": "sha256-O/G/U2B1DVlj+rnISUZ3af1Vcpxhy+SN8b+mA12dpjY=",
+        "lastModified": 1786726601,
+        "narHash": "sha256-i7mR/YFKaiTGBHKEiscgpwOqb1r8NwWu4C+yBQxjDJU=",
         "owner": "teslamate-org",
         "repo": "teslamate",
-        "rev": "12f61a2bd6551fd7f44365d01694123b6f2d820c",
+        "rev": "d6c43bc8c48784da8f0b701945b80b20911b3d1a",
         "type": "github"
       },
       "original": {
         "owner": "teslamate-org",
         "repo": "teslamate",
-        "rev": "12f61a2bd6551fd7f44365d01694123b6f2d820c",
+        "rev": "d6c43bc8c48784da8f0b701945b80b20911b3d1a",
         "type": "github"
       }
     },
