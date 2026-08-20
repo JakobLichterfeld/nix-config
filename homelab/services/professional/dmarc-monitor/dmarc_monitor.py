@@ -405,6 +405,9 @@ class Mailbox:
         # loudly instead of corrupting the mailbox.
         self._ok("MOVE", self.conn.uid("MOVE", uid, self._quote(folder)))
 
+    def mark_seen(self, uid):
+        self._ok("STORE", self.conn.uid("STORE", uid, "+FLAGS.SILENT", r"(\Seen)"))
+
 
 # --- alertmanager -----------------------------------------------------------
 
@@ -525,6 +528,14 @@ class Monitor:
                 "noncompliant": cfg["folder_failed"],
                 "invalid": cfg["folder_invalid"],
             }[summary["verdict"]]
+            # Archived reports are machine-handled and never read by a human;
+            # without \Seen the archive would collect unread badges forever.
+            # Failed and invalid mails stay unread on purpose: unread mirrors
+            # "unacknowledged" in the mail client at no cost. A failed STORE
+            # leaves the mail unprocessed in the inbox for the next cycle,
+            # same as a failed move.
+            if summary["verdict"] == "compliant":
+                mailbox.mark_seen(uid)
             # Verdict and metrics are booked only after the move is confirmed:
             # a failed move leaves the mail in the inbox for the next cycle,
             # and accounting first would count it twice then.
