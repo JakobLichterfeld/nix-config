@@ -9,7 +9,7 @@ let
   service = "matomo";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
-  customAlertsVersion = "5.3.3";
+  customAlertsVersion = "6.0.0";
 
   # CustomAlerts is a free Marketplace plugin, NOT bundled with Matomo core.
   # Matomo's in-app Marketplace installer cannot install it here because the
@@ -24,7 +24,7 @@ let
     name = "matomo-plugin-CustomAlerts-${customAlertsVersion}";
     url = "https://plugins.matomo.org/api/2.0/plugins/CustomAlerts/download/${customAlertsVersion}";
     extension = "zip"; # download URL has no file extension, so tell fetchzip how to unpack
-    hash = "sha256-ZStdw57p3TikPL1r1OTCHVwkXS2xnI9kF65kbtMItc0=";
+    hash = "sha256-ujz7t+cJLieTs367Qfq4VxSqcw6KBILdOuw4ZQEQvc0=";
   };
 
   # Matomo sends mail through PHP mail() -> msmtp (see modules/email). msmtp
