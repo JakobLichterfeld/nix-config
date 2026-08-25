@@ -13,7 +13,7 @@ with pkgs;
   shfmt
   nixfmt # Nix code formatter
   html-tidy
-  beamPackages.elixir_1_19
+  beamPackages.elixir_1_20
   chromedriver
   cocoapods # or use, gem install cocoapods
   # fastlane # do not use, use with gem bundler
