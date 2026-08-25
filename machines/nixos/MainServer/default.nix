@@ -217,4 +217,47 @@ in
     credentialsFile = config.age.secrets.telegramCredentials.path;
   };
 
+  # Swap fills monotonically over uptime: the kernel only ever pages
+  # anonymous memory back in on access, never proactively, so cold pages
+  # from idle containers accumulate until a reboot. This reclaims them
+  # without one. Guarded, not unconditional: swapoff must place the full
+  # currently-swapped amount back into RAM, so it only runs when
+  # MemAvailable covers that plus a 2 GiB margin -- the margin keeps page
+  # cache and OOM headroom intact while pages stream back in, and absorbs
+  # allocations happening between the check and the swapoff. If the guard
+  # trips, the existing HostSwapIsFillingUp alert is the notification
+  # path, no second one is added here.
+  systemd.services.swap-reclaim = {
+    description = "Reclaim swap by moving pages back to RAM if headroom allows";
+    script = ''
+      available=$(${pkgs.gawk}/bin/awk '/MemAvailable/{print $2}' /proc/meminfo)
+      swapused=$(${pkgs.gawk}/bin/awk '/SwapTotal/{t=$2} /SwapFree/{f=$2} END{print t-f}' /proc/meminfo)
+      if [ "$swapused" -eq 0 ]; then
+        echo "no swap in use, nothing to do"
+        exit 0
+      fi
+      margin=2097152 # 2 GiB in kB
+      if [ "$available" -le "$((swapused + margin))" ]; then
+        echo "insufficient headroom: available=''${available}kB swapused=''${swapused}kB margin=''${margin}kB, skipping"
+        exit 0
+      fi
+      ${pkgs.util-linux}/bin/swapoff -a
+      ${pkgs.util-linux}/bin/swapon -a
+    '';
+    serviceConfig = {
+      Type = "oneshot";
+      # The script runs with bash -e, so a failed swapoff would skip the
+      # in-script swapon; ExecStopPost runs even then and re-enables swap.
+      ExecStopPost = "${pkgs.util-linux}/bin/swapon -a";
+    };
+  };
+  systemd.timers.swap-reclaim = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      # Must dodge both daytime usage and the 03:30-05:30 backup
+      # swap-activity window.
+      OnCalendar = "Sun 07:00:00";
+      Persistent = false; # skip a missed run rather than firing at an unpredictable catch-up time
+    };
+  };
 }
