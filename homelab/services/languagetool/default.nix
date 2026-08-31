@@ -60,6 +60,9 @@ in
       port = cfg.listenPort;
       public = false;
       settings.cacheSize = 1000; # Number of sentences cached.
+      # Without a heap cap the JVM claims up to 25 % of physical RAM as max
+      # heap and never returns it to the OS once grown.
+      jvmOptions = [ "-Xmx1g" ];
     };
 
     services.caddy.virtualHosts."${cfg.url}" = {
