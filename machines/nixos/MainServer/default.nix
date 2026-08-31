@@ -39,6 +39,12 @@ in
       "consoleblank=60"
       "acpi_enforce_resources=lax"
       "nvme_core.default_ps_max_latency_us=50000" # Set NVMe power state transition latency to 50ms for better resume from power saving
+      # Cap the ZFS ARC at 8 GiB. The default c_max on this box is ~30 GiB
+      # (RAM minus 1 GiB); nightly backup churn balloons the ARC toward
+      # that limit and pushes idle service anon pages into the 4 GiB swap,
+      # which then fills within a day. 8 GiB is above the ~6.5 GiB daytime
+      # steady state, so only the backup ballooning is cut.
+      "zfs.zfs_arc_max=8589934592"
     ];
     kernelModules = [
       "kvm-intel"
