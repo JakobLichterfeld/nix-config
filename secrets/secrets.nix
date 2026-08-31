@@ -42,6 +42,7 @@ in
   "hashedUserPasswordChristine.age".publicKeys = serverAndChristine;
   "linkwardenEnv.age".publicKeys = allKeys;
   "matomoCloudflared.age".publicKeys = serverAndJakob;
+  "openSeoEnv.age".publicKeys = serverAndJakob;
   "paperlessEnv.age".publicKeys = allKeys;
   "paperlessPassword.age".publicKeys = allKeys;
   "postizEnv.age".publicKeys = serverAndJakob;

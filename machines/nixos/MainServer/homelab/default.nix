@@ -299,6 +299,11 @@ in
         };
       };
 
+      open-seo = {
+        enable = true;
+        homepage.category = "${machinesSensitiveVars.OperatingCompany.name}";
+      };
+
       postiz = {
         enable = true;
         homepage.category = "${machinesSensitiveVars.OperatingCompany.name}";

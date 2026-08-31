@@ -118,6 +118,7 @@ in
     ./paperless-ngx
     ./professional/dmarc-monitor
     ./professional/matomo
+    ./professional/open-seo
     ./professional/postiz
     ./professional/umami
     ./prometheus

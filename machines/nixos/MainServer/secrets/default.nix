@@ -73,6 +73,12 @@ in
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e matomoCloudflared.age
   };
 
+  age.secrets.openSeoEnv = {
+    file = secretsBasePath + /openSeoEnv.age; # content are the sensitive env vars: DATAFORSEO_API_KEY= (base64 of "email:password", see https://github.com/every-app/open-seo/blob/main/docs/DATAFORSEO_API_KEY.md)
+    # optional: OPENROUTER_API_KEY= (AI features like SAM), GOOGLE_CLIENT_ID=, GOOGLE_CLIENT_SECRET= and BETTER_AUTH_SECRET= (Google Search Console integration; BETTER_AUTH_SECRET encrypts the stored OAuth tokens)
+    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e openSeoEnv.age
+  };
+
   age.secrets.paperlessEnv = {
     file = secretsBasePath + /paperlessEnv.age; # content is the paperless env file, so PAPERLESS_SECRET_KEY=<secret>
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e paperlessEnv.age
