@@ -158,6 +158,31 @@ in
       };
     };
 
+    # enable PostgreSQL extension that tracks planning and execution statistics for all SQL queries
+    services.postgresql.settings.shared_preload_libraries = [ "pg_stat_statements" ]; # Preload the extension
+
+    # `services.postgresql.initialScript` cannot create the extension: it runs
+    # only once, on the first startup of a freshly initialised data directory,
+    # and against the `postgres` database — whereas the extension has to live
+    # inside TeslaMate's own, long-existing database. Create it idempotently on
+    # every activation instead.
+    systemd.services.teslamate-pg-stat-statements = {
+      description = "Create the pg_stat_statements extension in the TeslaMate database";
+      wantedBy = [ "multi-user.target" ];
+      requires = [ "postgresql-setup.service" ];
+      after = [ "postgresql-setup.service" ];
+      path = [ config.services.postgresql.finalPackage ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        User = "postgres";
+        Group = "postgres";
+      };
+      script = ''
+        psql -d ${cfg.postgres.database} -c 'CREATE EXTENSION IF NOT EXISTS pg_stat_statements'
+      '';
+    };
+
     # Prometheus exporter for PostgreSQL
     services.prometheus.exporters.postgres.environmentFile = config.age.secrets.teslamateEnv.path;
     # the Environment file must contain the following with real values:
