@@ -360,7 +360,11 @@ in
       # monitor exposes.
       systemd.services.${mailboxCheck} = {
         description = "Check that the DMARC report mailbox is reachable and its folders exist";
-        after = [ "network-online.target" ];
+        # Ordered after the local resolver: on a switch that restarts both,
+        # this oneshot otherwise races blocky and fails its IMAP host lookup,
+        # which fails the activation. network-online.target does not cover a
+        # resolver that is itself a unit of this system.
+        after = [ "network-online.target" ] ++ lib.optional config.services.blocky.enable "blocky.service";
         wants = [ "network-online.target" ];
         # Also run at boot, not only on the timer below: waiting up to a day to
         # learn that the credentials or the folder names are wrong defeats the
