@@ -258,6 +258,12 @@ in
       TimeoutStartSec = "6min";
     };
 
+    # Blocky serves DoT and DoH from this certificate and has no ExecReload,
+    # so a renewal restarts it (try-reload-or-restart falls back to restart).
+    # Registered on the certificate blocky reads, not as an ACME default: the
+    # fallback certificate is not used here and must not restart the resolver.
+    security.acme.certs.${homelab.baseDomain}.reloadServices = [ "blocky.service" ];
+
     # Enable reverse proxy DoH
     services.caddy.virtualHosts."${cfg.doh.url}" = {
       useACMEHost = homelab.baseDomain;

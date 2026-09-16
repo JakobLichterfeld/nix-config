@@ -43,11 +43,12 @@ in
       acceptTerms = true;
       defaults = {
         email = "${machinesSensitiveVars.dns.letsencryptEmail}";
-        reloadServices = [
-          "caddy.service"
-        ] ++ lib.optional config.services.blocky.enable "blocky.service";
-
       };
+      # No defaults.reloadServices: every consumer registers its reload on the
+      # certificate it reads. The nixpkgs caddy module does that for every
+      # certificate a virtual host uses via useACMEHost, blocky does it in its
+      # own module. A per-certificate definition replaces the default, so a
+      # global list would silently not apply exactly where it matters.
       certs = lib.mkMerge [
         {
           "${config.homelab.baseDomain}" = {
