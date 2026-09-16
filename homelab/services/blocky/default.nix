@@ -207,6 +207,40 @@ in
 
     };
 
+    # Blocky has no sd_notify support (checked against v0.29.0 and main), so
+    # with Type=simple its start job completes on fork, while the blocking
+    # loading strategy keeps every listener closed until all lists are loaded.
+    # Units ordered After=blocky.service would therefore start before name
+    # resolution works. Hold the start job until blocky answers on its HTTP
+    # API: DNS and HTTP listeners open together in server.Start(), after the
+    # blocking resolver is built.
+    #
+    # Fail open: the probe orders other units, it is not blocky's health check.
+    # A broken or timed-out probe must never take the resolver down, so the
+    # "-" prefix ignores its exit status and the probe's own deadline stays
+    # below TimeoutStartSec. Dependents then start unordered and fail loudly
+    # on their own, exactly as they did before this probe existed.
+    #
+    # curl, not dig: ExecStartPost runs inside the unit's sandbox, and the
+    # module's SystemCallFilter (~@aio) kills dig with SIGSYS in libuv's
+    # io_uring setup. curl only needs socket/connect/poll/read/write, all in
+    # @system-service.
+    systemd.services.blocky.serviceConfig = {
+      ExecStartPost = "-${pkgs.writeShellScript "blocky-wait-ready" ''
+        deadline=300 # seconds, must stay below TimeoutStartSec
+        while (( SECONDS < deadline )); do
+          if ${lib.getExe pkgs.curl} --silent --fail --max-time 2 --output /dev/null \
+              http://127.0.0.1:${toString cfg.listenPort}/api/blocking/status; then
+            exit 0
+          fi
+          sleep 1
+        done
+        echo "blocky did not answer on 127.0.0.1:${toString cfg.listenPort} within $deadline s, dependents start unordered" >&2
+        exit 1
+      ''}";
+      TimeoutStartSec = "6min";
+    };
+
     # Enable reverse proxy DoH
     services.caddy.virtualHosts."${cfg.doh.url}" = {
       useACMEHost = homelab.baseDomain;
