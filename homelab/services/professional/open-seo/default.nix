@@ -198,7 +198,7 @@ in
       };
     };
     systemd.services."podman-${service}" = {
-      after = [ "network-online.target" ];
+      after = [ "network-online.target" ] ++ lib.optional config.services.blocky.enable "blocky.service";
       wants = [ "network-online.target" ];
     };
 
