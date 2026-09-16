@@ -81,6 +81,13 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
+    # nixos-26.05 marks immich 2.7.5 as insecure (2.x is EOL upstream,
+    # CVE-2026-59258, CVE-2026-82272) and refuses to evaluate it. Immich is a
+    # production service here, so a flake.lock bump must not force an
+    # unplanned major upgrade to 3.x with its irreversible DB migration. Allow
+    # 2.7.5 explicitly until the upgrade is planned.
+    nixpkgs.config.permittedInsecurePackages = [ "immich-2.7.5" ];
+
     # Ensure media directory exists with correct permissions
     systemd.tmpfiles.rules = [
       "d ${cfg.mediaDir} 0770 ${cfg.user} ${cfg.group} - -"
