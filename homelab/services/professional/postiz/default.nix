@@ -477,7 +477,8 @@ in
           "redis-${service}.service"
           "temporal.service"
           "${service}-temporal-namespace.service"
-        ] ++ lib.optional config.services.blocky.enable "blocky.service";
+          "nss-lookup.target"
+        ];
         requires = [
           "postgresql.target"
           "redis-${service}.service"

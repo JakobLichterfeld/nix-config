@@ -334,7 +334,7 @@ in
           };
         };
       };
-      systemd.services."cloudflared-tunnel-${cfg.cloudflared.tunnelId}".after = lib.optional config.services.blocky.enable "blocky.service";
+      systemd.services."cloudflared-tunnel-${cfg.cloudflared.tunnelId}".after = [ "nss-lookup.target" ];
     })
     (lib.mkIf cfg.enableConsole {
       # idiomatic way to access matomo console

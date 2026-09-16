@@ -60,10 +60,10 @@ in
       after =
         [
           "network-online.target"
+          "nss-lookup.target"
         ]
         ++ lib.optional config.services.tailscale.enable "tailscaled.service"
-        ++ lib.optional config.services.tailscale.enable "tailscaled-autoconnect.service"
-        ++ lib.optional config.services.blocky.enable "blocky.service";
+        ++ lib.optional config.services.tailscale.enable "tailscaled-autoconnect.service";
       wants = [ "network-online.target" ];
       serviceConfig = {
         Type = "oneshot";

@@ -53,7 +53,8 @@ in
         "network-online.target"
         "mosquitto.service"
         "teslamate.service"
-      ] ++ lib.optional config.services.blocky.enable "blocky.service";
+        "nss-lookup.target"
+      ];
       requires = [
         "mosquitto.service"
         "teslamate.service"

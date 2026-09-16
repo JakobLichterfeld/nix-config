@@ -57,7 +57,10 @@ in
 
     systemd.services.deadman-ping = {
       description = "Send heartbeat ping to external monitoring service";
-      after = [ "network-online.target" ] ++ lib.optional config.services.blocky.enable "blocky.service";
+      after = [
+        "network-online.target"
+        "nss-lookup.target"
+      ];
       wants = [ "network-online.target" ];
       serviceConfig = {
         Type = "oneshot";
