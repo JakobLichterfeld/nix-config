@@ -210,8 +210,8 @@ in
     # Blocky has no sd_notify support (checked against v0.29.0 and main), so
     # with Type=simple its start job completes on fork, while the blocking
     # loading strategy keeps every listener closed until all lists are loaded.
-    # Units ordered After=blocky.service would therefore start before name
-    # resolution works. Hold the start job until blocky answers on its HTTP
+    # Units ordered after blocky would therefore start before name resolution
+    # works. Hold the start job until blocky answers on its HTTP
     # API: DNS and HTTP listeners open together in server.Start(), after the
     # blocking resolver is built.
     #
@@ -225,6 +225,23 @@ in
     # module's SystemCallFilter (~@aio) kills dig with SIGSYS in libuv's
     # io_uring setup. curl only needs socket/connect/poll/read/write, all in
     # @system-service.
+    #
+    # Dependents never name this unit. nss-lookup.target is systemd's
+    # synchronisation point for name resolution; the nixpkgs module already
+    # registers blocky as a provider (Wants= and Before= the target), so with
+    # the probe above the target only becomes active once blocky answers, and
+    # units ordered After=nss-lookup.target wait exactly as long as needed.
+    #
+    # That covers boot only. nss-lookup.target carries RefuseManualStart, so
+    # switch-to-configuration never restarts it, and a Wants= on an already
+    # active target queues no job. After a switch, a restart or a crash of
+    # blocky the target would stay active without a job and order nothing.
+    # PropagatesStopTo= takes the target down together with blocky in all
+    # three cases (explicit stop, restart, unexpected exit); the next start of
+    # blocky then queues a real start job for the target, ordered after the
+    # probe, and dependents wait on it again. Requirement-free: stopping or
+    # starting the target never stops or starts blocky.
+    systemd.services.blocky.unitConfig.PropagatesStopTo = "nss-lookup.target";
     systemd.services.blocky.serviceConfig = {
       ExecStartPost = "-${pkgs.writeShellScript "blocky-wait-ready" ''
         deadline=300 # seconds, must stay below TimeoutStartSec
