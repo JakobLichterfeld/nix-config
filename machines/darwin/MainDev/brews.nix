@@ -8,6 +8,7 @@
   { name = "clang-format"; } # Formatting tools for C, C++, Obj-C, Java, JavaScript, TypeScript
   { name = "ruff"; } # Extremely fast Python linter, written in Rust
   { name = "gh"; } # GitHub CLI
+  { name = "actionlint"; } # Static checker for GitHub Actions workflow files
   { name = "firebase-cli"; }
   { name = "gemini-cli"; }
   { name = "opencode"; }
