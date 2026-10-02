@@ -169,6 +169,7 @@ in
         # enable Celery Monitoring via Flower to export metrics for Prometheus
         # see https://docs.paperless-ngx.com/advanced_usage/#celery-monitoring
         PAPERLESS_ENABLE_FLOWER = config.services.prometheus.enable;
+        PAPERLESS_ENABLE_NLTK = false; # paperless-ngx >= 3.2 no longer ships NLTK; stops the 26.05 module from referencing the removed nltkDataDir
       };
     };
 
