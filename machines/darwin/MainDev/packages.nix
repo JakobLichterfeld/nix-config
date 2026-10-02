@@ -17,7 +17,7 @@ with pkgs;
   chromedriver
   cocoapods # or use, gem install cocoapods
   # fastlane # do not use, use with gem bundler
-  openssl_3
+  openssl
   ruby
   bundler # Ruby dependency manager
   bundix # Creates Nix packages from Gemfiles
