@@ -85,7 +85,10 @@ in
     # ];
     virtualisation.podman = {
       dockerCompat = true;
-      autoPrune.enable = true;
+      autoPrune = {
+        enable = true;
+        flags = [ "--all" ]; # also remove unused tagged images, otherwise every version bump leaves its old image behind
+      };
       extraPackages = [ pkgs.zfs ];
       defaultNetwork.settings = {
         dns_enabled = lib.mkForce (!config.homelab.services.blocky.enable); # only enable podman's internal DNS if blocky is not enabled
