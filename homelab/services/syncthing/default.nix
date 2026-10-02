@@ -3,6 +3,7 @@
   lib,
   machinesSensitiveVars,
   pkgsUnstable,
+  inputs,
   ...
 }:
 let
@@ -11,6 +12,10 @@ let
   homelab = config.homelab;
 in
 {
+  # Use the NixOS module from the same nixpkgs revision as the package, as the module relies on package internals.
+  disabledModules = [ "services/networking/syncthing.nix" ];
+  imports = [ "${inputs.nixpkgs-unstable}/nixos/modules/services/networking/syncthing.nix" ];
+
   options.homelab.services.${service} = {
     enable = lib.mkEnableOption {
       description = "Enable ${service}";

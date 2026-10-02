@@ -3,6 +3,7 @@
   lib,
   pkgs,
   pkgsUnstable,
+  inputs,
   ...
 }:
 let
@@ -11,6 +12,10 @@ let
   cfg = config.homelab.services.home-assistant;
 in
 {
+  # Use the NixOS module from the same nixpkgs revision as the package, as the module relies on package internals.
+  disabledModules = [ "services/home-automation/home-assistant.nix" ];
+  imports = [ "${inputs.nixpkgs-unstable}/nixos/modules/services/home-automation/home-assistant.nix" ];
+
   options.homelab.services.${service} = {
     enable = lib.mkEnableOption {
       description = "Enable Home Assistant";

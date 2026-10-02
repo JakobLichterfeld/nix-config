@@ -2,6 +2,7 @@
   config,
   lib,
   pkgsUnstable,
+  inputs,
   ...
 }:
 let
@@ -10,6 +11,10 @@ let
   homelab = config.homelab;
 in
 {
+  # Use the NixOS module from the same nixpkgs revision as the package, as the module relies on package internals.
+  disabledModules = [ "services/security/vaultwarden/default.nix" ];
+  imports = [ "${inputs.nixpkgs-unstable}/nixos/modules/services/security/vaultwarden/default.nix" ];
+
   options.homelab.services.${service} = {
     enable = lib.mkEnableOption {
       description = "Enable ${service}";
