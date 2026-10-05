@@ -120,6 +120,15 @@ in
             + ''
               cp -r ${customAlertsPlugin} $out/share/plugins/CustomAlerts
             '';
+          # Matomo silently refuses to load a plugin whose plugin.json requires
+          # another Matomo version, so fail the build instead.
+          doInstallCheck = true;
+          installCheckPhase = ''
+            runHook preInstallCheck
+            ${config.services.phpfpm.pools.matomo.phpPackage}/bin/php ${./check-plugin-dependencies.php} \
+              $out/share $out/share/plugins/CustomAlerts/plugin.json
+            runHook postInstallCheck
+          '';
         });
         hostname = cfg.url;
         webServerUser = "caddy";
