@@ -8,7 +8,7 @@ let
   service = "open-seo";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
-  open-seo-version = "v0.1.11";
+  open-seo-version = "v0.1.12";
   containerPort = 3001; # fixed app port inside the container (image EXPOSE/healthcheck)
 in
 {
