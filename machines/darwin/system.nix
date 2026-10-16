@@ -221,8 +221,8 @@
         # Top left screen corner → Mission Control (All windows)
         wvous-tl-corner = 2;
 
-        # Bottom right screen corner → Desktop
-        wvous-br-corner = 4;
+        # Bottom right screen corner → Put display to sleep
+        wvous-br-corner = 10;
 
         # Bottom Left screen corner -> show Application Windows
         wvous-bl-corner = 3;
