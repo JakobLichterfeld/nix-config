@@ -66,7 +66,7 @@
     };
 
     teslamate = {
-      url = "github:teslamate-org/teslamate?rev=33d200b2fba9d5138803916a788cef5eae31b1aa"; # v4.3.0
+      url = "github:teslamate-org/teslamate?rev=42d187daadd0104fc9c4509785df47a26705845a"; # v4.4.0
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
