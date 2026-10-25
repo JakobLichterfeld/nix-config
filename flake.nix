@@ -138,10 +138,6 @@
           manualSensitiveDarwin
           manualSensitiveDarwinMainDev
 
-          # Services
-          # ./modules/tailscale
-          # ./modules/zerotier
-
           # Users
           inputs.home-manager-darwin-unstable.darwinModules.home-manager
           ./modules/home-manager.nix

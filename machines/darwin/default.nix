@@ -128,6 +128,8 @@ in
     ++ (import ./packages.nix { inherit pkgs; })
   );
 
+  services.tailscale.enable = true;
+
   # Fully declarative dock using the latest from Nix Store
   local = {
     dock.enable = true;
