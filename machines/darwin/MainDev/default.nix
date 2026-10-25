@@ -24,10 +24,6 @@ in
     casks = map mkGreedy (casks);
   };
 
-  environment.shellInit = ''
-    ulimit -n 2048
-  '';
-
   environment.systemPackages =
     with inputs.nixpkgs-unstable.legacyPackages."${pkgs.stdenv.hostPlatform.system}";
     pkgs.callPackage ./packages.nix { };

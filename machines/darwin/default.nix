@@ -130,6 +130,18 @@ in
 
   services.tailscale.enable = true;
 
+  # Raise the open file limit for all processes (macOS default soft limit is 256)
+  launchd.daemons.limit-maxfiles.serviceConfig = {
+    ProgramArguments = [
+      "/bin/launchctl"
+      "limit"
+      "maxfiles"
+      "524288"
+      "524288"
+    ];
+    RunAtLoad = true;
+  };
+
   # Fully declarative dock using the latest from Nix Store
   local = {
     dock.enable = true;
