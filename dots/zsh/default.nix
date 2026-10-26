@@ -25,7 +25,7 @@
 
     shellAliases = {
       # Use difftastic, syntax-aware diffing
-      diff = "difft";
+      diff = lib.getExe pkgs.difftastic;
       # Always color ls and group directories
       ls = "ls --color=auto";
     };
