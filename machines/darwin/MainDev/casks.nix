@@ -39,7 +39,6 @@
   { name = "steam"; }
 
   # Writing
-  { name = "mactex"; } # LaTeX
   { name = "obsidian"; } # Note taking
 
   # Encryption and security tools
