@@ -71,7 +71,7 @@
     };
 
     teslamate-telegram-bot = {
-      url = "github:JakobLichterfeld/TeslaMate-Telegram-Bot?rev=8e85f26f2948a09e3bcc981cb338ac97ed7d0bdc"; # v1.1.0 with updated flake.lock
+      url = "github:JakobLichterfeld/TeslaMate-Telegram-Bot?rev=5feba62aeb6b172eccaaf4ad83c46bbe9c890cb5"; # v1.1.1
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
