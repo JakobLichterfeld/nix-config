@@ -22,6 +22,7 @@
   # File Sharing
   { name = "google-drive"; }
   { name = "rsyncui"; }
+  { name = "syncthing-app"; } # Syncthing GUI (syncthing-macos)
 
   # Security
   { name = "avast-security"; }
