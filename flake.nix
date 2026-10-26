@@ -241,7 +241,7 @@
             inherit system;
             overlays = [
               (final: prev: {
-                deploy-rs = inputs.deploy-rs.packages.${prev.system}.deploy-rs; # overlay to get deploy-rs package from binary cache instead of building from source
+                deploy-rs = inputs.deploy-rs.packages.${prev.stdenv.hostPlatform.system}.deploy-rs; # overlay to get deploy-rs package from binary cache instead of building from source
               })
             ];
           };
