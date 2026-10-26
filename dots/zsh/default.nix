@@ -39,9 +39,6 @@
       # enable frum
       # eval "$(frum init)"
 
-      # TeX
-      export PATH="/Library/TeX/texbin:$PATH"
-
       export GPG_TTY=$(tty)
 
       # Dart
