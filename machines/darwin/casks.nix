@@ -18,6 +18,7 @@
   # Design Tools
   { name = "figma"; }
   { name = "sketch"; }
+  { name = "rayon"; } # AI-powered drawing for interior design and architecture
 
   # File Sharing
   { name = "google-drive"; }
