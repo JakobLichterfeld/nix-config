@@ -28,9 +28,8 @@ in
     with inputs.nixpkgs-unstable.legacyPackages."${pkgs.stdenv.hostPlatform.system}";
     pkgs.callPackage ./packages.nix { };
 
-  # PATH for the fvm global Flutter SDK and Dart pub global tools (fvm: ./packages.nix)
+  # PATH for the fvm global Flutter SDK (fvm: ./packages.nix)
   environment.systemPath = [
     "$HOME/fvm/default/bin"
-    "$HOME/.pub-cache/bin"
   ];
 }
