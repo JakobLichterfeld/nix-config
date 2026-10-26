@@ -22,21 +22,5 @@
         "cd"
       ]; # Remove history data we don't want to see
     };
-
-    shellAliases = {
-      # Use difftastic, syntax-aware diffing
-      diff = lib.getExe pkgs.difftastic;
-      # Always color ls and group directories
-      ls = "ls --color=auto";
-    };
-
-    initContent = lib.mkBefore ''
-      # nix shortcuts
-      shell() {
-          nix-shell '<nixpkgs>' -A "$1"
-      }
-
-      export GPG_TTY=$(tty)
-    '';
   };
 }
