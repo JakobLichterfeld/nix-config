@@ -36,9 +36,6 @@
           nix-shell '<nixpkgs>' -A "$1"
       }
 
-      # enable frum
-      # eval "$(frum init)"
-
       export GPG_TTY=$(tty)
     '';
   };
