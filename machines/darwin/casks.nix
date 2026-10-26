@@ -74,6 +74,7 @@
   # Video
   { name = "iina"; }
   { name = "obs"; }
+  { name = "yattee"; } # Privacy-friendly YouTube frontend
 
   # Remote Desktop
   { name = "teamviewer"; }
