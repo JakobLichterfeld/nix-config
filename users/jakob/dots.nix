@@ -7,6 +7,7 @@
 }:
 {
   imports = [
+    ../../dots/bash/default.nix
     ../../dots/direnv/default.nix
     ../../dots/fastfetch/default.nix
     ../../dots/starship/default.nix
