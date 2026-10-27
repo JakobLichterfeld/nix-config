@@ -1,0 +1,37 @@
+{
+  pkgs,
+  lib,
+  osConfig,
+  ...
+}:
+let
+  # The GitHub CLI itself comes from Homebrew, so only configure it where it is installed
+  ghInstalled = lib.elem "gh" (map (brew: brew.name) (osConfig.homebrew.brews or [ ]));
+in
+{
+  # hosts.yml holds the login and stays unmanaged
+  xdg.configFile."gh/config.yml" = lib.mkIf ghInstalled {
+    source = (pkgs.formats.yaml { }).generate "gh-config.yml" {
+      # The current version of the config schema
+      version = 1;
+      # What protocol to use when performing git operations. Supported values: ssh, https
+      git_protocol = "ssh";
+      # What editor gh should run when creating issues, pull requests, etc. If blank, will refer to environment.
+      editor = "";
+      # When to interactively prompt. This is a global config that cannot be overridden by hostname. Supported values: enabled, disabled
+      prompt = "enabled";
+      # Preference for editor-based interactive prompting. This is a global config that cannot be overridden by hostname. Supported values: enabled, disabled
+      prefer_editor_prompt = "disabled";
+      # A pager program to send command output to, e.g. "less". If blank, will refer to environment. Set the value to "cat" to disable the pager.
+      pager = "";
+      # Aliases allow you to create nicknames for gh commands
+      aliases = { };
+      # The path to a unix socket through which send HTTP connections. If blank, HTTP traffic will be handled by net/http.DefaultTransport.
+      http_unix_socket = "";
+      # What web browser gh should use when opening URLs. If blank, will refer to environment.
+      browser = "";
+      # Do not send usage data to GitHub
+      telemetry = "disabled";
+    };
+  };
+}
