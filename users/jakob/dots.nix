@@ -10,6 +10,7 @@
     ../../dots/bash/default.nix
     ../../dots/direnv/default.nix
     ../../dots/fastfetch/default.nix
+    ../../dots/gpg/default.nix
     ../../dots/shell/default.nix
     ../../dots/starship/default.nix
     ../../dots/zsh/default.nix
