@@ -1,6 +1,7 @@
 {
   self,
   pkgs,
+  lib,
   config,
   ...
 }:
@@ -58,6 +59,34 @@
         user = config.system.primaryUser;
         home = config.users.users.${user}.home;
         finderPlist = "${home}/Library/Preferences/com.apple.finder.plist";
+
+        # Control <-> Command swap in the format macOS stores per keyboard
+        # (System Settings > Keyboard > Keyboard Shortcuts > Modifier Keys).
+        # Each key is its HID usage: 0x700000000 (keyboard usage page 0x07 shifted left by 32 bits)
+        # plus the key's usage ID, e.g. 30064771296 = 0x7000000E0 = left Control.
+        # Src is the physical key, Dst the key it acts as.
+        swapControlAndCommand = lib.generators.toPlist { escape = true; } [
+          # right Control (0xE4) -> right Command (0xE7)
+          {
+            HIDKeyboardModifierMappingSrc = 30064771300;
+            HIDKeyboardModifierMappingDst = 30064771303;
+          }
+          # right Command (0xE7) -> right Control (0xE4)
+          {
+            HIDKeyboardModifierMappingSrc = 30064771303;
+            HIDKeyboardModifierMappingDst = 30064771300;
+          }
+          # left Control (0xE0) -> left Command (0xE3)
+          {
+            HIDKeyboardModifierMappingSrc = 30064771296;
+            HIDKeyboardModifierMappingDst = 30064771299;
+          }
+          # left Command (0xE3) -> left Control (0xE0)
+          {
+            HIDKeyboardModifierMappingSrc = 30064771299;
+            HIDKeyboardModifierMappingDst = 30064771296;
+          }
+        ];
       in
       ''
         # Show the ~/Library folder
@@ -69,6 +98,20 @@
             launchctl asuser "$(id -u -- ${user})" sudo --user=${user} -- \
               /usr/libexec/PlistBuddy -c "Set :$view:IconViewSettings:$setting" "${finderPlist}" || true
           done
+        done
+
+        # Swap Control and Command on the Logitech G915 TKL (Windows layout: the Ctrl key acts as
+        # Command, the Win key as Control). macOS stores the mapping per device as
+        # com.apple.keyboard.modifiermapping.<vendor ID>-<product ID>-0 and applies it whenever the
+        # device connects, so it survives reboots. Vendor ID 1133 (0x046D) is Logitech; the keyboard
+        # has one product ID per connection:
+        #   50501 (0xC545): Logitech USB receiver (LIGHTSPEED)
+        #   45919 (0xB35F): the keyboard's second connection, most likely Bluetooth
+        # List the stored entries with: defaults -currentHost read -g | grep modifiermapping
+        for productId in 45919 50501; do
+          launchctl asuser "$(id -u -- ${user})" sudo --user=${user} -- \
+            defaults -currentHost write -g "com.apple.keyboard.modifiermapping.1133-$productId-0" \
+            ${lib.escapeShellArg swapControlAndCommand}
         done
       '';
 
