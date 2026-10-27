@@ -10,10 +10,7 @@ let
   # GUI prompt on macOS, terminal prompt on Linux where we work over SSH
   pinentryPackage = if isDarwin then pkgs.pinentry_mac else pkgs.pinentry-curses;
   pinentry =
-    if isDarwin then
-      lib.getExe pinentryPackage
-    else
-      lib.getExe' pinentryPackage "pinentry-curses";
+    if isDarwin then lib.getExe pinentryPackage else lib.getExe' pinentryPackage "pinentry-curses";
 in
 {
   home.packages =
