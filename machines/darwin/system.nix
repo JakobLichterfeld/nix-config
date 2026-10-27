@@ -32,6 +32,9 @@
   };
   ids.gids.nixbld = 30000; # TODO: remove this once the issue is resolved
 
+  # Restart automatically if the computer freezes
+  power.restartAfterFreeze = true;
+
   system = {
     configurationRevision = self.rev or self.dirtyRev or null; # set git commit hash for darwin-version
 
@@ -49,12 +52,40 @@
       ${pkgs.rsync}/bin/rsync --archive --checksum --chmod=-w --copy-unsafe-links --delete "$apps_source/" "$app_target"
     '';
 
+    # Settings outside of `defaults` or nested inside plist dicts, which system.defaults cannot express
+    activationScripts.postActivation.text =
+      let
+        user = config.system.primaryUser;
+        home = config.users.users.${user}.home;
+        finderPlist = "${home}/Library/Preferences/com.apple.finder.plist";
+      in
+      ''
+        # Show the ~/Library folder
+        chflags nohidden "${home}/Library"
+
+        # Enable snap-to-grid and set the size of icons on the desktop and in other icon views
+        for view in DesktopViewSettings FK_StandardViewSettings StandardViewSettings; do
+          for setting in "arrangeBy grid" "iconSize 64"; do
+            launchctl asuser "$(id -u -- ${user})" sudo --user=${user} -- \
+              /usr/libexec/PlistBuddy -c "Set :$view:IconViewSettings:$setting" "${finderPlist}" || true
+          done
+        done
+      '';
+
     defaults = {
       loginwindow.GuestEnabled = false; # Disable the guest account
 
       trackpad = {
         Clicking = true;
         TrackpadThreeFingerDrag = true;
+
+        # Haptic feedback (light, silent clicking)
+        FirstClickThreshold = 0;
+        ActuationStrength = 0;
+
+        # Map bottom right corner to right-click (requires restart!)
+        TrackpadRightClick = true;
+        TrackpadCornerSecondaryClick = 2;
       };
       finder = {
         # When performing a search, search the current folder by default
@@ -62,9 +93,6 @@
         # Current Folder : `SCcf`
         # Previous Scope : `SCsp`
         FXDefaultSearchScope = "SCcf";
-
-        #show all filename extensions
-        AppleShowAllExtensions = true;
 
         # Disable the warning when changing a file extension
         FXEnableExtensionChangeWarning = false;
@@ -85,22 +113,22 @@
         # Cover Flow  : `Flwv`
         FXPreferredViewStyle = "Nlsv";
 
+        # Set Home as the default location for new Finder windows
+        # Computer     : "Computer"
+        # Volume       : "OS volume"
+        # $HOME        : "Home"
+        # Desktop      : "Desktop"
+        # Documents    : "Documents"
+        # All My Files : "Recents"
+        # iCloud Drive : "iCloud Drive"
+        # Other…       : "Other"
+        # For other paths, use "Other" and NewWindowTargetPath = "file:///full/path/here/"
+        NewWindowTarget = "Home";
+        # NewWindowTargetPath = "file://${HOME}/Desktop/";
       };
       CustomUserPreferences = {
         # Finder
         "com.apple.finder" = {
-          # Set Home as the default location for new Finder windows
-          # Computer     : "PfCm"
-          # Volume       : "PfVo"
-          # $HOME        : "PfHm"
-          # Desktop      : "PfDe"
-          # Documents    : "PfDo"
-          # All My Files : "PfAF"
-          # Other…       : "PfLo"
-          # For other paths, use `PfLo` and `file:///full/path/here/`
-          cNewWindowTarget = "PfHm";
-          # NewWindowTargetPath = "file://${HOME}/Desktop/";
-
           # Show icons for hard drives, servers, and removable media on the desktop
           ShowExternalHardDrivesOnDesktop = true;
           ShowHardDrivesOnDesktop = true;
@@ -114,17 +142,9 @@
           # AppleShowAllFiles = true;
         };
 
-        "com.apple.springing" = {
-          # Enable spring loading for directories
-          enabled = true;
-
-          # Remove the spring loading delay for directories
-          delay = 0.1;
-        };
-
         # Automatically quit printer app once the print jobs complete
         "com.apple.print.PrintingPrefs" = {
-          QuitWhenFinished = true;
+          "Quit When Finished" = true;
         };
 
         "com.apple.desktopservices" = {
@@ -138,13 +158,23 @@
         NSGlobalDomain = {
           # Add a context menu item for showing the Safari Web Inspector in web views
           WebKitDeveloperExtras = true;
+
+          # Trackpad: map bottom right corner to right-click (with the trackpad settings above)
+          ContextMenuGesture = 1;
         };
 
         "com.apple.Safari" = {
           # Enable the Develop menu and the Web Inspector in Safari
           IncludeDevelopMenu = true;
           WebKitDeveloperExtrasEnabledPreferenceKey = true;
-          WebKit2DeveloperExtrasEnabled = true;
+          "com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled" = true;
+        };
+
+        # Hot corners without modifier keys
+        "com.apple.dock" = {
+          wvous-tl-modifier = 0;
+          wvous-br-modifier = 0;
+          wvous-bl-modifier = 0;
         };
 
         ###############################################################################
@@ -244,6 +274,15 @@
 
         # Save to disk (not to iCloud) by default
         NSDocumentSaveNewDocumentsToCloud = false;
+
+        # Show all filename extensions
+        AppleShowAllExtensions = true;
+
+        # Enable spring loading for directories
+        "com.apple.springing.enabled" = true;
+
+        # Remove the spring loading delay for directories
+        "com.apple.springing.delay" = 0.1;
 
         ###############################################################################
         # Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
