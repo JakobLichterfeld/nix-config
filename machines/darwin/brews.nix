@@ -4,6 +4,9 @@
   { name = "rsync"; } # Fast, versatile, remote (and local) file-copying tool
   { name = "syncthing"; } # Continuous file synchronization program
 
+  # Encryption and security tools
+  { name = "gnupg"; }
+
   # Writing
   { name = "diff-pdf"; } # Visually compare two PDF files
   { name = "klavaro"; } # Free touch typing tutor program
