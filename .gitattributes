@@ -24,6 +24,9 @@ homelab/services/blocky/allowlists.txt filter=git-crypt diff=git-crypt
 users/jakob/git.nix filter=git-crypt diff=git-crypt
 **/git.nix  filter=git-crypt diff=git-crypt
 
+users/jakob/ssh.nix filter=git-crypt diff=git-crypt
+**/ssh.nix filter=git-crypt diff=git-crypt
+
 machines/darwin/MainDev/manualSensitive.nix filter=git-crypt diff=git-crypt
 machines/darwin/manualSensitive.nix filter=git-crypt diff=git-crypt
 **/manualSensitive.nix filter=git-crypt diff=git-crypt

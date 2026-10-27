@@ -16,6 +16,7 @@
     ../../dots/zsh/default.nix
     ./packages.nix
     ./git.nix
+    ./ssh.nix
   ];
 
   programs.nix-index = {
