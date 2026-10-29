@@ -18,7 +18,6 @@ in
 {
   imports = [
     ../../modules/cachix
-    ./../../modules/darwin/dock
     ./system.nix
   ];
   nix-homebrew = {
@@ -142,76 +141,77 @@ in
     RunAtLoad = true;
   };
 
-  # Fully declarative dock using the latest from Nix Store
-  local = {
-    dock.enable = true;
-    dock.entries = [
-      # position_options:
-      # --section [ apps | others ]                                   section of the dock to place the item in
-
-      # folder_options:
-      # --view [grid|fan|list|auto]                                   stack view option
-      # --display [folder|stack]                                      how to display a folder's icon
-      # --sort [name|dateadded|datemodified|datecreated|kind]         sets sorting option for a folder view
-
+  # Fully declarative dock
+  system.defaults.dock = {
+    persistent-apps = [
       # Finder
-      # { path = "/System/Applications/Finder.app/"; }
+      # { app = "/System/Applications/Finder.app"; }
       # Google Chrome
-      { path = "/Applications/Google Chrome.app/"; }
+      { app = "/Applications/Google Chrome.app"; }
       # Warp
-      { path = "/Applications/Warp.app/"; }
+      { app = "/Applications/Warp.app"; }
       # VS Code
-      { path = "/Applications/Visual Studio Code.app/"; }
+      { app = "/Applications/Visual Studio Code.app"; }
       # Discord
-      { path = "/Applications/Discord.app/"; }
+      { app = "/Applications/Discord.app"; }
       # Mail
-      { path = "/System/Applications/Mail.app/"; }
+      { app = "/System/Applications/Mail.app"; }
       # Figma
-      { path = "/Applications/Figma.app/"; }
+      { app = "/Applications/Figma.app"; }
       # App Store
-      # { path = "/System/Applications/App Store.app/"; }
+      # { app = "/System/Applications/App Store.app"; }
       # Applite
-      # { path = "/Applications/Applite.app/"; }
+      # { app = "/Applications/Applite.app"; }
       # System Settings
-      { path = "/System/Applications/System Settings.app/"; }
+      { app = "/System/Applications/System Settings.app"; }
       # Calculator
-      { path = "/System/Applications/Calculator.app/"; }
+      { app = "/System/Applications/Calculator.app"; }
       # Obsidian
-      { path = "/Applications/Obsidian.app/"; }
+      { app = "/Applications/Obsidian.app"; }
       # # KeepassXC
-      # { path = "/Applications/KeePassXC.app/"; }
+      # { app = "/Applications/KeePassXC.app"; }
       # Bitwarden
-      { path = "/Applications/Bitwarden.app/"; }
+      { app = "/Applications/Bitwarden.app"; }
       # Join
-      { path = "/Users/${user}/Applications/Chrome Apps.localized/Join by Joaoapps.app/"; }
+      { app = "/Users/${user}/Applications/Chrome Apps.localized/Join by Joaoapps.app"; }
       # Windows App (formerly Microsoft Remote Desktop)
-      { path = "/Applications/Windows App.app/"; }
+      { app = "/Applications/Windows App.app"; }
       # DeepL
-      { path = "/Applications/DeepL.app/"; }
+      { app = "/Applications/DeepL.app"; }
       # ChatGPT
-      { path = "/Applications/ChatGPT.app/"; }
+      { app = "/Applications/ChatGPT.app"; }
       # Claude
-      { path = "/Applications/Claude.app/"; }
+      { app = "/Applications/Claude.app"; }
       # Telegram
-      { path = "/Applications/Telegram.app/"; }
+      { app = "/Applications/Telegram.app"; }
+    ];
 
-      # others section
+    # others section
 
+    # folder_options:
+    # showas [automatic|fan|grid|list]                                  stack view option
+    # displayas [folder|stack]                                          how to display a folder's icon
+    # arrangement [name|date-added|date-modified|date-created|kind]     sets sorting option for a folder view
+    persistent-others = [
       # Show applications via Finder, as Launchpad has been removed in macOS Tahoe 26.0, as it is now part of Spotlight
       {
-        path = "/Applications/";
-        section = "others";
-        options = "--sort name --view grid --display stack";
+        folder = {
+          path = "/Applications/";
+          arrangement = "name";
+          showas = "grid";
+          displayas = "stack";
+        };
       }
       # Downloads
       {
-        path = "/Users/${user}/Downloads/";
-        section = "others";
-        options = "--sort dateadded --view grid --display stack";
+        folder = {
+          path = "/Users/${user}/Downloads/";
+          arrangement = "date-added";
+          showas = "grid";
+          displayas = "stack";
+        };
       }
-
     ];
-    dock.username = "${user}";
   };
 
   # Fonts
