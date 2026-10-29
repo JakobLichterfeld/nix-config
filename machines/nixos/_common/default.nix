@@ -24,6 +24,7 @@
   imports = [
     ./filesystems
     ./nix
+    ./overlays
     ./terminal-multiplexer
   ];
 
