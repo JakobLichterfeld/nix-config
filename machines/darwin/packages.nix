@@ -34,9 +34,6 @@ with pkgs;
   unison # Bidirectional file synchronizer
   backrest # Web UI and orchestrator for restic backup
 
-  # Writing
-  pstoedit # Translates PostScript and PDF graphics into other vector formats
-
   # Image
   exiv2 # Image metadata manipulation tool
   graphicsmagick # Image processing tools collection
