@@ -19,11 +19,6 @@ in
       description = "File with the secrets for the DNS provider API used for ACME DNS challenges.";
       default = config.age.secrets.dnsApiCredentials.path;
     };
-    dnsApiCredentialsFallbackFile = lib.mkOption {
-      type = lib.types.path;
-      description = "File with the secrets for the DNS provider API used for ACME DNS challenges.";
-      default = config.age.secrets.dnsApiCredentialsFallback.path;
-    };
   };
 
   config = lib.mkIf config.homelab.services.enable {
@@ -49,34 +44,22 @@ in
       # certificate a virtual host uses via useACMEHost, blocky does it in its
       # own module. A per-certificate definition replaces the default, so a
       # global list would silently not apply exactly where it matters.
-      certs = lib.mkMerge [
-        {
-          "${config.homelab.baseDomain}" = {
-            domain = "${config.homelab.baseDomain}";
-            extraDomainNames = [ "*.${config.homelab.baseDomain}" ];
-            dnsProvider = "${machinesSensitiveVars.dns.challengeProvider}";
-            dnsPropagationCheck = true;
-            dnsResolver = "1.1.1.1:53";
-            group = acmeSharedGroup;
-            environmentFile = cfg.dnsApiCredentialsFile;
-            # deSEC's anycast frontends can lag a few seconds behind the API, so Let's Encrypt
-            # intermittently fails the wildcard challenge with "No TXT record found" even though
-            # lego's propagation check already passed. Skip the check and give the record a fixed
-            # head start before validation instead.
-            extraLegoFlags = [ "--dns.propagation-wait=120s" ];
-          };
-        }
-        (lib.optionalAttrs (config.homelab.baseDomainFallback != null) {
-          "${config.homelab.baseDomainFallback}" = {
-            domain = "${config.homelab.baseDomainFallback}";
-            extraDomainNames = [ "*.${config.homelab.baseDomainFallback}" ];
-            dnsProvider = "${machinesSensitiveVars.dns.challengeProviderFallback}";
-            dnsPropagationCheck = true;
-            dnsResolver = "1.1.1.1:53";
-            environmentFile = cfg.dnsApiCredentialsFallbackFile;
-          };
-        })
-      ];
+      certs = {
+        "${config.homelab.baseDomain}" = {
+          domain = "${config.homelab.baseDomain}";
+          extraDomainNames = [ "*.${config.homelab.baseDomain}" ];
+          dnsProvider = "${machinesSensitiveVars.dns.challengeProvider}";
+          dnsPropagationCheck = true;
+          dnsResolver = "1.1.1.1:53";
+          group = acmeSharedGroup;
+          environmentFile = cfg.dnsApiCredentialsFile;
+          # deSEC's anycast frontends can lag a few seconds behind the API, so Let's Encrypt
+          # intermittently fails the wildcard challenge with "No TXT record found" even though
+          # lego's propagation check already passed. Skip the check and give the record a fixed
+          # head start before validation instead.
+          extraLegoFlags = [ "--dns.propagation-wait=120s" ];
+        };
+      };
     };
     # services.caddy itself lives in ./caddy (baseline infrastructure, always
     # active); the ACME certificates, firewall openings and the caddy user with

@@ -25,11 +25,6 @@ in
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e dnsApiCredentials.age
   };
 
-  age.secrets.dnsApiCredentialsFallback = {
-    file = secretsBasePath + /dnsApiCredentialsFallback.age; # content is according to the provider, see https://go-acme.github.io/lego/dns/
-    # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e dnsApiCredentialsFallback.age
-  };
-
   age.secrets.fritzboxExporterEnv = {
     file = secretsBasePath + /fritzboxExporterEnv.age; # content is the fritzbox_exporter env file, so USERNAME='your FritzBox username goes here', PASSWORD='your FritzBox password goes here', GATEWAY_URL='http://<IP of your FritzBox>:49000', GATEWAY_LUAURL='http://<your FritzBox IP>'
     # cd secrets && EDITOR=nano nix --experimental-features 'nix-command flakes' run github:ryantm/agenix -- -e fritzboxExporterEnv.age

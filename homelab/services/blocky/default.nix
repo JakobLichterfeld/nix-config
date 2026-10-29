@@ -260,8 +260,7 @@ in
 
     # Blocky serves DoT and DoH from this certificate and has no ExecReload,
     # so a renewal restarts it (try-reload-or-restart falls back to restart).
-    # Registered on the certificate blocky reads, not as an ACME default: the
-    # fallback certificate is not used here and must not restart the resolver.
+    # Registered on the certificate blocky reads, see security.acme in ../default.nix.
     security.acme.certs.${homelab.baseDomain}.reloadServices = [ "blocky.service" ];
 
     # Enable reverse proxy DoH

@@ -29,18 +29,6 @@
             redir https://{host}{uri}
           '';
         };
-
-        "http://${config.homelab.baseDomainFallback}" = {
-          extraConfig = ''
-            redir https://{host}{uri}
-          '';
-        };
-        "http://*.${config.homelab.baseDomainFallback}" = {
-          extraConfig = ''
-            redir https://{host}{uri}
-          '';
-        };
-
       };
     };
 

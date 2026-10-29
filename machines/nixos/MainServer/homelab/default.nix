@@ -11,7 +11,6 @@ in
   homelab = {
     enable = true;
     baseDomain = machinesSensitiveVars.dns.baseDomain;
-    baseDomainFallback = machinesSensitiveVars.dns.baseDomainFallback;
 
     timeZone = "Europe/Berlin";
     mounts = {
