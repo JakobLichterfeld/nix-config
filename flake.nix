@@ -14,7 +14,15 @@
       url = "github:LnL7/nix-darwin/master?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
     };
-    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew?shallow=1";
+    nix-homebrew = {
+      url = "github:zhaofengli-wip/nix-homebrew?shallow=1";
+      inputs.brew-src.follows = "brew-src";
+    };
+    # Track brew itself alongside homebrew-core, whose formulae are written against brew main
+    brew-src = {
+      url = "github:Homebrew/brew/main?shallow=1";
+      flake = false;
+    };
 
     # Declarative tap management
     homebrew-core = {
