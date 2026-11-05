@@ -108,6 +108,15 @@ in
         ) enabledServicesWithAdditionalPathsToBackup
       );
 
+      excludePaths = lib.flatten (
+        lib.attrsets.mapAttrsToList (
+          name: value: lib.attrsets.attrByPath [ "backup" "excludePaths" ] [ ] value
+        ) enabledServices
+      );
+      tarExcludeFlags = lib.concatMapStringsSep " " (
+        path: "--exclude=${lib.escapeShellArg path}"
+      ) excludePaths;
+
       # read the 'servicesToManage' lists from all enabled services
       # and merge them into a single flat list.
       serviceNamesToManage = lib.flatten (
@@ -401,9 +410,7 @@ in
                 "--keep-weekly 4"
                 "--keep-monthly 6"
               ];
-              exclude =
-                [
-                ];
+              exclude = excludePaths;
               paths = allStateDirsAndBackupPathsList;
               backupPrepareCommand =
                 let
@@ -441,9 +448,7 @@ in
                   "--keep-weekly 4"
                   "--keep-monthly 3"
                 ];
-                exclude =
-                  [
-                  ];
+                exclude = excludePaths;
                 paths = if cfg.s3.useTarball then [ tarballPath ] else allStateDirsAndBackupPathsList;
                 backupPrepareCommand =
                   let
@@ -453,7 +458,7 @@ in
                   + ''
                     ${restic} stats || ${restic} init
                     ${lib.optionalString cfg.s3.useTarball ''
-                      ${pkgs.gnutar}/bin/tar -cf ${tarballPath} --ignore-failed-read --one-file-system ${allStateDirsAndBackupPaths}
+                      ${pkgs.gnutar}/bin/tar -cf ${tarballPath} --ignore-failed-read --one-file-system ${tarExcludeFlags} ${allStateDirsAndBackupPaths}
                     ''}
                     ${restic} unlock
                   '';

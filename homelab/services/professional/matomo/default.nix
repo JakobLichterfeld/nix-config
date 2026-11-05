@@ -48,6 +48,15 @@ in
       description = "Directory containing the persistent state data to back up";
       default = "/var/lib/matomo";
     };
+    backup.excludePaths = lib.mkOption {
+      type = lib.types.listOf lib.types.path;
+      description = "Paths below stateDir that are kept out of the backup.";
+      # tmp only holds regenerable data (the nixpkgs module wipes it on every
+      # package change). core:archive deletes its temporary CSVs in tmp/assets
+      # while running, and its hourly timer overlaps the backup timers, so restic
+      # would otherwise hit vanished files and exit 3.
+      default = [ "${cfg.stateDir}/tmp" ];
+    };
     url = lib.mkOption {
       type = lib.types.str;
       default = "matomo.${homelab.baseDomain}";
