@@ -76,7 +76,7 @@ in
         src = fetchFromGitHub {
           owner = "sberk42";
           repo = "fritzbox_exporter";
-          rev = "5547846785cf0c2d311ac65ff698f031520ecbab";
+          rev = "0525e3ca5672d3a00490a0cf97d2008b6238cbc9";
           /*
             On Dev machine from the repository root, determine this hash without
             building MainServer. The command reads `rev` from this file:
@@ -86,7 +86,7 @@ in
 
             Copy the reported hash to `sha256` and commit it.
           */
-          sha256 = "sha256-If0qNpm9Wpl2/WBNC4p4tGUfYFRomr9jpwxM5Cg0oK0=";
+          sha256 = "sha256-alJwFwrpkrychJEjpYcC+PGn3WEaPMeUBw3iS+C860s=";
         };
 
         /*
@@ -97,8 +97,9 @@ in
             export FRITZBOX_EXPORTER_REV="$(sed -n 's/^[[:space:]]*rev = "\([^"]*\)";/\1/p' homelab/services/prometheus/fritzbox-exporter/default.nix)"
             nix build --no-link --impure --expr '
               let
-                flake = builtins.getFlake (toString ./.);
-                pkgs = import flake.inputs.nixpkgs { system = builtins.currentSystem; };
+                lock = builtins.fromJSON (builtins.readFile ./flake.lock);
+                nixpkgs = lock.nodes.${lock.nodes.${lock.root}.inputs.nixpkgs}.locked;
+                pkgs = import (builtins.fetchTree nixpkgs) { system = builtins.currentSystem; };
               in pkgs.buildGoModule {
                 pname = "fritzbox_exporter";
                 version = "latest";
@@ -111,7 +112,7 @@ in
 
           Copy the reported `got:` hash to `vendorHash` and commit it.
         */
-        vendorHash = "sha256-+B7GfSWV6F1b88l4hfeEJM73CUG2niQSud5F3NGi394=";
+        vendorHash = "sha256-jjQ3zV0hOyMoM67MR+SI7oQZcJpnwVA6c0E4EDOYNAU=";
 
         meta = with lib; {
           description = "Fritz!Box Upnp statistics exporter for prometheus";
