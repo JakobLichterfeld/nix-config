@@ -207,6 +207,10 @@ in
               "--uidmap=1:200000:65535"
               "--gidmap=0:${toString cfg.gid}:1"
               "--gidmap=1:200000:65535"
+              # Nothing reads the image's healthcheck, the blackbox probe covers
+              # availability. Its transient unit fails while the app starts, and a
+              # failed unit at the end of a switch fails the whole activation.
+              "--no-healthcheck"
             ];
           };
         };
