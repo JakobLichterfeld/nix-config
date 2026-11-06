@@ -8,12 +8,12 @@ let
   service = "changedetection-io";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
-  # Digest and hash of the playwright image, which the nixpkgs module sets without a
-  # tag. To get them, run this in the repository and copy imageDigest and hash from
-  # its output:
-  # nix run --inputs-from . nixpkgs#nix-prefetch-docker -- --image-name browserless/chrome --image-tag latest --os linux --arch amd64
-  playwright-image-digest = "sha256:3678a24595187a3916dc45b800c4fe962832b581227bbef193ae6f0ec5fbc14d";
-  playwright-image-hash = "sha256-Or2XoaYtVBQKI6lYClk46dL97eKTpm8LAGTQxmmiTPc=";
+  playwright-image = "dgtlmoon/sockpuppetbrowser";
+  # Digest and hash of the image, both change with every update. To get them, run this
+  # in the repository and copy imageDigest and hash from its output:
+  # nix run --inputs-from . nixpkgs#nix-prefetch-docker -- --image-name dgtlmoon/sockpuppetbrowser --image-tag latest --os linux --arch amd64
+  playwright-image-digest = "sha256:3eba6b4286c1477152a35a38937d20a51c684b86d2d6352e1c812abc646fbc34";
+  playwright-image-hash = "sha256-PiMeSuhIfw9z+bpBHsyr/AuoZI37Dz+bny4Q80dgkyM=";
 in
 {
   options.homelab.services.${service} = {
@@ -92,10 +92,15 @@ in
       # Part of the build: a new image is downloaded while the old container keeps
       # running, a failed download stops nothing.
       oci-containers.containers = lib.mkIf config.services.changedetection-io.playwrightSupport {
-        changedetection-io-playwright.imageFile = pkgs.dockerTools.pullImage {
-          imageName = config.virtualisation.oci-containers.containers.changedetection-io-playwright.image;
-          imageDigest = playwright-image-digest;
-          hash = playwright-image-hash;
+        changedetection-io-playwright = {
+          # Replaces the outdated nixpkgs default with the image changedetection.io recommends.
+          image = lib.mkForce playwright-image;
+          imageFile = pkgs.dockerTools.pullImage {
+            imageName = playwright-image;
+            imageDigest = playwright-image-digest;
+            hash = playwright-image-hash;
+          };
+          environment.MAX_CONCURRENT_CHROME_PROCESSES = "10";
         };
       };
     };
