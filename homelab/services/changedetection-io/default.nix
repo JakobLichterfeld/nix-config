@@ -1,12 +1,19 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
   service = "changedetection-io";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
+  # Digest and hash of the playwright image, which the nixpkgs module sets without a
+  # tag. To get them, run this in the repository and copy imageDigest and hash from
+  # its output:
+  # nix run --inputs-from . nixpkgs#nix-prefetch-docker -- --image-name browserless/chrome --image-tag latest --os linux --arch amd64
+  playwright-image-digest = "sha256:3678a24595187a3916dc45b800c4fe962832b581227bbef193ae6f0ec5fbc14d";
+  playwright-image-hash = "sha256-Or2XoaYtVBQKI6lYClk46dL97eKTpm8LAGTQxmmiTPc=";
 in
 {
   options.homelab.services.${service} = {
@@ -79,6 +86,19 @@ in
     homelab.services.loki.untaggedContainerLogUnits =
       lib.mkIf config.services.changedetection-io.playwrightSupport
         [ "podman-changedetection-io-playwright.service" ];
+
+    virtualisation = {
+      podman.enable = true;
+      # Part of the build: a new image is downloaded while the old container keeps
+      # running, a failed download stops nothing.
+      oci-containers.containers = lib.mkIf config.services.changedetection-io.playwrightSupport {
+        changedetection-io-playwright.imageFile = pkgs.dockerTools.pullImage {
+          imageName = config.virtualisation.oci-containers.containers.changedetection-io-playwright.image;
+          imageDigest = playwright-image-digest;
+          hash = playwright-image-hash;
+        };
+      };
+    };
 
     # Playwright can currently leak memory. See https://github.com/dgtlmoon/changedetection.io/wiki/Playwright-content-fetcher#playwright-memory-leak
     # To mitigate this, we can limit the memory usage of the service.

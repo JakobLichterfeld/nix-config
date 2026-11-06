@@ -80,11 +80,10 @@ in
     virtualisation.oci-containers = {
       backend = "podman";
     };
-    # nixpkgs sets TimeoutStartSec=0 because the image is pulled inside the start
-    # job, so a hanging pull would hold the switch-to-configuration lock forever.
-    # 20min covers the largest image. Keep this below deploy-rs' activationTimeout,
-    # so a hanging start fails the activation within the deploy window and triggers
-    # a real rollback.
+    # nixpkgs sets TimeoutStartSec=0, so a hanging image load would hold the
+    # switch-to-configuration lock forever. 20min covers the largest image. Keep this
+    # below deploy-rs' activationTimeout, so a hanging start fails the activation
+    # within the deploy window and triggers a real rollback.
     systemd.services = lib.mapAttrs' (
       name: _:
       lib.nameValuePair "podman-${name}" {

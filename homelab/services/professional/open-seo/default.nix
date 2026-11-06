@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 
@@ -8,7 +9,13 @@ let
   service = "open-seo";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
+  open-seo-image = "ghcr.io/every-app/open-seo";
   open-seo-version = "v0.1.25";
+  # Digest and hash of the image, both change with the version. To get them, run this
+  # in the repository with VERSION replaced and copy imageDigest and hash from its output:
+  # nix run --inputs-from . nixpkgs#nix-prefetch-docker -- --image-name ghcr.io/every-app/open-seo --image-tag VERSION --os linux --arch amd64
+  open-seo-image-digest = "sha256:bb7459b16bff5844efcd22b43a1f38b229f67a40c9ff1405415c3d7c15106205";
+  open-seo-image-hash = "sha256-ds11XXgSz2vDS7JviG5Evdw3lN+bObrkU4nx7eOTN4M=";
   containerPort = 3001; # fixed app port inside the container (image EXPOSE/healthcheck)
 in
 {
@@ -139,7 +146,15 @@ in
           # Single self-contained container: state (local D1/SQLite) lives in
           # /app/.wrangler, there is no external database or cache.
           "${service}" = {
-            image = "ghcr.io/every-app/open-seo:${open-seo-version}";
+            image = "${open-seo-image}:${open-seo-version}";
+            # Part of the build: a version bump downloads the image while the old
+            # container keeps running, a failed download stops nothing.
+            imageFile = pkgs.dockerTools.pullImage {
+              imageName = open-seo-image;
+              imageDigest = open-seo-image-digest;
+              hash = open-seo-image-hash;
+              finalImageTag = open-seo-version;
+            };
             autoStart = true;
             volumes = [
               "${cfg.stateDir}/data:/app/.wrangler"

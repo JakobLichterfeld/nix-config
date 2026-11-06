@@ -9,7 +9,13 @@ let
   service = "postiz";
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
+  postiz-image = "ghcr.io/gitroomhq/postiz-app";
   postiz-version = "v2.25.3";
+  # Digest and hash of the image, both change with the version. To get them, run this
+  # in the repository with VERSION replaced and copy imageDigest and hash from its output:
+  # nix run --inputs-from . nixpkgs#nix-prefetch-docker -- --image-name ghcr.io/gitroomhq/postiz-app --image-tag VERSION --os linux --arch amd64
+  postiz-image-digest = "sha256:3e2facf0c1ffdfe07b31cebdc5b850767721cb40a7a389dd07485f8e381bb49f";
+  postiz-image-hash = "sha256-bfZgzSQ+2vjx9yi/zs5uA18/rHj3GogIX7HLtV12sao=";
   podmanBridgeIp = "10.88.0.1"; # gateway of podman's default network, reachable from containers
 in
 {
@@ -404,7 +410,15 @@ in
             # PostgreSQL, Redis and Temporal run as native NixOS services; only
             # the Postiz app itself remains a container.
             "postiz-app" = {
-              image = "ghcr.io/gitroomhq/postiz-app:${postiz-version}";
+              image = "${postiz-image}:${postiz-version}";
+              # Part of the build: a version bump downloads the image while the old
+              # container keeps running, a failed download stops nothing.
+              imageFile = pkgs.dockerTools.pullImage {
+                imageName = postiz-image;
+                imageDigest = postiz-image-digest;
+                hash = postiz-image-hash;
+                finalImageTag = postiz-version;
+              };
               autoStart = true;
               volumes = [
                 "${cfg.stateDir}/config:/config"

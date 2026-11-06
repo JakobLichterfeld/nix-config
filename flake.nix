@@ -168,7 +168,7 @@
             autoRollback = true;
             magicRollback = true;
             confirmTimeout = 60;
-            # Container images are pulled inside the activation. This must stay above
+            # Container images are loaded inside the activation. This must stay above
             # the containers' TimeoutStartSec: when the window closes first, deploy-rs
             # reports a failure and a rollback, while the activation keeps running on
             # the server and rolls back later on its own.
