@@ -33,7 +33,10 @@
   # System Tools
   { name = "applite"; }
   { name = "alt-tab"; } # Enable Windows-like alt-tab
-  { name = "macfuse"; }
+  {
+    name = "macfuse";
+    greedy = true; # Homebrew cannot detect that the installed version is outdated; without greedy it never upgrades this cask
+  }
   { name = "warp"; } # warp terminal
   { name = "rectangle"; } # Move and resize windows in macOS using keyboard shortcuts or snap areas
   { name = "stats"; } # system monitor in mac menu bar
@@ -46,11 +49,17 @@
 
   # Browsers
   { name = "google-chrome"; }
-  { name = "brave-browser"; }
+  {
+    name = "brave-browser";
+    greedy = true; # Homebrew cannot detect that the installed version is outdated; without greedy it never upgrades this cask
+  }
 
   # Writing
   { name = "pdfsam-basic"; }
-  { name = "adobe-acrobat-reader"; }
+  {
+    name = "adobe-acrobat-reader";
+    greedy = true; # Homebrew cannot detect that the installed version is outdated; without greedy it never upgrades this cask
+  }
   { name = "libreoffice"; }
   { name = "libreoffice-language-pack"; }
   { name = "microsoft-auto-update"; }
@@ -77,7 +86,10 @@
   { name = "yattee"; } # Privacy-friendly YouTube frontend
 
   # Remote Desktop
-  { name = "teamviewer"; }
+  {
+    name = "teamviewer";
+    greedy = true; # Homebrew cannot detect that the installed version is outdated; without greedy it never upgrades this cask
+  }
   { name = "rustdesk"; }
 
   # Mobile devices

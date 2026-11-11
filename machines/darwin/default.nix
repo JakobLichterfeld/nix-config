@@ -12,8 +12,6 @@ let
   masApps = import ./masApps.nix;
   brews = import ./brews.nix;
   casks = import ./casks.nix;
-
-  mkGreedy = cask: cask // { greedy = true; }; # add greedy = true to all casks to enable greedy updates
 in
 {
   imports = [
@@ -66,11 +64,11 @@ in
   homebrew = {
     enable = true;
     onActivation = {
-      # Do not auto-update Homebrew or upgrade formulae on activation.
+      # Do not auto-update Homebrew on activation.
       # Updates are controlled exclusively via `nix flake update`, which updates
       # the tap inputs in flake.lock. This ensures reproducible, declarative state.
       autoUpdate = false; # do not auto-update homebrew formulae on activation of the flake
-      upgrade = false; # do not upgrade all formulae on activation of the flake
+      upgrade = true; # upgrade installed packages to the pinned tap versions; otherwise only missing ones get installed
       cleanup = "zap"; # cleanup all formulae not in the flake
     };
     prefix = "/opt/homebrew";
@@ -81,7 +79,7 @@ in
     taps = builtins.attrNames config.nix-homebrew.taps; # Align homebrew taps config with nix-homebrew
     masApps = masApps;
     brews = brews;
-    casks = map mkGreedy (casks);
+    casks = casks;
   };
 
   # Setup user, packages, programs

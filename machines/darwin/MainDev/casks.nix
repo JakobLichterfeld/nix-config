@@ -12,7 +12,10 @@
   { name = "ollama-app"; } # Ollama: Local LLM inference
   { name = "devtoys"; } # Swiss Army knife for developers, it’s a toolbox of over 30+ handy utilities bundled into a clean UI
   { name = "sourcetree"; } # Git GUI
-  { name = "android-studio"; }
+  {
+    name = "android-studio";
+    greedy = true; # Homebrew cannot detect that the installed version is outdated; without greedy it never upgrades this cask
+  }
   { name = "android-commandlinetools"; }
   { name = "android-platform-tools"; }
   # { name = "flutter"; } # we currently use Flutter Version Management (FVM) to manage the global flutter version
@@ -51,5 +54,8 @@
   { name = "tradingview"; }
 
   # Remote desktop
-  { name = "xquartz"; }
+  {
+    name = "xquartz";
+    greedy = true; # Homebrew cannot detect that the installed version is outdated; without greedy it never upgrades this cask
+  }
 ]
