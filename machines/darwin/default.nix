@@ -92,9 +92,6 @@ in
       extraEnv.HOMEBREW_SUDO_CHECKED = "1"; # internal Homebrew switch: skip the sudo check that discards the sudo login once in every brew process
     };
     prefix = "/opt/homebrew";
-    caskArgs = {
-      no_quarantine = true;
-    };
 
     taps = builtins.attrNames config.nix-homebrew.taps; # Align homebrew taps config with nix-homebrew
     masApps = masApps;
