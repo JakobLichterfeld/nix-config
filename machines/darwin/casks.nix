@@ -100,5 +100,6 @@
   { name = "google-ads-editor"; }
 
   # AI
-  { name = "chatgpt"; }
+  { name = "chatgpt"; } # ChatGPT desktop app
+  { name = "claude"; } # Claude AI desktop app
 ]

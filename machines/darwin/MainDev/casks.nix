@@ -2,9 +2,7 @@
   # Development
   { name = "visual-studio-code"; } # Code Editor
   { name = "antigravity"; } # Google AI Coding Agent IDE
-  { name = "chatgpt"; } # ChatGPT desktop app
   { name = "codex"; } # OpenAI's coding agent
-  { name = "claude"; } # Claude AI desktop app
   { name = "claude-code"; }
   { name = "cursor"; }
   { name = "cursor-cli"; }
