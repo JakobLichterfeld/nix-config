@@ -270,7 +270,10 @@
               fi
               echo "Keeping sudo session alive for the duration of the command..."
               sudo -v
-              sudo sh -c 'echo "Defaults timestamp_timeout=-1" > /etc/sudoers.d/sudo-keepalive-temp'
+              # 240 minutes instead of unlimited, so a leftover file cannot keep sudo logins valid forever
+              sudo sh -c 'echo "Defaults timestamp_timeout=240" > /etc/sudoers.d/sudo-keepalive-temp'
+              # run commands in this terminal instead of an own pseudo-terminal, so the sudo login from above is also valid for nested sudo calls
+              sudo sh -c 'echo "Defaults !use_pty" >> /etc/sudoers.d/sudo-keepalive-temp'
               trap 'sudo rm -f /etc/sudoers.d/sudo-keepalive-temp' EXIT
               sudo "$@"
               trap - EXIT
