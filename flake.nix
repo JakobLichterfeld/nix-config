@@ -2,74 +2,74 @@
   description = "Configuration for MacOS and NixOS";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05?shallow=1";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable?shallow=1";
-    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-26.05-darwin?shallow=1";
-    nixpkgs-darwin-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable?shallow=1";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-26.05-darwin";
+    nixpkgs-darwin-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     nix-darwin = {
-      url = "github:LnL7/nix-darwin/nix-darwin-26.05?shallow=1";
+      url = "github:LnL7/nix-darwin/nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     nix-darwin-unstable = {
-      url = "github:LnL7/nix-darwin/master?shallow=1";
+      url = "github:LnL7/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
     };
     nix-homebrew = {
-      url = "github:zhaofengli-wip/nix-homebrew?shallow=1";
+      url = "github:zhaofengli-wip/nix-homebrew";
       inputs.brew-src.follows = "brew-src";
     };
     # Track brew itself alongside homebrew-core, whose formulae are written against brew main
     brew-src = {
-      url = "github:Homebrew/brew/main?shallow=1";
+      url = "github:Homebrew/brew/main";
       flake = false;
     };
 
     # Declarative tap management
     homebrew-core = {
-      url = "github:homebrew/homebrew-core?shallow=1";
+      url = "github:homebrew/homebrew-core";
       flake = false;
     };
     homebrew-cask = {
-      url = "github:homebrew/homebrew-cask?shallow=1";
+      url = "github:homebrew/homebrew-cask";
       flake = false;
     };
     # Spotube
     homebrew-spotube = {
-      url = "github:KRTirtho/homebrew-apps?shallow=1";
+      url = "github:KRTirtho/homebrew-apps";
       flake = false;
     };
     # sshfs-mac
     homebrew-fuse = {
-      url = "github:gromgit/homebrew-fuse?shallow=1";
+      url = "github:gromgit/homebrew-fuse";
       flake = false;
     };
     home-manager = {
-      url = "github:nix-community/home-manager/release-26.05?shallow=1";
+      url = "github:nix-community/home-manager/release-26.05";
       # url = "https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz"; # if the above gets timeouts
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager-darwin = {
-      url = "github:nix-community/home-manager/release-26.05?shallow=1";
+      url = "github:nix-community/home-manager/release-26.05";
       # url = "https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz"; # if the above gets timeouts
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     home-manager-darwin-unstable = {
-      url = "github:nix-community/home-manager/master?shallow=1";
+      url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
     };
     agenix = {
-      url = "github:ryantm/agenix?shallow=1";
+      url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-index-database = {
-      url = "github:nix-community/nix-index-database?shallow=1";
+      url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    deploy-rs.url = "github:serokell/deploy-rs?shallow=1";
+    deploy-rs.url = "github:serokell/deploy-rs";
 
     nixos-wsl = {
-      url = "github:nix-community/NixOS-WSL/main?shallow=1";
+      url = "github:nix-community/NixOS-WSL/main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -84,7 +84,7 @@
     };
 
     spotblock = {
-      url = "github:vincentkenny01/spotblock?shallow=1";
+      url = "github:vincentkenny01/spotblock";
       flake = false;
     };
   };
