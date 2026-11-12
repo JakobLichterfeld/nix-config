@@ -12,6 +12,24 @@ let
   masApps = import ./masApps.nix;
   brews = import ./brews.nix;
   casks = import ./casks.nix;
+
+  # Own tap with a single cask that needs root, so Homebrew asks for the sudo password before all other casks
+  sudoFirstTap = pkgs.writeTextDir "Casks/sudo-first.rb" ''
+    cask "sudo-first" do
+      version "${inputs.homebrew-cask.shortRev}" # changes with the pinned cask tap, which makes Homebrew reinstall this cask
+      sha256 :no_check
+
+      url "file://${pkgs.writeText "sudo-first.txt" "sudo-first"}"
+      name "sudo-first"
+      desc "Asks for the sudo password before all other casks"
+
+      stage_only true
+
+      preflight_steps do
+        run "/usr/bin/true", sudo: true
+      end
+    end
+  '';
 in
 {
   imports = [
@@ -37,6 +55,7 @@ in
       "homebrew/homebrew-cask" = inputs.homebrew-cask;
       "krtirtho/homebrew-apps" = inputs.homebrew-spotube;
       "gromgit/homebrew-fuse" = inputs.homebrew-fuse;
+      "local/homebrew-sudo-first" = sudoFirstTap;
     };
 
     # Enable fully-declarative tap management
@@ -70,6 +89,7 @@ in
       autoUpdate = false; # do not auto-update homebrew formulae on activation of the flake
       upgrade = true; # upgrade installed packages to the pinned tap versions; otherwise only missing ones get installed
       cleanup = "zap"; # cleanup all formulae not in the flake
+      extraEnv.HOMEBREW_SUDO_CHECKED = "1"; # internal Homebrew switch: skip the sudo check that discards the sudo login once in every brew process
     };
     prefix = "/opt/homebrew";
     caskArgs = {
@@ -79,7 +99,10 @@ in
     taps = builtins.attrNames config.nix-homebrew.taps; # Align homebrew taps config with nix-homebrew
     masApps = masApps;
     brews = brews;
-    casks = casks;
+    casks = lib.mkMerge [
+      (lib.mkBefore [ { name = "local/sudo-first/sudo-first"; } ]) # mkBefore puts it ahead of the casks of all other modules
+      casks
+    ];
   };
 
   # Setup user, packages, programs
