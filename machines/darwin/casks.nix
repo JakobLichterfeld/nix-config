@@ -44,9 +44,6 @@
   # Network
   { name = "zerotier-one"; }
 
-  # Host Management
-  { name = "switchhosts"; }
-
   # Browsers
   { name = "google-chrome"; }
   {
