@@ -10,12 +10,12 @@ let
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
   postiz-image = "ghcr.io/gitroomhq/postiz-app";
-  postiz-version = "v2.25.3";
+  postiz-version = "v2.26.0";
   # Digest and hash of the image, both change with the version. To get them, run this
   # in the repository with VERSION replaced and copy imageDigest and hash from its output:
   # nix run --inputs-from . nixpkgs#nix-prefetch-docker -- --image-name ghcr.io/gitroomhq/postiz-app --image-tag VERSION --os linux --arch amd64
-  postiz-image-digest = "sha256:3e2facf0c1ffdfe07b31cebdc5b850767721cb40a7a389dd07485f8e381bb49f";
-  postiz-image-hash = "sha256-bfZgzSQ+2vjx9yi/zs5uA18/rHj3GogIX7HLtV12sao=";
+  postiz-image-digest = "sha256:875e61ac5d0ac43c3dec78a78a7032dfb03d9a8c6d4936ebb18adb606cc207";
+  postiz-image-hash = "sha256-ozA3BGh5KZFdO0oHpJ2XIE4EsqZKFgG25Rb5RBT+JRE=";
   podmanBridgeIp = "10.88.0.1"; # gateway of podman's default network, reachable from containers
 in
 {
