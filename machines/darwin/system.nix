@@ -204,6 +204,10 @@
 
           # Trackpad: map bottom right corner to right-click (with the trackpad settings above)
           ContextMenuGesture = 1;
+
+          # Open the emoji picker with Control + . ("^"), which is Win + . on the keyboard with the Control <-> Command swap;
+          # the title must match the menu item in the system language
+          NSUserKeyEquivalents."Emoji & Symbole" = "^.";
         };
 
         "com.apple.Safari" = {
