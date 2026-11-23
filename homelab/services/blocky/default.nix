@@ -53,6 +53,23 @@ in
         ];
       };
     };
+    # The tile links to the control page on ${cfg.url}, not to Blocky itself.
+    homepage.name = lib.mkOption {
+      type = lib.types.str;
+      default = "DNS Blocking";
+    };
+    homepage.description = lib.mkOption {
+      type = lib.types.str;
+      default = "Shows whether DNS blocking is active and pauses it for 5 minutes.";
+    };
+    homepage.icon = lib.mkOption {
+      type = lib.types.str;
+      default = "blocky.svg";
+    };
+    homepage.category = lib.mkOption {
+      type = lib.types.str;
+      default = "System Services";
+    };
     blackbox.targets = import ../../../lib/options/blackboxTargets.nix {
       inherit lib;
       defaultTargets =
@@ -271,12 +288,100 @@ in
       '';
     };
 
-    # Enable reverse proxy for Prometheus metrics scraping
-    services.caddy.virtualHosts."${cfg.url}" = lib.mkIf config.services.prometheus.enable {
-      useACMEHost = homelab.baseDomain;
-      extraConfig = ''
-        reverse_proxy /metrics http://127.0.0.1:${toString cfg.listenPort}
-      '';
-    };
+    # Control page for DNS blocking (./web/index.html): shows the status,
+    # pauses blocking for five minutes and resumes it.
+    #
+    # Blocky's HTTP API has no authentication and can also disable blocking
+    # permanently, so it is not proxied. The vhost is default deny: only the
+    # page and its three calls are routed, each call is rewritten to a fixed
+    # upstream request, and everything else gets a 404. No path or query sent
+    # by a client reaches Blocky; the pause is always duration=5m.
+    #
+    # The calls require Sec-Fetch-Site: same-origin, pause and resume also a
+    # POST with this vhost as Origin. Browsers set both headers themselves and
+    # page scripts cannot forge them, so a foreign website can neither trigger
+    # nor read the calls through a visitor's browser. This is not
+    # authentication: whoever can reach the vhost may use the page.
+    services.caddy.virtualHosts."${cfg.url}" =
+      let
+        upstream = "http://127.0.0.1:${toString cfg.listenPort}";
+      in
+      lib.mkMerge [
+        {
+          useACMEHost = homelab.baseDomain;
+          extraConfig = ''
+            # Deferred, so it also applies to what Blocky sends: its CORS
+            # headers allow every origin and are removed. The CSP permits
+            # inline script and style because the page is a single file;
+            # framing is forbidden so no foreign page can overlay the buttons.
+            header {
+              -Access-Control-*
+              Cross-Origin-Resource-Policy same-origin
+              Content-Security-Policy "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+              X-Frame-Options DENY
+              X-Content-Type-Options nosniff
+              Cache-Control no-store
+              defer
+            }
+
+            @page {
+              method GET HEAD
+              path /
+            }
+            handle @page {
+              root * ${./web}
+              file_server
+            }
+
+            @status {
+              method GET
+              path /api/blocking/status
+              header Sec-Fetch-Site same-origin
+            }
+            handle @status {
+              rewrite * /api/blocking/status?
+              reverse_proxy ${upstream}
+            }
+
+            @pause {
+              method POST
+              path /api/blocking/pause
+              header Sec-Fetch-Site same-origin
+              header Origin https://${cfg.url}
+            }
+            handle @pause {
+              # Blocky's API only knows GET.
+              method GET
+              # Keep in sync with the button label in web/index.html.
+              rewrite * /api/blocking/disable?duration=5m
+              reverse_proxy ${upstream}
+            }
+
+            @resume {
+              method POST
+              path /api/blocking/resume
+              header Sec-Fetch-Site same-origin
+              header Origin https://${cfg.url}
+            }
+            handle @resume {
+              method GET
+              rewrite * /api/blocking/enable?
+              reverse_proxy ${upstream}
+            }
+
+            handle {
+              respond 404
+            }
+          '';
+        }
+        # Enable reverse proxy for Prometheus metrics scraping
+        (lib.mkIf config.services.prometheus.enable {
+          extraConfig = ''
+            handle /metrics {
+              reverse_proxy ${upstream}
+            }
+          '';
+        })
+      ];
   };
 }

@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>DNS Blocking</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        font-family: system-ui, sans-serif;
+        line-height: 1.5;
+        background-color: #121212;
+        color: #e0e0e0;
+      }
+
+      main {
+        width: 100%;
+        max-width: 26rem;
+        padding: 2rem 1.5rem;
+        border: 1px solid #333;
+        border-radius: 8px;
+        background-color: #1e1e1e;
+        text-align: center;
+      }
+
+      h1 {
+        margin: 0 0 1.5rem;
+        font-size: 1.5rem;
+        color: #ffffff;
+      }
+
+      .state {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        margin: 0;
+        font-size: 1.75rem;
+        font-weight: 600;
+      }
+
+      .dot {
+        width: 0.9rem;
+        height: 0.9rem;
+        border-radius: 50%;
+        background-color: #757575;
+      }
+
+      [data-state="active"] .dot {
+        background-color: #43a047;
+      }
+
+      [data-state="active"] .state {
+        color: #81c784;
+      }
+
+      [data-state="paused"] .dot {
+        background-color: #e53935;
+      }
+
+      [data-state="paused"] .state {
+        color: #ef9a9a;
+      }
+
+      .detail {
+        min-height: 1.5em;
+        margin: 0.75rem 0 1.5rem;
+        color: #b0b0b0;
+      }
+
+      button {
+        width: 100%;
+        min-height: 3rem;
+        padding: 0.75rem 1rem;
+        border: 1px solid #444;
+        border-radius: 8px;
+        background-color: #2c2c2c;
+        color: #ffffff;
+        font: inherit;
+        font-size: 1.05rem;
+        cursor: pointer;
+      }
+
+      button:hover:not(:disabled) {
+        background-color: #383838;
+      }
+
+      button:focus-visible {
+        outline: 2px solid #8ab4f8;
+        outline-offset: 2px;
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: wait;
+      }
+
+      .message {
+        min-height: 1.5em;
+        margin: 1rem 0 0;
+        color: #ef9a9a;
+      }
+    </style>
+  </head>
+  <body>
+    <main data-state="unknown">
+      <h1>DNS Blocking</h1>
+      <p class="state" role="status" aria-live="polite">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="state-label">Checking…</span>
+      </p>
+      <!-- Outside the live region: the countdown changes every second and
+           must not be read out each time. -->
+      <p id="state-detail" class="detail"></p>
+      <button type="button" id="pause" hidden>Pause for 5 minutes</button>
+      <button type="button" id="resume" hidden>Resume now</button>
+      <p id="message" class="message" role="alert"></p>
+      <noscript><p class="message">This page needs JavaScript.</p></noscript>
+    </main>
+    <script>
+      "use strict";
+
+      // Re-read the state regularly, so a pause or resume made on another
+      // device shows up here without a reload.
+      const POLL_INTERVAL_MS = 5000;
+      // Blocky truncates the time left of a timed pause to whole seconds, so
+      // during its last second it reports "paused, 0 seconds left", exactly
+      // as for an indefinite pause. Such a report is taken as that last
+      // second when the countdown the page knows ends within this margin of
+      // now; it covers the truncated second plus the latency of the requests
+      // the countdown was computed from.
+      const COUNTDOWN_END_MARGIN_MS = 3000;
+      // An action error stays on the page this long after the failed action
+      // (or until the next action), so it can be read; status refreshes in
+      // between do not remove it. It is shown next to a status error, never
+      // instead of it.
+      const ACTION_ERROR_VISIBLE_MS = 10000;
+
+      const main = document.querySelector("main");
+      const stateLabel = document.getElementById("state-label");
+      const stateDetail = document.getElementById("state-detail");
+      const pauseButton = document.getElementById("pause");
+      const resumeButton = document.getElementById("resume");
+      const message = document.getElementById("message");
+
+      // Last known state: null while unknown, otherwise whether blocking is
+      // enabled and, for a timed pause, when Blocky re-enables it by itself.
+      let state = null;
+      // Only the newest status request may update the page, so a slow
+      // response cannot overwrite the result of a newer one.
+      let latestStatusRequest = 0;
+      // Status requests not answered yet. The extra requests at the end of a
+      // countdown are only sent while this is 0, so a slow backend never has
+      // more than one of them outstanding.
+      let pendingStatusRequests = 0;
+      // End of the timed pause the newest status responses announced. Unlike
+      // state it survives a failed status request, so one failed poll cannot
+      // turn the end of a running countdown into an indefinite pause. It is
+      // cleared once blocking is seen enabled or a pause is seen to be
+      // indefinite.
+      let countdownEnd = null;
+      // Invariant: while an action runs, the buttons are disabled and the
+      // action is the only one requesting the status, so the status it
+      // requests after its POST is the newest and is on the page before the
+      // buttons are enabled again.
+      let actionRunning = false;
+      let statusError = "";
+      let actionError = "";
+      let actionErrorTimer;
+
+      function formatRemaining(milliseconds) {
+        const totalSeconds = Math.max(0, Math.ceil(milliseconds / 1000));
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = String(totalSeconds % 60).padStart(2, "0");
+        return `${minutes}:${seconds}`;
+      }
+
+      function describePause() {
+        if (state.resumesAt === null) {
+          return "Blocking stays off until it is resumed.";
+        }
+        const remaining = state.resumesAt - Date.now();
+        if (remaining <= 0) {
+          return "Resuming…";
+        }
+        return `Resumes automatically in ${formatRemaining(remaining)}.`;
+      }
+
+      // Text always accompanies the colour, so the state does not depend on
+      // telling green from red.
+      function render() {
+        if (state === null) {
+          main.dataset.state = "unknown";
+          stateLabel.textContent = "Unknown";
+          stateDetail.textContent = "";
+        } else if (state.enabled) {
+          main.dataset.state = "active";
+          stateLabel.textContent = "Active";
+          stateDetail.textContent = "Blocklists are applied to DNS queries.";
+        } else {
+          main.dataset.state = "paused";
+          stateLabel.textContent = "Paused";
+          stateDetail.textContent = describePause();
+        }
+        pauseButton.hidden = state === null || !state.enabled;
+        resumeButton.hidden = state === null || state.enabled;
+        pauseButton.disabled = actionRunning;
+        resumeButton.disabled = actionRunning;
+        message.textContent = [actionError, statusError]
+          .filter((text) => text !== "")
+          .join(" ");
+      }
+
+      // Turns the newest status response into the page state and keeps
+      // countdownEnd up to date. Must only be called for a response that is
+      // applied to the page, so a stale one cannot move the countdown.
+      function stateFromStatus(status) {
+        const now = Date.now();
+        if (status.enabled) {
+          countdownEnd = null;
+          return { enabled: true, resumesAt: null };
+        }
+        if (status.autoEnableInSec > 0) {
+          countdownEnd = now + status.autoEnableInSec * 1000;
+        } else if (
+          countdownEnd !== null &&
+          Math.abs(countdownEnd - now) <= COUNTDOWN_END_MARGIN_MS
+        ) {
+          // The last, truncated second of the known countdown: Blocky
+          // resumes within one second, so the countdown ends no later than
+          // that instead of switching to the indefinite-pause text.
+          countdownEnd = Math.min(countdownEnd, now + 1000);
+        } else {
+          // No known countdown, or one that ended long ago or would end much
+          // later: the pause is indefinite.
+          countdownEnd = null;
+        }
+        return { enabled: false, resumesAt: countdownEnd };
+      }
+
+      // Requests the status for polls and the like; skipped while an action
+      // runs, because the action requests it itself (see actionRunning).
+      function refreshStatus() {
+        if (!actionRunning) {
+          loadStatus();
+        }
+      }
+
+      async function loadStatus() {
+        const request = ++latestStatusRequest;
+        pendingStatusRequests++;
+        let status = null;
+        let error = "";
+        try {
+          const response = await fetch("/api/blocking/status", {
+            cache: "no-store",
+          });
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+          const body = await response.json();
+          if (typeof body.enabled !== "boolean") {
+            throw new Error("unexpected response");
+          }
+          status = body;
+        } catch (err) {
+          // A stale "Active" or "Paused" would be misleading, so an
+          // unreadable state is shown as unknown.
+          error = `Could not read the state (${err.message}).`;
+        } finally {
+          pendingStatusRequests--;
+        }
+        if (request !== latestStatusRequest) {
+          return;
+        }
+        state = status === null ? null : stateFromStatus(status);
+        statusError = error;
+        render();
+      }
+
+      // POST, because browsers send the Origin header on every POST, also on
+      // same-origin ones; the server requires it to reject requests made by
+      // foreign websites. The pause duration is fixed on the server.
+      async function runAction(action, description) {
+        actionRunning = true;
+        render();
+        try {
+          const response = await fetch(`/api/blocking/${action}`, {
+            method: "POST",
+            cache: "no-store",
+          });
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+          actionError = "";
+        } catch (err) {
+          actionError = `Could not ${description} (${err.message}).`;
+          clearTimeout(actionErrorTimer);
+          actionErrorTimer = setTimeout(() => {
+            actionError = "";
+            render();
+          }, ACTION_ERROR_VISIBLE_MS);
+        }
+        // loadStatus never throws; a failed request is applied as an
+        // unknown state, so the buttons are enabled again in every case.
+        await loadStatus();
+        actionRunning = false;
+        render();
+      }
+
+      pauseButton.addEventListener("click", () =>
+        runAction("pause", "pause blocking"),
+      );
+      resumeButton.addEventListener("click", () =>
+        runAction("resume", "resume blocking"),
+      );
+
+      // Advance the countdown between two status requests. Once it has run
+      // out, ask again every second instead of waiting for the next poll, so
+      // the resumed state shows up promptly. At most one request is
+      // outstanding at a time, and they stop by themselves: every response
+      // either shows blocking enabled, fails, starts a new countdown, or -
+      // once the countdown ended more than COUNTDOWN_END_MARGIN_MS ago -
+      // reports an indefinite pause (see stateFromStatus).
+      setInterval(() => {
+        if (state === null || state.resumesAt === null) {
+          return;
+        }
+        render();
+        if (
+          state.resumesAt <= Date.now() &&
+          pendingStatusRequests === 0 &&
+          !document.hidden
+        ) {
+          refreshStatus();
+        }
+      }, 1000);
+
+      // Hidden tabs do not poll; they catch up as soon as they are shown.
+      setInterval(() => {
+        if (!document.hidden) {
+          refreshStatus();
+        }
+      }, POLL_INTERVAL_MS);
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) {
+          refreshStatus();
+        }
+      });
+
+      refreshStatus();
+    </script>
+  </body>
+</html>
