@@ -10,12 +10,12 @@ let
   cfg = config.homelab.services.${service};
   homelab = config.homelab;
   open-seo-image = "ghcr.io/every-app/open-seo";
-  open-seo-version = "v0.1.31";
+  open-seo-version = "v0.1.32";
   # Digest and hash of the image, both change with the version. To get them, run this
   # in the repository with VERSION replaced and copy imageDigest and hash from its output:
   # nix run --inputs-from . nixpkgs#nix-prefetch-docker -- --image-name ghcr.io/every-app/open-seo --image-tag VERSION --os linux --arch amd64
-  open-seo-image-digest = "sha256:795f20da6925b61a30de0bb22071f581514182801a6dad9e3f489ac6f2af07b9";
-  open-seo-image-hash = "sha256-2Le2ztGmlppjZHriENJ7VrEFPBh00oNCdyz/8vEffaM=";
+  open-seo-image-digest = "sha256:a4a5689b5e10d3a7842564d32e40e31d2e198884f4e292680062e1e6b6ebdf40";
+  open-seo-image-hash = "sha256-aOW7aITxI7+34hT5FWTw7PFyzkioM1o5eegWbCBcyB4=";
   containerPort = 3001; # fixed app port inside the container (image EXPOSE/healthcheck)
 in
 {
