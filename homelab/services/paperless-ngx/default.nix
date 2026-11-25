@@ -147,6 +147,9 @@ in
 
       settings = {
         PAPERLESS_URL = "https://${cfg.url}";
+        # Since 3.5.0, setting PAPERLESS_URL restricts ALLOWED_HOSTS to its hostname (plus "localhost").
+        # Also allow the listen address, so direct requests (e.g. the internal blackbox probe) are not rejected with 400.
+        PAPERLESS_ALLOWED_HOSTS = "${cfg.url},${cfg.listenAddress}";
         PAPERLESS_TIME_ZONE = homelab.timeZone;
         PAPERLESS_CONSUMER_IGNORE_PATTERN = [
           ".DS_STORE/*"
