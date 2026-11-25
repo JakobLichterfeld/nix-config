@@ -76,7 +76,7 @@ in
         src = fetchFromGitHub {
           owner = "sberk42";
           repo = "fritzbox_exporter";
-          rev = "0525e3ca5672d3a00490a0cf97d2008b6238cbc9";
+          rev = "10a9fc0d27760f06f2c424e6e3bf8c8468d61c78";
           /*
             On Dev machine from the repository root, determine this hash without
             building MainServer. The command reads `rev` from this file:
@@ -86,7 +86,7 @@ in
 
             Copy the reported hash to `sha256` and commit it.
           */
-          sha256 = "sha256-alJwFwrpkrychJEjpYcC+PGn3WEaPMeUBw3iS+C860s=";
+          sha256 = "sha256-POB1Df6a5JHw9PnljCyhSJkv1x/p5fOSgNulrYu6BEg=";
         };
 
         /*
