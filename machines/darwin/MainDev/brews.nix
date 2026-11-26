@@ -8,7 +8,6 @@
   { name = "ruff"; } # Extremely fast Python linter, written in Rust
   { name = "rust"; } # Rust toolchain (compiler, cargo, rustfmt, clippy)
   { name = "gh"; } # GitHub CLI
-  { name = "actionlint"; } # Static checker for GitHub Actions workflow files
   { name = "firebase-cli"; }
   { name = "gemini-cli"; }
   { name = "opencode"; }
