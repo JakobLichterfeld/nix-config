@@ -11,6 +11,7 @@ with pkgs;
   # john # disabled because of Avast quarantine
   shellcheck
   shfmt
+  zizmor # Static analysis for GitHub Actions security issues
   nixfmt # Nix code formatter
   html-tidy
   beamPackages.elixir_1_20
